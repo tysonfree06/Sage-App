@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/general_extensions.dart';
@@ -31,6 +32,10 @@ class MyDropdown<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = context.typography.body.copyWith(
+      fontWeight: FontWeight.w500,
+      fontSize: 14.sp,
+    );
     return DropdownButtonFormField<T>(
       isExpanded: true,
       value: value,
@@ -41,6 +46,7 @@ class MyDropdown<T> extends StatelessWidget {
         Icons.keyboard_arrow_down_rounded,
         color: context.colors.mainGreenLight,
       ),
+      style: textStyle,
       decoration: decoration ??
           InputDecoration(
             hintText: hint,
@@ -56,7 +62,7 @@ class MyDropdown<T> extends StatelessWidget {
           value: e,
           child: Text(
             displayString?.call(e) ?? e.toString(),
-            style: TextStyle(
+            style: textStyle.copyWith(
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               color: isSelected ? context.colors.mainGreenLight : null,
             ),

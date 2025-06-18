@@ -3,7 +3,7 @@ import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.splash;
+  static String initialRoute() => RoutesName.step1;
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
