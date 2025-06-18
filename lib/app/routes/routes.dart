@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:sage/app/routes/routes_name.dart';
+import 'package:sage/view/onboarding/onboarding.dart';
+import 'package:sage/view/onboarding/step1.dart';
+import 'package:sage/view/auth/resetPassword.dart';
+import 'package:sage/view/views.dart';
+
+class Routes {
+  static String initialRoute() => RoutesName.splash;
+
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case RoutesName.splash:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const SplashScreen(),
+        );
+
+      case RoutesName.home:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const HomeScreen(),
+        );
+
+      case RoutesName.login:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const LoginScreen(),
+        );
+
+      case RoutesName.welcome:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const WelcomeScreen(),
+        );
+
+      case RoutesName.forgotPassword:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const ForgotPassword(),
+        );
+      case RoutesName.onBoarding:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const OnBoardingScreen(),
+        );
+      case RoutesName.step1:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const Step1Screen(),
+        );
+
+        case RoutesName.resetPassword:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => ResetPassword(),
+        );
+
+      default:
+        return MaterialPageRoute(
+          builder: (_) {
+            return const Scaffold(
+              body: Center(
+                child: Text('No route defined'),
+              ),
+            );
+          },
+        );
+    }
+  }
+}
