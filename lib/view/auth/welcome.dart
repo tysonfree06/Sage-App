@@ -7,7 +7,7 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/welcome_service.dart';
-import 'package:sage/view/welcome/widget/welcome_scaffold.dart';
+import 'package:sage/view/auth/widget/welcome_scaffold.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

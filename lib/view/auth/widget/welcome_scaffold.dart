@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sage/app/components/status_bar_style.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 
 class WelcomeScaffold extends StatefulWidget {
@@ -46,22 +47,24 @@ class _WelcomeScaffoldState extends State<WelcomeScaffold> {
           fit: BoxFit.cover,
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(child: widget.body ?? const SizedBox.shrink()),
-        appBar: widget.appBar,
-        drawer: widget.drawer,
-        bottomNavigationBar: widget.bottomNavigationBar,
-        floatingActionButton: widget.floatingActionButton,
-        bottomSheet: widget.bottomSheet,
-        persistentFooterButtons: widget.persistentFooterButtons != null
-            ? [widget.persistentFooterButtons!]
-            : null,
-        endDrawer: widget.endDrawer,
-        resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-        primary: widget.primary ?? true,
-        extendBody: widget.extendBody ?? false,
-        extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,
+      child: DarkStatusBar(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(child: widget.body ?? const SizedBox.shrink()),
+          appBar: widget.appBar,
+          drawer: widget.drawer,
+          bottomNavigationBar: widget.bottomNavigationBar,
+          floatingActionButton: widget.floatingActionButton,
+          bottomSheet: widget.bottomSheet,
+          persistentFooterButtons: widget.persistentFooterButtons != null
+              ? [widget.persistentFooterButtons!]
+              : null,
+          endDrawer: widget.endDrawer,
+          resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+          primary: widget.primary ?? true,
+          extendBody: widget.extendBody ?? false,
+          extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,
+        ),
       ),
     );
   }

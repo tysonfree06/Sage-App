@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sage/app/components/status_bar_style.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
@@ -55,39 +56,41 @@ class _AuthScaffoldState extends State<AuthScaffold> {
           fit: BoxFit.cover,
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: widget.contentHeight,
-              width: double.infinity,
-              padding: EdgeInsets.all(AppDimensions.small),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(AppDimensions.extraLarge),
-                  topRight: Radius.circular(AppDimensions.extraLarge),
+      child: DarkStatusBar(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: widget.contentHeight,
+                width: double.infinity,
+                padding: EdgeInsets.all(AppDimensions.small),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(AppDimensions.extraLarge),
+                    topRight: Radius.circular(AppDimensions.extraLarge),
+                  ),
+                  color: context.colors.white,
                 ),
-                color: context.colors.white,
+                child: widget.body ?? const SizedBox.shrink(),
               ),
-              child: widget.body ?? const SizedBox.shrink(),
             ),
           ),
+          appBar: widget.appBar,
+          drawer: widget.drawer,
+          bottomNavigationBar: widget.bottomNavigationBar,
+          floatingActionButton: widget.floatingActionButton,
+          bottomSheet: widget.bottomSheet,
+          persistentFooterButtons: widget.persistentFooterButtons != null
+              ? [widget.persistentFooterButtons!]
+              : null,
+          endDrawer: widget.endDrawer,
+          resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+          primary: widget.primary ?? true,
+          extendBody: widget.extendBody ?? false,
+          extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,
         ),
-        appBar: widget.appBar,
-        drawer: widget.drawer,
-        bottomNavigationBar: widget.bottomNavigationBar,
-        floatingActionButton: widget.floatingActionButton,
-        bottomSheet: widget.bottomSheet,
-        persistentFooterButtons: widget.persistentFooterButtons != null
-            ? [widget.persistentFooterButtons!]
-            : null,
-        endDrawer: widget.endDrawer,
-        resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-        primary: widget.primary ?? true,
-        extendBody: widget.extendBody ?? false,
-        extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,
       ),
     );
   }

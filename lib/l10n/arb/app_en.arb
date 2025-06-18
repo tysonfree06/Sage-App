@@ -68,5 +68,17 @@
   "account_verification": "Verification",
   "account_subtitle": "Please enter the verification code that we have sent on your email ",
   "account_resend_otp": "Resend OTP",
-  "account_verify": "Verify"
+  "account_verify": "Verify",
+
+  "@_ANALYZE_DATA_SCREEN": {},
+  "analyze_data_title":"Analyzing Your Data...",
+  "analyze_data_subtitle":"Please wait we are analyzing your provided data to give you better results. it will take only few seconds.",
+
+  "@_ONBOARDING_SCREEN": {},
+  "onboarding_lets_see_what":"Let's See What ",
+  "onboarding_fuels":"Fuels",
+  "onboarding_your":"Your",
+  "onboarding_connection":"Connection!!",
+  "onboarding_start":"Start",
+  "onboarding_maybe_latter":"Maybe Later"
 }

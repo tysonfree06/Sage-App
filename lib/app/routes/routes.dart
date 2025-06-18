@@ -45,6 +45,11 @@ class Routes {
           builder: (BuildContext context) => const ResetPassword(),
         );
 
+      case RoutesName.analyzeData:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const AnalyzeDataScreen(),
+        );
+
       default:
         return MaterialPageRoute(
           builder: (_) {

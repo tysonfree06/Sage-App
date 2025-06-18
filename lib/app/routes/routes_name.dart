@@ -8,4 +8,8 @@ class RoutesName {
   static const String forgotPassword = 'forgot_password_screen';
   static const String onBoarding = 'onboarding_screen';
   static const String step1 = 'step1_screen';
+  static const String step2 = 'step2_screen';
+  static const String step3 = 'step3_screen';
+  static const String step4 = 'step4_screen';
+  static const String analyzeData = 'analyze_data_screen';
 }
