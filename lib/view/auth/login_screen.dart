@@ -7,28 +7,25 @@ import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/login_service.dart';
 import 'package:sage/view/auth/widget/auth_scaffold.dart';
 
-/// A widget representing the auth screen of the application.
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     return AuthScaffold(
-      appBar: AppBar(
-        leading: BackButton(color: context.colors.white,),
-      ),
-    body: Padding(
-    padding: const EdgeInsets.symmetric(
-    vertical: 22,
-    horizontal: 16,
-    ),
-    child: Form(
-        key: _formKey,
-        child: Column(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 22,
+          horizontal: 16,
+        ),
+        child: Form(
+          key: formKey,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -83,13 +80,17 @@ class LoginScreen extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: MyTextButton(
                   label: context.l10n.login_forgot_password,
-                  onPressed: () {},
+                  onPressed: () {
+                    LoginService.goToForgotPassword(context);
+                  },
                 ),
               ),
               SizedBox(height: 40.h),
               MyButton(
                 label: context.l10n.login,
-                onPressed: () {},
+                onPressed: () {
+                  LoginService.goToHome(context);
+                },
               ),
               SizedBox(height: 20.h),
               Row(
@@ -107,11 +108,12 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(width: 5.w),
                   MyTextButton(
                     label: context.l10n.login_signup,
-                    onPressed: () {},
+                    onPressed: () {
+                      LoginService.goToSignup(context);
+                    },
                   ),
                 ],
               ),
-              // Widget for submit button
             ],
           ),
         ),

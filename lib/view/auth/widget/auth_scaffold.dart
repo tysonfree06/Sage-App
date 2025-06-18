@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
-import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 
 class AuthScaffold extends StatefulWidget {

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
-import 'package:sage/view/onboarding/onboarding.dart';
-import 'package:sage/view/onboarding/step1.dart';
-import 'package:sage/view/auth/resetPassword.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
@@ -43,16 +40,17 @@ class Routes {
           builder: (BuildContext context) => const Step1Screen(),
         );
 
-        case RoutesName.resetPassword:
+      case RoutesName.resetPassword:
         return MaterialPageRoute(
-          builder: (BuildContext context) => ResetPassword(),
+          builder: (BuildContext context) => const ResetPassword(),
         );
 
       default:
         return MaterialPageRoute(
           builder: (_) {
-            return const Scaffold(
-              body: Center(
+            return Scaffold(
+              appBar: AppBar(),
+              body: const Center(
                 child: Text('No route defined'),
               ),
             );

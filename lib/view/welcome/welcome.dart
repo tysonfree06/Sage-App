@@ -6,6 +6,7 @@ import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/welcome_service.dart';
 import 'package:sage/view/welcome/widget/welcome_scaffold.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -42,12 +43,16 @@ class WelcomeScreen extends StatelessWidget {
             MyButton(
               label: context.l10n.welcome_signup,
               isDark: true,
-              onPressed: () {},
+              onPressed: () {
+                WelcomeService.goToSignup(context);
+              },
             ),
             SizedBox(height: 15.h),
             MyButton(
               label: context.l10n.welcome_to_your_account,
-              onPressed: () {},
+              onPressed: () {
+                WelcomeService.goToLogin(context);
+              },
             ),
             SizedBox(height: 40.h),
           ],

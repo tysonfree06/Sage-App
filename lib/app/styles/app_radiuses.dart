@@ -10,6 +10,9 @@ class AppRadiuses {
   /// 16.0
   static final double largeRadius = 16.0.r;
 
+  /// 30.0
+  static final double extraLargeRadius = 30.0.r;
+
   /// 100.0
   static final double hundredRadius = 100.0.r;
 }

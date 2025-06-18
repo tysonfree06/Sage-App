@@ -1,6 +1,5 @@
-import 'package:sage/app/components/my_form_text_field.dart';
-import 'package:sage/l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:sage/app/components/my_form_text_field.dart';
 
 /// A widget representing the password input field.
 

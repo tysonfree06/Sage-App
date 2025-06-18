@@ -60,7 +60,7 @@ abstract class ThemeFactory {
           showDragHandle: true,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(AppRadiuses.largeRadius),
+              top: Radius.circular(AppRadiuses.extraLargeRadius),
             ),
           ),
         ),
