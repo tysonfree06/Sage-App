@@ -25,11 +25,12 @@ class AnalyzeDataScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             // mainAxisSize: MainAxisSize.min,
             children: [
-              Assets.images.analyzing.svg(
-                fit: BoxFit.scaleDown,
-                height: 116,
-                width: 116,
+              Image.asset(
+                Assets.images.loading.path,
+                width: 150,
+                height: 150,
               ),
+              SizedBox(height: 12.h),
               Text(
                 context.l10n.analyze_data_title,
                 style: context.typography.title.copyWith(
