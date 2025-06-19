@@ -30,16 +30,16 @@ class ColoredRichText extends StatelessWidget {
               color: firstColor ?? context.colors.textLightGreen,
               fontSize: fontSize,
               fontWeight: fontWeight,
-              letterSpacing: -.2
+              letterSpacing: -.2,
             ),
           ),
           TextSpan(
             text: second,
-            style:  context.typography.title.copyWith(
-                color: secondColor ?? context.colors.textDarkGreen,
-                fontSize: fontSize,
-                fontWeight: fontWeight,
-                letterSpacing: -.2
+            style: context.typography.title.copyWith(
+              color: secondColor ?? context.colors.textDarkGreen,
+              fontSize: fontSize,
+              fontWeight: fontWeight,
+              letterSpacing: -.2,
             ),
           ),
         ],

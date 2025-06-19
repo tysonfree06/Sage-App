@@ -62,8 +62,9 @@ class TypographyExtension extends ThemeExtension<TypographyExtension> {
         subtitle: TextStyle(
           fontFamily: FontFamily.raleway,
           fontSize: 16.sp,
-          fontWeight: FontWeight.w400,
-          color: colors.textDarkGreen,
+          fontWeight: FontWeight.w500,
+          height: 0,
+          color: colors.textDarkGreen.withValues(alpha: .6),
         ),
         body: TextStyle(
           fontFamily: FontFamily.raleway,

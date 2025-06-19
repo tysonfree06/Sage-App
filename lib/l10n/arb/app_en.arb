@@ -5,6 +5,27 @@
   "done":"Done",
 
 
+  "@_Dialogs": {},
+  "dialog_cancel":"Cancel",
+  "dialog_redeem":"Redeem ",
+  "dialog_offer":"Offer?",
+  "dialog_yes_sure":"Yes, Sure",
+  "dialog_redeem_offer_subtitle":"Are you sure you want to use 500 points for this offer???? it will be deducted from your points",
+  "dialog_delete":"Delete ",
+  "dialog_idea":"Idea?",
+  "dialog_delete_idea_subtitle":"Are you sure you want to delete this idea?? it will be removed from everywhere..",
+  "dialog_yes_delete":"Yes Delete",
+  "dialog_remove":"Remove ",
+  "dialog_partner":"Partner?",
+  "dialog_remove_partner_subtitle":"Are you sure you want to delete your partner?? all partners details will be removed from everywhere..",
+  "dialog_subscription":" Subscription?",
+  "dialog_cancel_sub_subtitle":"Are you sure you want to cancel your subscription???",
+  "dialog_yes_cancel":"Yes, cancel",
+  "dialog_account":"Account?",
+  "dialog_delete_account_subtitle":"Are you sure you want to delete your account?? all the account details will be deleted permanently",
+
+
+
 
   "@_WELCOME_SCREEN": {},
   "welcome_to": "Welcome To ",
