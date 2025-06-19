@@ -3,30 +3,36 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
+import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/signup_service.dart';
 import 'package:sage/view/auth/widget/auth_scaffold.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final formKey = GlobalKey<FormState>();
+  // ValueNotifiers to toggle visibility
+  final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
+  final ValueNotifier<bool> _obscureConfirmPassword = ValueNotifier(true);
+  @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
     return AuthScaffold(
-      appBar: AppBar(
-        leading: BackButton(
-          color: context.colors.white,
-        ),
-      ),
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 22,
           horizontal: 16,
         ),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -92,9 +98,20 @@ class SignupScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10.h),
-                MyFormTextField(
-                  hint: context.l10n.lets_password_hint,
-                  suffixIcon: Assets.icons.visibilityOn.svg(),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _obscurePassword,
+                  builder: (_, obscure, __) {
+                    return MyFormTextField(
+                      hint: context.l10n.lets_password_hint,
+                      obscureText: obscure,
+                      suffixIcon: GestureDetector(
+                        onTap: () => _obscurePassword.value = !obscure,
+                        child: obscure
+                            ? Assets.icons.visibilityOff.svg()
+                            : Assets.icons.visibilityOn.svg(),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 15.h),
                 Align(
@@ -108,9 +125,20 @@ class SignupScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10.h),
-                MyFormTextField(
-                  hint: context.l10n.lets_password_hint,
-                  suffixIcon: Assets.icons.visibilityOn.svg(),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _obscureConfirmPassword,
+                  builder: (_, obscure, __) {
+                    return MyFormTextField(
+                      hint: context.l10n.lets_password_hint,
+                      obscureText: obscure,
+                      suffixIcon: GestureDetector(
+                        onTap: () => _obscureConfirmPassword.value = !obscure,
+                        child: obscure
+                            ? Assets.icons.visibilityOff.svg()
+                            : Assets.icons.visibilityOn.svg(),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 15.h),
                 Align(
@@ -140,13 +168,35 @@ class SignupScreen extends StatelessWidget {
                 SizedBox(height: 40.h),
                 MyButton(
                   label: context.l10n.login_signup,
-                  onPressed: () {},
+                  onPressed: () {
+                    SignupService.showVerificationSheet(context);
+                  },
                 ),
                 SizedBox(height: 20.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      context.l10n.lets_already_have_an_account,
+                      style: context.typography.subtitle.copyWith(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w500,
+                        color: context.colors.textDarkGreen.withValues(),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(width: 5.w),
+                    MyTextButton(
+                      label: context.l10n.lets_login,
+                      onPressed: () {
+                        SignupService.goToLogin(context);
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          // Widget for submit button
         ),
       ),
     );

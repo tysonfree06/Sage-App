@@ -6,7 +6,7 @@ import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/services/views/welcome_service.dart';
+import 'package:sage/services/views/onboarding_service.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   const OnBoardingScreen({super.key});
@@ -18,10 +18,9 @@ class OnBoardingScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Assets.images.onBoarding
-                .svg(fit: BoxFit.fitWidth),
+            Assets.images.onBoarding.svg(fit: BoxFit.fitWidth),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal:  AppDimensions.medium),
+              padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -44,7 +43,7 @@ class OnBoardingScreen extends StatelessWidget {
                   MyButton(
                     label: context.l10n.onboarding_start,
                     onPressed: () {
-                      WelcomeService.goToSignup(context);
+                      OnboardingService.goToStep1(context);
                     },
                   ),
                   SizedBox(height: 12.h),
@@ -52,7 +51,7 @@ class OnBoardingScreen extends StatelessWidget {
                     label: context.l10n.onboarding_maybe_latter,
                     isDark: true,
                     onPressed: () {
-                      WelcomeService.goToLogin(context);
+                      OnboardingService.goToHome(context);
                     },
                   ),
                   SizedBox(height: 40.h),

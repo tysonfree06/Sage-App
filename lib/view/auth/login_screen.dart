@@ -10,9 +10,15 @@ import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/login_service.dart';
 import 'package:sage/view/auth/widget/auth_scaffold.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
@@ -71,9 +77,20 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10.h),
-              MyFormTextField(
-                hint: context.l10n.login_password_hint,
-                suffixIcon: Assets.icons.visibilityOff.svg(),
+              ValueListenableBuilder<bool>(
+                valueListenable: _obscurePassword,
+                builder: (_, obscure, __) {
+                  return MyFormTextField(
+                    hint: context.l10n.login_password_hint,
+                    obscureText: obscure,
+                    suffixIcon: GestureDetector(
+                      onTap: () => _obscurePassword.value = !obscure,
+                      child: obscure
+                          ? Assets.icons.visibilityOff.svg()
+                          : Assets.icons.visibilityOn.svg(),
+                    ),
+                  );
+                },
               ),
               SizedBox(height: 10.h),
               Align(

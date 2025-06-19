@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
@@ -7,30 +6,36 @@ import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/reset_password_service.dart';
 import 'package:sage/view/auth/widget/auth_scaffold.dart';
 
-class ResetPassword extends StatelessWidget {
+class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+  State<ResetPassword> createState() => _ResetPasswordState();
+}
 
+class _ResetPasswordState extends State<ResetPassword> {
+  final formKey = GlobalKey<FormState>();
+
+  // ValueNotifiers to toggle visibility
+  final ValueNotifier<bool> _obscureNewPassword = ValueNotifier(true);
+  final ValueNotifier<bool> _obscureConfirmPassword = ValueNotifier(true);
+
+  @override
+  Widget build(BuildContext context) {
     return AuthScaffold(
       appBar: AppBar(
-        leading: BackButton(color: context.colors.white,),
+        leading: BackButton(color: context.colors.white),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 22,
-          horizontal: 16,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ColoredRichText(
                 first: context.l10n.reset,
@@ -47,6 +52,8 @@ class ResetPassword extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 30.h),
+
+              // NEW PASSWORD
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -58,11 +65,25 @@ class ResetPassword extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10.h),
-              MyFormTextField(
-                hint: context.l10n.reset_new_password_hint,
-                suffixIcon: Assets.icons.visibilityOn.svg(),
+              ValueListenableBuilder<bool>(
+                valueListenable: _obscureNewPassword,
+                builder: (_, obscure, __) {
+                  return MyFormTextField(
+                    hint: context.l10n.reset_new_password_hint,
+                    obscureText: obscure,
+                    suffixIcon: GestureDetector(
+                      onTap: () => _obscureNewPassword.value = !obscure,
+                      child: obscure
+                          ? Assets.icons.visibilityOff.svg()
+                          : Assets.icons.visibilityOn.svg(),
+                    ),
+                  );
+                },
               ),
+
               SizedBox(height: 15.h),
+
+              // CONFIRM PASSWORD
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -74,15 +95,30 @@ class ResetPassword extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10.h),
-              MyFormTextField(
-                hint: context.l10n.reset_confirm_password_hint,
-                suffixIcon: Assets.icons.visibilityOff.svg(),
+              ValueListenableBuilder<bool>(
+                valueListenable: _obscureConfirmPassword,
+                builder: (_, obscure, __) {
+                  return MyFormTextField(
+                    hint: context.l10n.reset_confirm_password_hint,
+                    obscureText: obscure,
+                    suffixIcon: GestureDetector(
+                      onTap: () => _obscureConfirmPassword.value = !obscure,
+                      child: obscure
+                          ? Assets.icons.visibilityOff.svg()
+                          : Assets.icons.visibilityOn.svg(),
+                    ),
+                  );
+                },
               ),
-              SizedBox(height: 10.h),
-              SizedBox(height: 40.h),
+
+              SizedBox(height: 50.h),
               MyButton(
                 label: context.l10n.reset_continue,
-                onPressed: () {},
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    ResetPasswordService.goToLogin(context);
+                  }
+                },
               ),
             ],
           ),

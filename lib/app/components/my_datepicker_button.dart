@@ -5,14 +5,9 @@ import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/l10n/l10n.dart';
 
 class MyDatePickerButton extends StatelessWidget {
-  final String hintText;
-  final DateTime? selectedDate;
-  final ValueChanged<DateTime> onChanged;
-  final bool isExpanded;
-  final Widget? suffixIcon;
-
   const MyDatePickerButton({
     required this.hintText,
     required this.selectedDate,
@@ -21,6 +16,11 @@ class MyDatePickerButton extends StatelessWidget {
     this.isExpanded = false,
     this.suffixIcon,
   });
+  final String hintText;
+  final DateTime? selectedDate;
+  final ValueChanged<DateTime> onChanged;
+  final bool isExpanded;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +65,6 @@ class MyDatePickerButton extends StatelessWidget {
   }
 
   void _showDatePicker(BuildContext context) {
-//     The type argument(s) of the function 'showModalBottomSheet' can't be inferred.
-// Use explicit type argument(s) for 'showModalBottomSheet'.
     DateTime tempPicked = selectedDate ?? DateTime.now();
     MyBottomSheet.show<void>(
       context,
@@ -90,7 +88,7 @@ class MyDatePickerButton extends StatelessWidget {
                 ),
               ),
               MyButton(
-                label: 'Done',
+                label: context.l10n.done,
                 onPressed: () {
                   Navigator.pop(context);
                   onChanged(tempPicked);
@@ -100,36 +98,6 @@ class MyDatePickerButton extends StatelessWidget {
           ),
         ),
       ),
-      // context: context,
-      // builder: (ctx) {
-      //   DateTime tempPicked = selectedDate ?? DateTime.now();
-
-      //   return SizedBox(
-      //     height: 300,
-      //     child: Column(
-      //       children: [
-      //         Expanded(
-      //           child: CupertinoDatePicker(
-      //             initialDateTime: tempPicked,
-      //             mode: CupertinoDatePickerMode.date,
-      //             maximumDate: DateTime(2100),
-      //             minimumDate: DateTime(1900),
-      //             onDateTimeChanged: (value) {
-      //               tempPicked = value;
-      //             },
-      //           ),
-      //         ),
-      //         MyButton(
-      //           label: "Done",
-      //           onPressed: () {
-      //             Navigator.pop(ctx);
-      //             onChanged(tempPicked);
-      //           },
-      //         )
-      //       ],
-      //     ),
-      //   );
-      // },
     );
   }
 }

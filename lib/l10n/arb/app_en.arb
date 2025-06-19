@@ -1,6 +1,11 @@
 {
   "@@locale": "en",
 
+  "@_GENERAL": {},
+  "done":"Done",
+
+
+
   "@_WELCOME_SCREEN": {},
   "welcome_to": "Welcome To ",
   "welcome_sage": "Sage",
@@ -56,6 +61,8 @@
   "lets_optional": "(Optional)",
   "lets_invitation_hint": "Enter invitation code",
   "lets_accept_policy": "I have read and agree with the terms & conditions and privacy policy",
+  "lets_already_have_an_account":"Already have an account? ",
+  "lets_login":"Login",
 
   "@_ACCOUNT_VERIFICATION_SCREEN": {},
   "account": "Account ",

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
-import 'package:sage/app/components/my_bottom_sheet.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_pinput.dart';
@@ -9,7 +8,7 @@ import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/view/auth/widget/account_verification_sheet.dart';
+import 'package:sage/services/views/forgot_password_service.dart';
 import 'package:sage/view/auth/widget/auth_scaffold.dart';
 
 class ForgotPassword extends StatelessWidget {
@@ -21,7 +20,9 @@ class ForgotPassword extends StatelessWidget {
     final pinController = TextEditingController();
     return AuthScaffold(
       appBar: AppBar(
-        leading: BackButton(color: context.colors.white,),
+        leading: BackButton(
+          color: context.colors.white,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
@@ -79,13 +80,7 @@ class ForgotPassword extends StatelessWidget {
               MyButton(
                 label: context.l10n.forgot_verify,
                 onPressed: () {
-                  //TODO: When Lets Get Start is Done copy following bottom sheet there
-                  MyBottomSheet.show<void>(
-                    context,
-                    child: const AccountVerificationSheet(
-                      email: 'alex123@gmail.com',
-                    ),
-                  );
+                  ForgotPasswordService.goToResetPassword(context);
                 },
               ),
             ],

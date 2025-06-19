@@ -1,7 +1,7 @@
 // Auth
 export 'auth//login_screen.dart';
 export 'auth/forgot_password.dart';
-export 'auth/resetPassword.dart';
+export 'auth/reset_password.dart';
 export 'auth/signup.dart';
 export 'auth/welcome.dart';
 
