@@ -66,6 +66,14 @@ abstract class ThemeFactory {
         ),
         chipTheme: ChipThemeData(),
         checkboxTheme: CheckboxThemeData(),
+        radioTheme: RadioThemeData(
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return colorSchemeLight.mainGreenLight; // Selected color
+            }
+            return colorSchemeLight.mainGreenLight; // Unselected color
+          }),
+        )
       );
 
   static AppColorScheme get colorSchemeDark => AppColorScheme.dark();
@@ -126,5 +134,13 @@ abstract class ThemeFactory {
         ),
         chipTheme: ChipThemeData(),
         checkboxTheme: CheckboxThemeData(),
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return colorSchemeDark.mainGreenLight; // Selected color
+          }
+          return colorSchemeDark.mainGreenLight; // Unselected color
+        }),
+      )
       );
 }

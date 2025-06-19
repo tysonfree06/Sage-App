@@ -32,7 +32,7 @@ class MyDropdown<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = context.typography.body.copyWith(
+    final textStyle = context.typography.subtitle.copyWith(
       fontWeight: FontWeight.w500,
       fontSize: 14.sp,
     );

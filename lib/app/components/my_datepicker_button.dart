@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/my_bottom_sheet.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
@@ -33,26 +34,32 @@ class MyDatePickerButton extends StatelessWidget {
       ),
     );
 
-    final textStyle = context.typography.body.copyWith();
+    final textStyle = context.typography.subtitle.copyWith(
+      fontWeight: FontWeight.w500,
+      fontSize: 14.sp,
+    );
 
     final child = InkWell(
       onTap: () => _showDatePicker(context),
       borderRadius: BorderRadius.circular(AppRadiuses.largeRadius),
       child: InputDecorator(
+        isEmpty: selectedDate == null,
         decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           hintText: hintText,
-          hintStyle: textStyle.copyWith(color: Colors.blue),
+          hintStyle: textStyle.copyWith(),
           border: border,
           enabledBorder: border,
           focusedBorder: border,
           suffixIcon: suffixIcon,
         ),
-        child: Text(
-          selectedDate != null ? _formatDate(selectedDate!) : '',
+        child: selectedDate != null
+            ? Text(
+          _formatDate(selectedDate!),
           style: textStyle,
-        ),
+        )
+            : null,
       ),
     );
 

@@ -19,6 +19,8 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final formKey = GlobalKey<FormState>();
+  bool isChecked = false;
+
   // ValueNotifiers to toggle visibility
   final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
   final ValueNotifier<bool> _obscureConfirmPassword = ValueNotifier(true);
@@ -157,7 +159,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         style: context.typography.subtitle.copyWith(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
-                          color: context.colors.textDarkGreen.withValues(),
+                          color: context.colors.textDarkGreen.withValues(alpha: 0.5),
+
                         ),
                       ),
                     ],
@@ -165,7 +168,36 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 SizedBox(height: 10.h),
                 MyFormTextField(hint: context.l10n.lets_invitation_hint),
-                SizedBox(height: 40.h),
+                SizedBox(height: 16.h),
+
+                Row(
+                  children: [
+                    Checkbox(
+                      value: isChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isChecked = value!;
+                        });
+                      },
+                      activeColor: context.colors.mainGreenLight,
+                      checkColor: context.colors.white,
+                      side: BorderSide(color: context.colors.mainGreenDark),
+                    ),
+
+                    Flexible(
+                      child: Text(
+                        context.l10n.lets_accept_policy,
+                        style: context.typography.subtitle.copyWith(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w500,
+                          color: context.colors.textDarkGreen.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 35.h),
                 MyButton(
                   label: context.l10n.login_signup,
                   onPressed: () {
