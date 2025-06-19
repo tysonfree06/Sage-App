@@ -23,7 +23,6 @@ class AnalyzeDataScreen extends StatelessWidget {
           padding: EdgeInsets.all(AppDimensions.medium),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            // mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
                 Assets.images.loading.path,
