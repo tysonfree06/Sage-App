@@ -5,79 +5,61 @@ import 'package:sage/view/views.dart';
 class Routes {
   static String initialRoute() => RoutesName.splash;
 
+  // Map of all route names to their corresponding widget builders
+  static final Map<String, Widget Function(BuildContext)> _routes = {
+    RoutesName.splash: (_) => const SplashScreen(),
+    RoutesName.welcome: (_) => const WelcomeScreen(),
+    RoutesName.login: (_) => const LoginScreen(),
+    RoutesName.signup: (_) => const SignupScreen(),
+    RoutesName.forgotPassword: (_) => const ForgotPassword(),
+    RoutesName.resetPassword: (_) => const ResetPassword(),
+    RoutesName.home: (_) => const HomeScreen(),
+    RoutesName.onBoarding: (_) => const OnBoardingScreen(),
+    RoutesName.step1: (_) => const Step1Screen(),
+    RoutesName.step2: (_) => const Step2Screen(),
+    RoutesName.step3: (_) => const Step3Screen(),
+    RoutesName.step4: (_) => const Step4Screen(),
+    RoutesName.analyzeData: (_) => const AnalyzeDataScreen(),
+  };
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case RoutesName.splash:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const SplashScreen(),
-        );
+    final builder = _routes[settings.name];
+    if (builder != null) {
+      /// If arguments are needed for a screen, handle them here
+      switch (settings.name) {
+        /// Example with arguments (uncomment and update when needed)
+        ///
+        // case RoutesName.login:
+        //   final email = settings.arguments as String?;
+        //   return MaterialPageRoute(
+        //     builder: (_) => LoginScreen(prefilledEmail: email),
+        //   );
 
-      case RoutesName.welcome:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const WelcomeScreen(),
-        );
-
-      case RoutesName.login:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const LoginScreen(),
-        );
-
-      case RoutesName.signup:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const SignupScreen(),
-        );
-
-      case RoutesName.forgotPassword:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const ForgotPassword(),
-        );
-      case RoutesName.resetPassword:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const ResetPassword(),
-        );
-
-      case RoutesName.home:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const HomeScreen(),
-        );
-      // case RoutesName.onBoarding:
-      //   return MaterialPageRoute(
-      //     builder: (BuildContext context) => const OnBoardingScreen(),
-      //   );
-      // case RoutesName.step1:
-      //   return MaterialPageRoute(
-      //     builder: (BuildContext context) => const Step1Screen(),
-      //   );
-      // case RoutesName.step2:
-      //   return MaterialPageRoute(
-      //     builder: (BuildContext context) => const Step2Screen(),
-      //   );
-      // case RoutesName.step3:
-      //   return MaterialPageRoute(
-      //     builder: (BuildContext context) => const Step3Screen(),
-      //   );
-      //
-      // case RoutesName.step4:
-      //   return MaterialPageRoute(
-      //     builder: (BuildContext context) => const Step4Screen(),
-      //   );
-
-      // case RoutesName.analyzeData:
-      //   return MaterialPageRoute(
-      //     builder: (BuildContext context) => const AnalyzeDataScreen(),
-      //   );
-
-      default:
-        return MaterialPageRoute(
-          builder: (_) {
-            return Scaffold(
-              appBar: AppBar(),
-              body: const Center(
-                child: Text('No route defined'),
-              ),
-            );
-          },
-        );
+        default:
+          return MaterialPageRoute(
+            builder: builder,
+            settings: settings,
+          );
+      }
     }
+
+    // Fallback screen for undefined routes
+    return MaterialPageRoute(
+      builder: (_) => const UnknownRouteScreen(),
+    );
+  }
+}
+
+class UnknownRouteScreen extends StatelessWidget {
+  const UnknownRouteScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Not Found')),
+      body: const Center(
+        child: Text('No route defined for this screen.'),
+      ),
+    );
   }
 }
