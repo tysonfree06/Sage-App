@@ -65,15 +65,31 @@ abstract class ThemeFactory {
           ),
         ),
         chipTheme: ChipThemeData(),
-        checkboxTheme: CheckboxThemeData(),
-        radioTheme: RadioThemeData(
+        checkboxTheme: CheckboxThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadiuses.verySmallRadius),
+          ),
+          side: BorderSide(color: colorSchemeLight.mainGreenDark),
           fillColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
-              return colorSchemeLight.mainGreenLight; // Selected color
+              return colorSchemeLight.mainGreenDark;
             }
-            return colorSchemeLight.mainGreenLight; // Unselected color
+            return Colors.transparent;
           }),
-        )
+          checkColor: WidgetStateProperty.all<Color>(colorSchemeLight.white),
+          visualDensity: VisualDensity.compact,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: WidgetStateProperty.resolveWith(
+            (states) {
+              if (states.contains(WidgetState.selected)) {
+                return colorSchemeLight.mainGreenLight; // Selected color
+              }
+              return colorSchemeLight.mainGreenLight; // Unselected color
+            },
+          ),
+        ),
       );
 
   static AppColorScheme get colorSchemeDark => AppColorScheme.dark();
@@ -133,14 +149,28 @@ abstract class ThemeFactory {
           ),
         ),
         chipTheme: ChipThemeData(),
-        checkboxTheme: CheckboxThemeData(),
-      radioTheme: RadioThemeData(
-        fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return colorSchemeDark.mainGreenLight; // Selected color
-          }
-          return colorSchemeDark.mainGreenLight; // Unselected color
-        }),
-      )
+        checkboxTheme: CheckboxThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadiuses.verySmallRadius),
+          ),
+          side: BorderSide(color: colorSchemeLight.mainGreenDark),
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return colorSchemeLight.mainGreenDark;
+            }
+            return Colors.transparent;
+          }),
+          checkColor: WidgetStateProperty.all<Color>(colorSchemeLight.white),
+          visualDensity: VisualDensity.compact,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return colorSchemeDark.mainGreenLight; // Selected color
+            }
+            return colorSchemeDark.mainGreenLight; // Unselected color
+          }),
+        ),
       );
 }

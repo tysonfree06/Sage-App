@@ -54,7 +54,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     style: context.typography.subtitle.copyWith(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w500,
-                      color: context.colors.textDarkGreen.withValues(alpha: .60),
+                      color:
+                          context.colors.textDarkGreen.withValues(alpha: .60),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -161,8 +162,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           style: context.typography.subtitle.copyWith(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen.withValues(alpha: 0.5),
-
+                            color: context.colors.textDarkGreen.withValues(
+                              alpha: 0.5,
+                            ),
                           ),
                         ),
                       ],
@@ -171,8 +173,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   SizedBox(height: 10.h),
                   MyFormTextField(hint: context.l10n.lets_invitation_hint),
                   SizedBox(height: 16.h),
-
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Checkbox(
                         value: isChecked,
@@ -181,24 +183,43 @@ class _SignupScreenState extends State<SignupScreen> {
                             isChecked = value!;
                           });
                         },
-                        activeColor: context.colors.mainGreenLight,
-                        checkColor: context.colors.white,
-                        side: BorderSide(color: context.colors.mainGreenDark),
                       ),
-
                       Flexible(
-                        child: Text(
-                          context.l10n.lets_accept_policy,
-                          style: context.typography.subtitle.copyWith(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen.withValues(alpha: 0.5),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Wrap(
+                            children: [
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              Text(
+                                "I have read and agree with the ",
+                                style: context.typography.subtitle.copyWith(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              MyTextButton(
+                                label: "terms & conditions",
+                                onPressed: () {},
+                              ),
+                              Text(
+                                " and ",
+                                style: context.typography.subtitle.copyWith(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              MyTextButton(
+                                label: "privacy policy",
+                                onPressed: () {},
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ],
                   ),
-
                   SizedBox(height: 35.h),
                   MyButton(
                     label: context.l10n.login_signup,

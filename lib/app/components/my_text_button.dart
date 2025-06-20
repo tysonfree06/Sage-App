@@ -32,7 +32,7 @@ class MyTextButton extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
+        style: context.typography.subtitle.copyWith(
           color: textColor,
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
