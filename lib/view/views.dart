@@ -12,6 +12,9 @@ export 'home/home.dart';
 export 'onboarding/analyze_data.dart';
 export 'onboarding/onboarding.dart';
 export 'onboarding/step1.dart';
+export 'onboarding/step2.dart';
+export 'onboarding/step3.dart';
+export 'onboarding/step4.dart';
 
 /// General
 export 'splash/splash.dart';

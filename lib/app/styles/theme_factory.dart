@@ -64,7 +64,6 @@ abstract class ThemeFactory {
             ),
           ),
         ),
-        chipTheme: ChipThemeData(),
         checkboxTheme: CheckboxThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadiuses.verySmallRadius),
@@ -84,9 +83,9 @@ abstract class ThemeFactory {
           fillColor: WidgetStateProperty.resolveWith(
             (states) {
               if (states.contains(WidgetState.selected)) {
-                return colorSchemeLight.mainGreenLight; // Selected color
+                return colorSchemeLight.mainGreenLight;
               }
-              return colorSchemeLight.mainGreenLight; // Unselected color
+              return colorSchemeLight.mainGreenLight;
             },
           ),
         ),
@@ -148,7 +147,6 @@ abstract class ThemeFactory {
             ),
           ),
         ),
-        chipTheme: ChipThemeData(),
         checkboxTheme: CheckboxThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadiuses.verySmallRadius),
@@ -167,9 +165,9 @@ abstract class ThemeFactory {
         radioTheme: RadioThemeData(
           fillColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
-              return colorSchemeDark.mainGreenLight; // Selected color
+              return colorSchemeDark.mainGreenLight;
             }
-            return colorSchemeDark.mainGreenLight; // Unselected color
+            return colorSchemeDark.mainGreenLight;
           }),
         ),
       );

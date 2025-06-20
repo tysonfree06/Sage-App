@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
-import 'package:sage/view/onboarding/step2.dart';
-import 'package:sage/view/onboarding/step3.dart';
-import 'package:sage/view/onboarding/step4.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
