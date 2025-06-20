@@ -6,7 +6,7 @@ import 'package:sage/view/onboarding/step4.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.step2;
+  static String initialRoute() => RoutesName.splash;
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -15,9 +15,9 @@ class Routes {
           builder: (BuildContext context) => const SplashScreen(),
         );
 
-      case RoutesName.home:
+      case RoutesName.welcome:
         return MaterialPageRoute(
-          builder: (BuildContext context) => const HomeScreen(),
+          builder: (BuildContext context) => const WelcomeScreen(),
         );
 
       case RoutesName.login:
@@ -25,51 +25,50 @@ class Routes {
           builder: (BuildContext context) => const LoginScreen(),
         );
 
-      case RoutesName.welcome:
+      case RoutesName.signup:
         return MaterialPageRoute(
-          builder: (BuildContext context) => const WelcomeScreen(),
+          builder: (BuildContext context) => const SignupScreen(),
         );
 
       case RoutesName.forgotPassword:
         return MaterialPageRoute(
           builder: (BuildContext context) => const ForgotPassword(),
         );
-      case RoutesName.onBoarding:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const OnBoardingScreen(),
-        );
-      case RoutesName.step1:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const Step1Screen(),
-        );
-      case RoutesName.step2:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const Step2Screen(),
-        );
-      case RoutesName.step3:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const Step3Screen(),
-        );
-
-      case RoutesName.step4:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const Step4Screen(),
-        );
-
       case RoutesName.resetPassword:
         return MaterialPageRoute(
           builder: (BuildContext context) => const ResetPassword(),
         );
 
-      case RoutesName.analyzeData:
+      case RoutesName.home:
         return MaterialPageRoute(
-          builder: (BuildContext context) => const AnalyzeDataScreen(),
+          builder: (BuildContext context) => const HomeScreen(),
         );
+      // case RoutesName.onBoarding:
+      //   return MaterialPageRoute(
+      //     builder: (BuildContext context) => const OnBoardingScreen(),
+      //   );
+      // case RoutesName.step1:
+      //   return MaterialPageRoute(
+      //     builder: (BuildContext context) => const Step1Screen(),
+      //   );
+      // case RoutesName.step2:
+      //   return MaterialPageRoute(
+      //     builder: (BuildContext context) => const Step2Screen(),
+      //   );
+      // case RoutesName.step3:
+      //   return MaterialPageRoute(
+      //     builder: (BuildContext context) => const Step3Screen(),
+      //   );
+      //
+      // case RoutesName.step4:
+      //   return MaterialPageRoute(
+      //     builder: (BuildContext context) => const Step4Screen(),
+      //   );
 
-      case RoutesName.signup:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => const SignupScreen(),
-        );
+      // case RoutesName.analyzeData:
+      //   return MaterialPageRoute(
+      //     builder: (BuildContext context) => const AnalyzeDataScreen(),
+      //   );
 
       default:
         return MaterialPageRoute(

@@ -135,7 +135,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                   ),
                   SizedBox(height: 10.h),
                   MyDatePickerButton(
-                    hintText: "Select a date",
+                    hintText: context.l10n.onboarding_step1_select_a_date,
                     selectedDate: anniversaryDate,
                     onChanged: (value) {
                       setState(() {
@@ -155,7 +155,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                   ),
                   SizedBox(height: 10.h),
                   MyDatePickerButton(
-                    hintText: "Select a date",
+                    hintText: context.l10n.onboarding_step1_select_a_date,
                     selectedDate: dob,
                     onChanged: (value) {
                       setState(() {
@@ -188,7 +188,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                           hint: context.l10n.onboarding_step1_state,
                         ),
                       ),
-                      SizedBox(width: 16), // Optional spacing between dropdowns
+                      const SizedBox(width: 16), // Optional spacing between dropdowns
                       Expanded(
                         child: MyDropdown(
                           items: [],

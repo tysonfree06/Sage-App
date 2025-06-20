@@ -24,66 +24,68 @@ class ForgotPassword extends StatelessWidget {
           color: context.colors.white,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 22,
-          horizontal: 16,
-        ),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ColoredRichText(
-                first: context.l10n.forgot,
-                second: context.l10n.forgot_password,
-              ),
-              SizedBox(height: 7.h),
-              Text(
-                context.l10n.forgot_subtitle,
-                style: context.typography.subtitle.copyWith(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.textDarkGreen.withValues(alpha: .60),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 22,
+            horizontal: 16,
+          ),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ColoredRichText(
+                  first: context.l10n.forgot,
+                  second: context.l10n.forgot_password,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 30.h),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  context.l10n.forgot_email_label,
-                  style: context.typography.title.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16.sp,
+                SizedBox(height: 7.h),
+                Text(
+                  context.l10n.forgot_subtitle,
+                  style: context.typography.subtitle.copyWith(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    color: context.colors.textDarkGreen.withValues(alpha: .60),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 30.h),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    context.l10n.forgot_email_label,
+                    style: context.typography.title.copyWith(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16.sp,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              MyFormTextField(
-                hint: context.l10n.forgot_email_hint,
-                suffixIcon: Assets.icons.email.svg(),
-              ),
-              SizedBox(height: 10.h),
-              Align(
-                alignment: Alignment.centerRight,
-                child: MyTextButton(
-                  label: context.l10n.forgot_send_otp,
-                  onPressed: () {},
+                SizedBox(height: 10.h),
+                MyFormTextField(
+                  hint: context.l10n.forgot_email_hint,
+                  suffixIcon: Assets.icons.email.svg(),
                 ),
-              ),
-              SizedBox(height: 40.h),
-              MyPinput(
-                controller: pinController,
-              ),
-              SizedBox(height: 90.h),
-              MyButton(
-                label: context.l10n.forgot_verify,
-                onPressed: () {
-                  ForgotPasswordService.goToResetPassword(context);
-                },
-              ),
-            ],
+                SizedBox(height: 10.h),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: MyTextButton(
+                    label: context.l10n.forgot_send_otp,
+                    onPressed: () {},
+                  ),
+                ),
+                SizedBox(height: 40.h),
+                MyPinput(
+                  controller: pinController,
+                ),
+                SizedBox(height: 90.h),
+                MyButton(
+                  label: context.l10n.forgot_verify,
+                  onPressed: () {
+                    ForgotPasswordService.goToResetPassword(context);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

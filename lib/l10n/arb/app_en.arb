@@ -129,6 +129,7 @@
   "onboarding_step1_state": "State",
   "onboarding_step1_country": "Country",
   "onboarding_step1_next": "Next",
+  "onboarding_step1_select_a_date": "Select a date",
 
   "@_ONBOARDING_STEP2_SCREEN": {},
   "onboarding_step2": "Step 2",

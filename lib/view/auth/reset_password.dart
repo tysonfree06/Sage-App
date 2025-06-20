@@ -29,98 +29,100 @@ class _ResetPasswordState extends State<ResetPassword> {
       appBar: AppBar(
         leading: BackButton(color: context.colors.white),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ColoredRichText(
-                first: context.l10n.reset,
-                second: context.l10n.reset_password,
-              ),
-              SizedBox(height: 7.h),
-              Text(
-                context.l10n.reset_subtitle,
-                style: context.typography.subtitle.copyWith(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.textDarkGreen.withValues(alpha: .60),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ColoredRichText(
+                  first: context.l10n.reset,
+                  second: context.l10n.reset_password,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 30.h),
-
-              // NEW PASSWORD
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  context.l10n.reset_new_password_label,
-                  style: context.typography.title.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16.sp,
+                SizedBox(height: 7.h),
+                Text(
+                  context.l10n.reset_subtitle,
+                  style: context.typography.subtitle.copyWith(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    color: context.colors.textDarkGreen.withValues(alpha: .60),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 30.h),
+        
+                // NEW PASSWORD
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    context.l10n.reset_new_password_label,
+                    style: context.typography.title.copyWith(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16.sp,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              ValueListenableBuilder<bool>(
-                valueListenable: _obscureNewPassword,
-                builder: (_, obscure, __) {
-                  return MyFormTextField(
-                    hint: context.l10n.reset_new_password_hint,
-                    obscureText: obscure,
-                    suffixIcon: GestureDetector(
-                      onTap: () => _obscureNewPassword.value = !obscure,
-                      child: obscure
-                          ? Assets.icons.visibilityOff.svg()
-                          : Assets.icons.visibilityOn.svg(),
+                SizedBox(height: 10.h),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _obscureNewPassword,
+                  builder: (_, obscure, __) {
+                    return MyFormTextField(
+                      hint: context.l10n.reset_new_password_hint,
+                      obscureText: obscure,
+                      suffixIcon: GestureDetector(
+                        onTap: () => _obscureNewPassword.value = !obscure,
+                        child: obscure
+                            ? Assets.icons.visibilityOff.svg()
+                            : Assets.icons.visibilityOn.svg(),
+                      ),
+                    );
+                  },
+                ),
+        
+                SizedBox(height: 15.h),
+        
+                // CONFIRM PASSWORD
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    context.l10n.reset_confirm_password_label,
+                    style: context.typography.title.copyWith(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16.sp,
                     ),
-                  );
-                },
-              ),
-
-              SizedBox(height: 15.h),
-
-              // CONFIRM PASSWORD
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  context.l10n.reset_confirm_password_label,
-                  style: context.typography.title.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16.sp,
                   ),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              ValueListenableBuilder<bool>(
-                valueListenable: _obscureConfirmPassword,
-                builder: (_, obscure, __) {
-                  return MyFormTextField(
-                    hint: context.l10n.reset_confirm_password_hint,
-                    obscureText: obscure,
-                    suffixIcon: GestureDetector(
-                      onTap: () => _obscureConfirmPassword.value = !obscure,
-                      child: obscure
-                          ? Assets.icons.visibilityOff.svg()
-                          : Assets.icons.visibilityOn.svg(),
-                    ),
-                  );
-                },
-              ),
-
-              SizedBox(height: 50.h),
-              MyButton(
-                label: context.l10n.reset_continue,
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    ResetPasswordService.goToLogin(context);
-                  }
-                },
-              ),
-            ],
+                SizedBox(height: 10.h),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _obscureConfirmPassword,
+                  builder: (_, obscure, __) {
+                    return MyFormTextField(
+                      hint: context.l10n.reset_confirm_password_hint,
+                      obscureText: obscure,
+                      suffixIcon: GestureDetector(
+                        onTap: () => _obscureConfirmPassword.value = !obscure,
+                        child: obscure
+                            ? Assets.icons.visibilityOff.svg()
+                            : Assets.icons.visibilityOn.svg(),
+                      ),
+                    );
+                  },
+                ),
+        
+                SizedBox(height: 50.h),
+                MyButton(
+                  label: context.l10n.reset_continue,
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      ResetPasswordService.goToLogin(context);
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
