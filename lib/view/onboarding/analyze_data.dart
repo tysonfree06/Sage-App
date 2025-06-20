@@ -5,9 +5,21 @@ import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/onboarding_service.dart';
 
-class AnalyzeDataScreen extends StatelessWidget {
+class AnalyzeDataScreen extends StatefulWidget {
   const AnalyzeDataScreen({super.key});
+
+  @override
+  State<AnalyzeDataScreen> createState() => _AnalyzeDataScreenState();
+}
+
+class _AnalyzeDataScreenState extends State<AnalyzeDataScreen> {
+  @override
+  void initState() {
+    super.initState();
+    OnboardingService.goToHomeDelayed(context);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -12,6 +12,7 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/onboarding_service.dart';
 
 class Step1Screen extends StatefulWidget {
   const Step1Screen({super.key});
@@ -33,6 +34,7 @@ class _Step1ScreenState extends State<Step1Screen> {
       fontSize: 16.sp,
       color: context.colors.textDarkGreen,
     );
+
     return LightStatusBar(
       child: Scaffold(
         appBar: AppBar(
@@ -201,7 +203,9 @@ class _Step1ScreenState extends State<Step1Screen> {
                   SizedBox(height: 20.h),
                   MyButton(
                     label: context.l10n.onboarding_step1_next,
-                    onPressed: () {},
+                    onPressed: () {
+                      OnboardingService.goToStep2(context);
+                    },
                   ),
                 ],
               ),

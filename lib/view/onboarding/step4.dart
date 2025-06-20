@@ -68,17 +68,15 @@ class _Step4ScreenState extends State<Step4Screen> {
                 ),
                 SizedBox(height: 35.h),
 
-
                 MyPinput(
                     controller: pinController
                 ),
-
 
                 const Spacer(),
                 MyButton(
                   label: context.l10n.onboarding_step4_connect,
                   onPressed: () {
-                    OnboardingService.goToStep1(context);
+                    OnboardingService.goToDataAnalysis(context);
                   },
                 ),
                 SizedBox(height: 12.h),
@@ -86,7 +84,7 @@ class _Step4ScreenState extends State<Step4Screen> {
                   label: context.l10n.onboarding_step4_will_add_later,
                   isDark: true,
                   onPressed: () {
-                    OnboardingService.goToHome(context);
+                    OnboardingService.goToDataAnalysis(context);
                   },
                 ),
                 SizedBox(height: 40.h),

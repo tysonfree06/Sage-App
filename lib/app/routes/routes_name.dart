@@ -12,4 +12,8 @@ class RoutesName {
   static const String step3 = 'step3_screen';
   static const String step4 = 'step4_screen';
   static const String analyzeData = 'analyze_data_screen';
+  static const String editProfile = 'edit_profile_screen';
+  static const String changePassword = 'change_password_screen';
+  static const String updateInterests = 'update_interests_screen';
+  static const String updateGiftPreference = 'update_gift_preference_screen';
 }

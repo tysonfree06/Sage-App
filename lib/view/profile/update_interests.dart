@@ -12,14 +12,14 @@ import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/onboarding_service.dart';
 
-class Step2Screen extends StatefulWidget {
-  const Step2Screen({super.key});
+class UpdateInterestsScreen extends StatefulWidget {
+  const UpdateInterestsScreen({super.key});
 
   @override
-  State<Step2Screen> createState() => _Step2ScreenState();
+  State<UpdateInterestsScreen> createState() => _UpdateInterestsScreenState();
 }
 
-class _Step2ScreenState extends State<Step2Screen> {
+class _UpdateInterestsScreenState extends State<UpdateInterestsScreen> {
   TextEditingController pinController = TextEditingController();
   List<String> allInterests = [
       "Fitness",
@@ -58,9 +58,13 @@ class _Step2ScreenState extends State<Step2Screen> {
       child: Scaffold(
         appBar: AppBar(
           leading: BackButton(color: context.colors.mainGreenLight),
-          title: SizedBox(
-            width: context.mediaQueryWidth / 2,
-            child: const StepProgressBar(totalSteps: 4, currentStep: 1),
+          title: Text(
+            context.l10n.update_interests,
+            style: context.typography.title.copyWith(
+              fontWeight: FontWeight.w700,
+              fontSize: 20.sp,
+              color: context.colors.textDarkGreen,
+            ),
           ),
         ),
         body: SafeArea(
@@ -68,25 +72,18 @@ class _Step2ScreenState extends State<Step2Screen> {
             padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
             child: Column(
               children: [
-                Center(
-                  child: ColoredRichText(
-                    first: context.l10n.onboarding_step2,
-                    second: context.l10n.onboarding_steps_4,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                SizedBox(height: 16.h),
                 Center(
                   child: Text(
-                    context.l10n.onboarding_step2_select_your_top_5_interests,
+                    context.l10n.update_interests_choose_upto_5_interests,
                     style: context.typography.title.copyWith(
                       fontWeight: FontWeight.w700,
-                      fontSize: 24.sp,
+                      fontSize: 16.sp,
                       color: context.colors.textDarkGreen,
                     ),
                   ),
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 20.h),
                 Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 10.w,
@@ -119,7 +116,7 @@ class _Step2ScreenState extends State<Step2Screen> {
                 ),
                 const Spacer(),
                 MyButton(
-                  label: context.l10n.onboarding_step2_next,
+                  label: context.l10n.interests_update,
                   onPressed: () {
                     OnboardingService.goToStep3(context);
                   },

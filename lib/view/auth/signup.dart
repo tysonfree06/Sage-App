@@ -193,25 +193,25 @@ class _SignupScreenState extends State<SignupScreen> {
                                 height: 20.h,
                               ),
                               Text(
-                                "I have read and agree with the ",
+                                context.l10n.lets_read_and_agree,
                                 style: context.typography.subtitle.copyWith(
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                               MyTextButton(
-                                label: "terms & conditions",
+                                label: context.l10n.lets_terms_conditions,
                                 onPressed: () {},
                               ),
                               Text(
-                                " and ",
+                                context.l10n.lets_and,
                                 style: context.typography.subtitle.copyWith(
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                               MyTextButton(
-                                label: "privacy policy",
+                                label: context.l10n.lets_privacy_policy,
                                 onPressed: () {},
                               ),
                             ],

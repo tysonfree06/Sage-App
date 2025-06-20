@@ -24,9 +24,6 @@
   "dialog_account":"Account?",
   "dialog_delete_account_subtitle":"Are you sure you want to delete your account?? all the account details will be deleted permanently",
 
-
-
-
   "@_WELCOME_SCREEN": {},
   "welcome_to": "Welcome To ",
   "welcome_sage": "Sage",
@@ -81,7 +78,10 @@
   "lets_invitation_label": "Invitation Code",
   "lets_optional": "(Optional)",
   "lets_invitation_hint": "Enter invitation code",
-  "lets_accept_policy": "I have read and agree with the terms & conditions and privacy policy",
+  "lets_read_and_agree": "I have read and agree with the ",
+  "lets_terms_conditions": "terms & conditions",
+  "lets_and": "and",
+  "lets_privacy_policy": "privacy policy",
   "lets_already_have_an_account":"Already have an account? ",
   "lets_login":"Login",
 
@@ -136,6 +136,7 @@
   "onboarding_step2_select_your_top_5_interests": "Select your top 5 interests",
   "onboarding_step2_next": "Next",
 
+
   "@_ONBOARDING_STEP3_SCREEN": {},
   "onboarding_step3": "Step 3",
   "onboarding_step3_select_your_top_5_gift_preferences": "Select your top 5 Gift Preferences",
@@ -146,6 +147,67 @@
   "onboarding_step4_add_partner": "Add Partner",
   "onboarding_step4_add_partner_with_code": "Add partner with the code that your partner has shared with you.",
   "onboarding_step4_connect": "Connect",
-  "onboarding_step4_will_add_later": "Will Add Later"
+  "onboarding_step4_will_add_later": "Will Add Later",
 
+
+  "@_SETTING_SCREEN": {},
+  "setting_edit_profile": "Edit Profile",
+  "setting_update_interests": "Update Interests",
+  "setting_update_gifts_preferences": "Update Gifts Preferences",
+  "setting_change_password": "Change Password",
+  "setting_subscription": "Subscription",
+  "setting_remove_partner": "Remove Partner",
+  "setting_refer_a_friend": "Refer a friend",
+  "setting_contact_us": "Contact Us",
+  "setting_privacy_policy": "Privacy Policy",
+  "setting_terms_conditions": "Terms & Conditions",
+  "setting_delete_account": "Delete Account",
+  "setting_logout": "Logout",
+
+  "@_EDIT_PROFILE_SCREEN": {},
+  "edit_profile": "Edit Profile",
+  "edit_name_label": "Name",
+  "edit_name_hint": "Enter your name",
+  "edit_what_is_your_love_language": "What is your love language?",
+  "edit_words_of_affirmation": "Words Of Affirmation",
+  "edit_what_is_your_apology_language": "What is your apology language?",
+  "edit_expressing_regrets": "Expressing regrets",
+  "edit_what_is_your_communication_style": "What is your communication style?",
+  "edit_assertive": "Assertive",
+  "edit_budget_level": "Budget level for dates & gifts",
+  "edit_budget_50_to_100": "$50 - $100",
+  "edit_relationship_status": "Relationship Status",
+  "edit_relationship_status_dating": "Dating",
+  "edit_relationship_status_engaged": "Engaged",
+  "edit_relationship_status_married": "Married",
+  "edit_anniversary_date": "Anniversary Date",
+  "edit_anniversary_date_apr10": "Apr 10",
+  "edit_date_of_birth": "Date Of Birth",
+  "edit_date_of_birth_apr10_2024": "Apr 10, 2024",
+  "edit_location": "Location",
+  "edit_select_city": "Select City",
+  "edit_state": "State",
+  "edit_country": "Country",
+  "edit_select_a_date": "Select a date",
+  "edit_update": "Update",
+
+  "@_EDIT_CHANGE_PASSWORD_SCREEN": {},
+  "change_password": "Change Password",
+  "change_old_password_label":"Old Password",
+  "change_old_password_hint": "Enter your password",
+  "change_new_password_label": "New Password",
+  "change_new_password_hint": "Enter your password",
+  "change_confirm_password_label": "Confirm New Password",
+  "change_confirm_password_hint": "Enter your password",
+  "change_update": "Update",
+
+  "@_UPDATE_INTERESTS_SCREEN": {},
+  "update_interests": "Update Interests",
+  "update_interests_choose_upto_5_interests": "Choose upto 5 interests",
+  "interests_update": "Update",
+
+  "@_UPDATE_GIFT_PREFERENCES_SCREEN": {},
+  "update_gift_preferences": "Update Gift Preferences",
+  "update_gift_choose_upto_5_preferences": "Choose upto 5 Preferences",
+  "preference_update": "Update"
 }
