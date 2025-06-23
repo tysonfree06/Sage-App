@@ -5,6 +5,12 @@
   "done":"Done",
 
 
+  "@_BottomSheets": {},
+  "locations_sheet_setting":"Go To Settings",
+  "locations_sheet_first_title":"Turn",
+  "locations_sheet_second_title":"Your Location On",
+  "locations_sheet_subtitle":"You’ll be able to find yourself on the map, and you can access the app better after turing on the location access.",
+
   "@_Dialogs": {},
   "dialog_cancel":"Cancel",
   "dialog_redeem":"Redeem ",
