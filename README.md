@@ -36,11 +36,29 @@ Sage is a relationship tool designed to help couples discover personalized, AI-g
 ### 🧱 File Structure Explanation
 Provide a list or tree view of the key folders and files:
 ```bash
-/src
-  /components
-  /pages
-  /utils
-  /config
+Sage-App/
+│
+├── .idea/                       # IDE config folder (used by Android Studio)
+│   └── runConfigurations/      # Stores saved run/debug presets
+│
+├── .vscode/                    # VS Code-specific settings (like launch configs)
+│
+├── android/                    # Native Android build files
+│
+├── assets/                     # App assets (images, fonts, etc.)
+│
+├── ios/                        # Native iOS build files
+│
+├── lib/                        # Main Flutter source code folder
+│
+├── .fvmrc                      # Specifies Flutter version used with FVM
+├── .gitignore                  # Git ignore rules (e.g., .DS_Store, build/, etc.)
+├── README.md                   # Main project documentation
+├── README-DEV.md               # Developer-specific notes and instructions
+├── analysis_options.yaml       # Linter configuration for Dart analyzer
+├── devtools_options.yaml       # Dart DevTools configuration options
+├── l10n.yaml                   # Localization configuration
+├── pubspec.yaml                # Flutter project metadata and dependencies
 ```
 
 ---
