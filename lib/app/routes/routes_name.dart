@@ -11,6 +11,7 @@ class RoutesName {
   static const String step2 = 'step2_screen';
   static const String step3 = 'step3_screen';
   static const String step4 = 'step4_screen';
+  static const String navigation = 'navigation_screen';
   static const String analyzeData = 'analyze_data_screen';
   static const String editProfile = 'edit_profile_screen';
   static const String changePassword = 'change_password_screen';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
-import 'package:sage/view/onboarding/widgets/location_permission.dart';
 import 'package:sage/view/profile/change_password.dart';
 import 'package:sage/view/profile/edit_profile.dart';
 import 'package:sage/view/profile/update_gift_preference.dart';
@@ -8,7 +7,7 @@ import 'package:sage/view/profile/update_interests.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.home;
+  static String initialRoute() => RoutesName.navigation;
 
   // Map of all route names to their corresponding widget builders
   static final Map<String, Widget Function(BuildContext)> _routes = {
@@ -25,6 +24,7 @@ class Routes {
     RoutesName.step3: (_) => const Step3Screen(),
     RoutesName.step4: (_) => const Step4Screen(),
     RoutesName.analyzeData: (_) => const AnalyzeDataScreen(),
+    RoutesName.navigation: (_) => const NavigationScreen(),
     RoutesName.editProfile: (_) => const EditProfileScreen(),
     RoutesName.changePassword: (_) => const ChangePasswordScreen(),
     RoutesName.updateInterests: (_) => const UpdateInterestsScreen(),

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 
 class CustomRadioGroup<T> extends StatelessWidget {
-
   const CustomRadioGroup({
-    super.key,
     required this.options,
     required this.selectedValue,
     required this.onChanged,
     required this.labelBuilder,
     this.direction = Axis.horizontal,
+    super.key,
   });
 
   final List<T> options;
@@ -33,7 +32,10 @@ class CustomRadioGroup<T> extends StatelessWidget {
                 if (value != null) onChanged(value);
               },
             ),
-            Text(labelBuilder(option), style: context.typography.subtitle.copyWith(),),
+            Text(
+              labelBuilder(option),
+              style: context.typography.subtitle.copyWith(),
+            ),
           ],
         );
       }).toList(),

@@ -7,6 +7,7 @@ export 'auth/welcome.dart';
 
 /// Home
 export 'home/home.dart';
+export 'home/navigation.dart';
 
 /// On Boarding
 export 'onboarding/analyze_data.dart';

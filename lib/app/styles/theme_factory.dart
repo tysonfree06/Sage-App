@@ -18,6 +18,7 @@ abstract class ThemeFactory {
           elevation: 0,
           scrolledUnderElevation: 0,
         ),
+        splashColor: colorSchemeLight.mainGreenLight.withValues(alpha: .2),
         snackBarTheme: SnackBarThemeData(
           backgroundColor: colorSchemeDark.white,
           contentTextStyle: TextStyle(color: colorSchemeLight.textLightGreen),
@@ -101,6 +102,7 @@ abstract class ThemeFactory {
           elevation: 0,
           scrolledUnderElevation: 0,
         ),
+        splashColor: colorSchemeLight.mainGreenLight.withValues(alpha: .2),
         snackBarTheme: SnackBarThemeData(
           backgroundColor: colorSchemeDark.white,
           contentTextStyle: TextStyle(color: colorSchemeLight.textLightGreen),
