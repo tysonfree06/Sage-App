@@ -17,4 +17,5 @@ class RoutesName {
   static const String changePassword = 'change_password_screen';
   static const String updateInterests = 'update_interests_screen';
   static const String updateGiftPreference = 'update_gift_preference_screen';
+  static const String subscription = 'subscription_screen';
 }

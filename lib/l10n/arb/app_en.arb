@@ -4,7 +4,6 @@
   "@_GENERAL": {},
   "done":"Done",
 
-
   "@_BottomSheets": {},
   "locations_sheet_setting":"Go To Settings",
   "locations_sheet_first_title":"Turn",
@@ -215,5 +214,35 @@
   "@_UPDATE_GIFT_PREFERENCES_SCREEN": {},
   "update_gift_preferences": "Update Gift Preferences",
   "update_gift_choose_upto_5_preferences": "Choose upto 5 Preferences",
-  "preference_update": "Update"
+  "preference_update": "Update",
+
+  "@_SUBSCRIPTION_SCREEN": {},
+  "sub_now_title": "Subscribe now and \nget 100 points!",
+  "sub_now_subtitle": "You can get 100 points or 10% off an available item.",
+  "sub_now_yearly": "Yearly",
+  "sub_now_monthly": "Monthly",
+  "sub_now_weekly": "Weekly",
+  "sub_what_is_include": "What’s Include:",
+  "sub_discounts_title": "Discounts & Prizes for Healthy Habits:",
+  "sub_discounts_subtitle": "Just by practicing healthy relationship habits you’ll earn points for discounts and prizes!",
+  "sub_unlimited_title": "Unlimited AI Generated Ideas: ",
+  "sub_unlimited_subtitle": "Sage AI will use your preferences to create ideas tailored to you and your partner",
+  "subscribe": "Subscribe",
+  "sub_skip": "Skip",
+
+  "@_HOME_SCREEN": {},
+  "home_partner": "Partner",
+  "home_add_partner": "Add Partner",
+  "home_or": "Or",
+  "home_share_code": "Share Code",
+  "home_you": "(You)",
+  "home_pts": "Pts",
+  "home_top_ideas_for_you": "Top Ideas For You",
+  "home_add_partner_with_code": "Add partner with the code that your partner has shared with you..",
+  "home_connect": "Connect",
+  "home_next_anniversary": "Next Anniversary In",
+  "home_days": "Days",
+  "home_hrs": "Hrs",
+  "home_mins": "Mins",
+  "home_sec": "Sec"
 }
