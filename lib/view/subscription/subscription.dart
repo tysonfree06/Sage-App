@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_text_button.dart';
+import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
@@ -21,7 +22,13 @@ class SubscriptionScreen extends StatelessWidget {
           alignment: Alignment.topRight,
           child: MyTextButton(
             label: context.l10n.sub_skip,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                RoutesName.navigation,
+                    (route) => false,
+              );
+            },
           ),
           ),
         ),

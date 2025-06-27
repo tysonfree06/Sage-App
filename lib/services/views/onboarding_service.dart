@@ -66,7 +66,7 @@ class OnboardingService {
       const Duration(seconds: 3),
           () => Navigator.pushNamedAndRemoveUntil(
         context,
-        RoutesName.home,
+        RoutesName.subscription,
             (route) => false,
       ),
     );

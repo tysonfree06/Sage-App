@@ -32,6 +32,7 @@ class _Step4ScreenState extends State<Step4Screen> {
       child: Scaffold(
         appBar: AppBar(
           leading: BackButton(color: context.colors.mainGreenLight),
+          centerTitle: true,
           title: SizedBox(
             width: context.mediaQueryWidth / 2,
             child: const StepProgressBar(totalSteps: 4, currentStep: 3),

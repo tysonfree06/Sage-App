@@ -120,8 +120,8 @@ flutter_native_splash:
   # Optional (but recommended) settings:
   android_gravity: center
   ios_content_mode: center
-  android_12:
-    image: assets/images/logo/launcher_icon.png
-    icon_background_color: "#F0F4F4"
-    image_dark: assets/images/logo/launcher_icon.png
-    icon_background_color_dark: "#F0F4F4"
+#  android_12:
+#    image: assets/images/logo/launcher_icon.png
+#    icon_background_color: "#F0F4F4"
+#    image_dark: assets/images/logo/launcher_icon.png
+#    icon_background_color_dark: "#F0F4F4"

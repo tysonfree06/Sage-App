@@ -8,7 +8,7 @@ import 'package:sage/view/subscription/subscription.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.subscription;
+  static String initialRoute() => RoutesName.splash;
 
   // Map of all route names to their corresponding widget builders
   static final Map<String, Widget Function(BuildContext)> _routes = {

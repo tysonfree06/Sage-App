@@ -39,6 +39,7 @@ class _Step1ScreenState extends State<Step1Screen> {
       child: Scaffold(
         appBar: AppBar(
           leading: BackButton(color: context.colors.mainGreenLight),
+          centerTitle: true,
           title: SizedBox(
             width: context.mediaQueryWidth / 2,
             child: const StepProgressBar(totalSteps: 4, currentStep: 0),
@@ -207,6 +208,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                       OnboardingService.goToStep2(context);
                     },
                   ),
+                  SizedBox(height: 30.h),
                 ],
               ),
             ),

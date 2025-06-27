@@ -46,14 +46,14 @@ class OnBoardingScreen extends StatelessWidget {
                       OnboardingService.goToStep1(context);
                     },
                   ),
-                  SizedBox(height: 12.h),
-                  MyButton(
-                    label: context.l10n.onboarding_maybe_latter,
-                    isDark: true,
-                    onPressed: () {
-                      OnboardingService.goToHome(context);
-                    },
-                  ),
+                  // SizedBox(height: 12.h),
+                  // MyButton(
+                  //   label: context.l10n.onboarding_maybe_latter,
+                  //   isDark: true,
+                  //   onPressed: () {
+                  //     OnboardingService.goToHome(context);
+                  //   },
+                  // ),
                   SizedBox(height: 40.h),
                 ],
               ),

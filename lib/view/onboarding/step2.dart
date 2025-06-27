@@ -58,6 +58,7 @@ class _Step2ScreenState extends State<Step2Screen> {
       child: Scaffold(
         appBar: AppBar(
           leading: BackButton(color: context.colors.mainGreenLight),
+          centerTitle: true,
           title: SizedBox(
             width: context.mediaQueryWidth / 2,
             child: const StepProgressBar(totalSteps: 4, currentStep: 1),

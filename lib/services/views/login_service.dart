@@ -12,7 +12,7 @@ class LoginService {
   static void goToHome(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(
       context,
-      RoutesName.home,
+      RoutesName.navigation,
       (route) => false,
     );
   }
