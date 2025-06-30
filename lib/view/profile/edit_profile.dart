@@ -4,10 +4,8 @@ import 'package:sage/app/components/custom_radio_group.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_datepicker_button.dart';
 import 'package:sage/app/components/my_dropdown.dart';
-import 'package:sage/app/components/step_progress_bar.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
-import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 

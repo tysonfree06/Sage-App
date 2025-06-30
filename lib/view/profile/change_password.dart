@@ -5,7 +5,6 @@ import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/services/views/reset_password_service.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});

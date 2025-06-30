@@ -23,13 +23,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return AuthScaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 22,
-            horizontal: 16,
+          padding: EdgeInsets.symmetric(
+            vertical: 22.h,
+            horizontal: 16.w,
           ),
           child: Form(
             key: formKey,

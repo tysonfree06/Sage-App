@@ -28,7 +28,8 @@ class WelcomeScreen extends StatelessWidget {
               firstColor: context.colors.white,
               second: context.l10n.welcome_sage.toUpperCase(),
               secondColor: context.colors.mainGreenLight,
-              fontSize: 30.sp,
+              firstFontSize: 30.sp,
+              secondFontSize: 30.sp,
             ),
             SizedBox(height: 7.h),
             Text(
@@ -54,7 +55,7 @@ class WelcomeScreen extends StatelessWidget {
                 WelcomeService.goToLogin(context);
               },
             ),
-            SizedBox(height: 40.h),
+            SizedBox(height: 30.h),
           ],
         ),
       ),

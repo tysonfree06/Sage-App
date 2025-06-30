@@ -26,6 +26,60 @@ class _Step1ScreenState extends State<Step1Screen> {
   final List<String> statuses = ['Dating', 'Engaged', 'Married'];
   DateTime? anniversaryDate;
   DateTime? dob;
+  // Define these dummy options at the top of your State class
+  final List<String> loveLanguages = [
+    'Words of Affirmation',
+    'Acts of Service',
+    'Receiving Gifts',
+    'Quality Time',
+    'Physical Touch',
+  ];
+
+  final List<String> apologyLanguages = [
+    'Expressing Regret',
+    'Accepting Responsibility',
+    'Making Restitution',
+    'Genuinely Repenting',
+    'Requesting Forgiveness',
+  ];
+
+  final List<String> communicationStyles = [
+    'Assertive',
+    'Passive',
+    'Aggressive',
+    'Passive-Aggressive',
+  ];
+
+  final List<String> budgetLevels = [
+    r'$0 - $50',
+    r'$50 - $100',
+    r'$100 - $200',
+    r'$200+',
+  ];
+
+  final List<String> cities = [
+    'New York',
+    'Los Angeles',
+    'Chicago',
+    'Houston',
+    'Phoenix',
+  ];
+
+  final List<String> states = [
+    'California',
+    'Texas',
+    'New York',
+    'Florida',
+    'Illinois',
+  ];
+
+  final List<String> countries = [
+    'United States',
+    'Canada',
+    'United Kingdom',
+    'Australia',
+    'India',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +110,10 @@ class _Step1ScreenState extends State<Step1Screen> {
                     child: ColoredRichText(
                       first: context.l10n.onboarding_step1,
                       second: context.l10n.onboarding_steps_4,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
+                      firstFontSize: 15.sp,
+                      secondFontSize: 15.sp,
+                      firstFontWeight: FontWeight.w600,
+                      secondFontWeight: FontWeight.w600,
                     ),
                   ),
                   Center(
@@ -77,7 +133,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                   ),
                   SizedBox(height: 10.h),
                   MyDropdown(
-                    items: [],
+                    items: loveLanguages,
                     onChanged: (value) {},
                     hint: context.l10n.onboarding_step1_words_of_affirmation,
                   ),
@@ -88,7 +144,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                   ),
                   SizedBox(height: 10.h),
                   MyDropdown(
-                    items: [],
+                    items: apologyLanguages,
                     onChanged: (value) {},
                     hint: context.l10n.onboarding_step1_expressing_regrets,
                   ),
@@ -100,7 +156,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                   ),
                   SizedBox(height: 10.h),
                   MyDropdown(
-                    items: [],
+                    items: communicationStyles,
                     onChanged: (value) {},
                     hint: context.l10n.onboarding_step1_assertive,
                   ),
@@ -111,7 +167,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                   ),
                   SizedBox(height: 10.h),
                   MyDropdown(
-                    items: [],
+                    items: budgetLevels,
                     onChanged: (value) {},
                     hint: context.l10n.onboarding_step1_budget_50_to_100,
                   ),
@@ -142,9 +198,8 @@ class _Step1ScreenState extends State<Step1Screen> {
                     selectedDate: anniversaryDate,
                     onChanged: (value) {
                       setState(() {
-                        anniversaryDate=value;
+                        anniversaryDate = value;
                       });
-
                     },
                     suffixIcon: Padding(
                       padding: const EdgeInsets.all(14),
@@ -162,7 +217,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                     selectedDate: dob,
                     onChanged: (value) {
                       setState(() {
-                        dob=value;
+                        dob = value;
                       });
                     },
                     suffixIcon: Padding(
@@ -177,7 +232,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                   ),
                   SizedBox(height: 10.h),
                   MyDropdown(
-                    items: [],
+                    items: cities,
                     onChanged: (value) {},
                     hint: context.l10n.onboarding_step1_select_city,
                   ),
@@ -186,15 +241,15 @@ class _Step1ScreenState extends State<Step1Screen> {
                     children: [
                       Expanded(
                         child: MyDropdown(
-                          items: [],
+                          items: states,
                           onChanged: (value) {},
                           hint: context.l10n.onboarding_step1_state,
                         ),
                       ),
-                      const SizedBox(width: 16), // Optional spacing between dropdowns
+                      SizedBox(width: 16.w),
                       Expanded(
                         child: MyDropdown(
-                          items: [],
+                          items: countries,
                           onChanged: (value) {},
                           hint: context.l10n.onboarding_step1_country,
                         ),

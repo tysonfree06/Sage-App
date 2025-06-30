@@ -18,7 +18,7 @@ class _AnalyzeDataScreenState extends State<AnalyzeDataScreen> {
   @override
   void initState() {
     super.initState();
-    OnboardingService.goToHomeDelayed(context);
+    OnboardingService.goToSubscriptionDelayed(context);
   }
 
   @override

@@ -8,28 +8,34 @@ class ColoredRichText extends StatelessWidget {
     super.key,
     this.firstColor,
     this.secondColor,
-    this.fontSize = 24,
-    this.fontWeight = FontWeight.w700,
+    this.firstFontSize = 24,
+    this.secondFontSize = 24,
+    this.firstFontWeight = FontWeight.w700,
+    this.secondFontWeight = FontWeight.w700,
+    this.textAlign = TextAlign.center,
   });
   final String first;
   final String second;
   final Color? firstColor;
   final Color? secondColor;
-  final double fontSize;
-  final FontWeight fontWeight;
+  final double firstFontSize;
+  final double secondFontSize;
+  final FontWeight firstFontWeight;
+  final FontWeight secondFontWeight;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
     return RichText(
-      textAlign: TextAlign.center,
+      textAlign: textAlign,
       text: TextSpan(
         children: [
           TextSpan(
             text: first,
             style: context.typography.title.copyWith(
               color: firstColor ?? context.colors.textLightGreen,
-              fontSize: fontSize,
-              fontWeight: fontWeight,
+              fontSize: firstFontSize,
+              fontWeight: firstFontWeight,
               letterSpacing: -.2,
             ),
           ),
@@ -37,8 +43,8 @@ class ColoredRichText extends StatelessWidget {
             text: second,
             style: context.typography.title.copyWith(
               color: secondColor ?? context.colors.textDarkGreen,
-              fontSize: fontSize,
-              fontWeight: fontWeight,
+              fontSize: secondFontSize,
+              fontWeight: secondFontWeight,
               letterSpacing: -.2,
             ),
           ),

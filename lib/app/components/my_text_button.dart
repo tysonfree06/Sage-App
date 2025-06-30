@@ -6,18 +6,27 @@ class MyTextButton extends StatelessWidget {
   const MyTextButton({
     required this.label,
     this.onPressed,
+    this.isDark = true,
+    this.fontSize, // Optional fontSize parameter
     super.key,
   });
   final String label;
   final VoidCallback? onPressed;
+  final bool isDark;
+  final double? fontSize; // Optional parameter for font size
 
   @override
   Widget build(BuildContext context) {
     final isEnabled = onPressed != null;
 
-    final textColor = (isEnabled
-        ? context.colors.textLightGreen
-        : context.colors.textLightGreen.withValues(alpha: .50));
+    // Set the color depending on the isDark flag
+    final textColor = isDark
+        ? (isEnabled
+            ? context.colors.textLightGreen
+            : context.colors.textLightGreen.withValues(alpha: .50))
+        : (isEnabled
+            ? context.colors.mainGreenLight
+            : context.colors.mainGreenLight.withValues(alpha: .50));
 
     return TextButton(
       onPressed: onPressed,
@@ -34,7 +43,8 @@ class MyTextButton extends StatelessWidget {
         label,
         style: context.typography.subtitle.copyWith(
           color: textColor,
-          fontSize: 14.sp,
+          fontSize:
+              fontSize ?? 14.sp, // Use provided fontSize or default to 14.sp
           fontWeight: FontWeight.w600,
           decoration: TextDecoration.underline,
         ),

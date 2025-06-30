@@ -30,14 +30,16 @@ class OnBoardingScreen extends StatelessWidget {
                     firstColor: context.colors.textDarkGreen,
                     second: context.l10n.onboarding_fuels,
                     secondColor: context.colors.textLightGreen,
-                    fontSize: 28.sp,
+                    firstFontSize: 28.sp,
+                    secondFontSize: 28.sp,
                   ),
                   ColoredRichText(
                     first: context.l10n.onboarding_your,
                     firstColor: context.colors.textDarkGreen,
                     second: context.l10n.onboarding_connection,
                     secondColor: context.colors.textLightGreen,
-                    fontSize: 28.sp,
+                    firstFontSize: 28.sp,
+                    secondFontSize: 28.sp,
                   ),
                   SizedBox(height: 65.h),
                   MyButton(

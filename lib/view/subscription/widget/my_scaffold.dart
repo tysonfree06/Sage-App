@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 
 class MyScaffold extends StatefulWidget {

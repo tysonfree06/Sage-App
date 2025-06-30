@@ -14,8 +14,8 @@ class OnboardingService {
   }
 
   static void goToStep2(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     Navigator.pushNamed(
       context,
       RoutesName.step2,
@@ -23,8 +23,8 @@ class OnboardingService {
   }
 
   static void goToStep3(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     Navigator.pushNamed(
       context,
       RoutesName.step3,
@@ -32,8 +32,8 @@ class OnboardingService {
   }
 
   static void goToStep4(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     Navigator.pushNamed(
       context,
       RoutesName.step4,
@@ -41,8 +41,8 @@ class OnboardingService {
   }
 
   static void goToDataAnalysis(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     Navigator.pushNamed(
       context,
       RoutesName.analyzeData,
@@ -59,15 +59,16 @@ class OnboardingService {
     );
   }
 
-  static void goToHomeDelayed(
+  static void goToSubscriptionDelayed(
     BuildContext context,
   ) {
     Timer(
-      const Duration(seconds: 3),
-          () => Navigator.pushNamedAndRemoveUntil(
+      const Duration(seconds: 2),
+      () => Navigator.pushNamedAndRemoveUntil(
         context,
         RoutesName.subscription,
-            (route) => false,
+        arguments: true,
+        (route) => false,
       ),
     );
   }

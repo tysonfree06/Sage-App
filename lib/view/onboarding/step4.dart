@@ -47,8 +47,10 @@ class _Step4ScreenState extends State<Step4Screen> {
                   child: ColoredRichText(
                     first: context.l10n.onboarding_step4,
                     second: context.l10n.onboarding_steps_4,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
+                    firstFontSize: 15.sp,
+                    secondFontSize: 15.sp,
+                    firstFontWeight: FontWeight.w600,
+                    secondFontWeight: FontWeight.w600,
                   ),
                 ),
                 Center(
@@ -68,11 +70,7 @@ class _Step4ScreenState extends State<Step4Screen> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 35.h),
-
-                MyPinput(
-                    controller: pinController
-                ),
-
+                MyPinput(controller: pinController),
                 const Spacer(),
                 MyButton(
                   label: context.l10n.onboarding_step4_connect,

@@ -73,8 +73,11 @@ class _Step2ScreenState extends State<Step2Screen> {
                   child: ColoredRichText(
                     first: context.l10n.onboarding_step2,
                     second: context.l10n.onboarding_steps_4,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
+                  
+                    firstFontSize: 15.sp,
+                      secondFontSize: 15.sp,
+                      firstFontWeight: FontWeight.w600,
+                      secondFontWeight: FontWeight.w600,
                   ),
                 ),
                 Center(

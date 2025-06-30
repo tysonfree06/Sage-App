@@ -44,7 +44,7 @@ class SplashServices {
 
   Future<void> goToWelcome(BuildContext context) async {
     Timer(
-      const Duration(seconds: 1),
+      const Duration(seconds: 2),
       () => Navigator.pushNamedAndRemoveUntil(
         context,
         RoutesName.welcome,

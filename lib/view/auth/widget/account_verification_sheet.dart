@@ -41,8 +41,10 @@ class _AccountVerificationSheetState extends State<AccountVerificationSheet> {
             second: widget.email ?? '',
             firstColor: context.colors.textDarkGreen.withValues(alpha: .60),
             secondColor: context.colors.textDarkGreen,
-            fontWeight: FontWeight.w500,
-            fontSize: 15.sp,
+            firstFontSize: 15.sp,
+            secondFontSize: 15.sp,
+            firstFontWeight: FontWeight.w500,
+            secondFontWeight: FontWeight.w500,
           ),
           SizedBox(height: 50.h),
           MyPinput(

@@ -41,11 +41,7 @@ class _Step3ScreenState extends State<Step3Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final labelStyle = context.typography.subtitle.copyWith(
-      fontWeight: FontWeight.w500,
-      fontSize: 15.sp,
-      color: context.colors.textDarkGreen.withValues(alpha: 0.6),
-    );
+    
     return LightStatusBar(
       child: Scaffold(
         appBar: AppBar(
@@ -65,8 +61,10 @@ class _Step3ScreenState extends State<Step3Screen> {
                   child: ColoredRichText(
                     first: context.l10n.onboarding_step3,
                     second: context.l10n.onboarding_steps_4,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
+                   firstFontSize: 15.sp,
+                      secondFontSize: 15.sp,
+                      firstFontWeight: FontWeight.w600,
+                      secondFontWeight: FontWeight.w600,
                   ),
                 ),
                 Center(

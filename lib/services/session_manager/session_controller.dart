@@ -1,68 +1,81 @@
-import 'dart:convert'; // Importing dart:convert for JSON encoding and decoding
+import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:sage/model/user/user_model.dart';
 import 'package:sage/services/storage/local_storage.dart';
-import 'package:flutter/material.dart'; // Importing Flutter material library
 
-/// A singleton class for managing user session data.
+/// A singleton class for managing user session data across the application.
 class SessionController {
-  //In Dart, a factory constructor is a special kind of constructor that can return an instance of the class,
-  // potentially a cached or pre-existing instance, instead of always creating a new one.
-  // It's defined using the factory keyword.
-  // This is useful for implementing patterns like singletons or when you want to control instance creat
-  //
-  /// Factory constructor for accessing the singleton instance of [SessionController].
-  factory SessionController() {
-    return _session;
-  }
+  /// Factory constructor to access the singleton instance.
+  factory SessionController() => _instance;
 
-  /// Private constructor for creating the singleton instance of [SessionController].
-  SessionController._internal() {
-    // Initialize default values
-    isLogin = false;
-  }
-
-  /// Instance of [LocalStorage] for accessing local storage.
-  final LocalStorage sharedPreferenceClass = LocalStorage();
+  /// Private constructor for creating the singleton instance.
+  SessionController._internal();
 
   /// Singleton instance of [SessionController].
-  static final SessionController _session = SessionController._internal();
+  static final SessionController _instance = SessionController._internal();
 
-  /// Flag indicating whether the user is logged in or not.
-  static bool? isLogin;
+  /// Instance of [LocalStorage] for accessing local storage operations.
+  final LocalStorage _localStorage = LocalStorage();
 
-  /// Model representing the user data.
-  static UserModel user = UserModel();
+  /// Indicates whether the user is currently logged in.
+  bool isLogin = false;
 
-  /// Saves user data into the local storage.
+  /// Current user data, null if no user is logged in.
+  UserModel? user;
+
+  /// Saves user data to local storage and updates session state.
   ///
-  /// Takes a [user] object as input and saves it into the local storage.
-  Future<void> saveUserInPreference(dynamic user) async {
-    await sharedPreferenceClass.setValue('token', jsonEncode(user));
-    // Storing value to check auth
-    await sharedPreferenceClass.setValue('isLogin', 'true');
+  /// [user] The [UserModel] to be saved.
+  /// Returns a [Future] that completes when the data is saved.
+  Future<void> saveUserInPreference(UserModel user) async {
+    try {
+      await _localStorage.setValue('token', jsonEncode(user.toJson()));
+      await _localStorage.setValue('isLogin', 'true');
+      this.user = user;
+      isLogin = true;
+    } catch (e) {
+      debugPrint('Error saving user data: $e');
+      rethrow;
+    }
   }
 
-  /// Retrieves user data from the local storage.
+  /// Retrieves user data from local storage and updates session state.
   ///
-  /// Retrieves user data from the local storage and assigns it to the session controller
-  /// to be used across the app.
+  /// Returns a [Future] that completes when the data is retrieved.
   Future<void> getUserFromPreference() async {
     try {
-      final String userData =
-          sharedPreferenceClass.readValue('token').toString();
-      final isLogin = await sharedPreferenceClass.readValue('isLogin');
+      final String? userData =
+          await _localStorage.readValue('token') as String?;
+      final String? isLoginData =
+          await _localStorage.readValue('isLogin') as String?;
 
-      if (userData.isNotEmpty) {
-        SessionController.user =
-            UserModel.fromJson(jsonDecode(userData) as Map<String, dynamic>);
-      }
-      if (isLogin == 'true') {
-        SessionController.isLogin = true;
+      if (userData != null && userData.isNotEmpty) {
+        final userJson = jsonDecode(userData) as Map<String, dynamic>;
+        user = UserModel.fromJson(userJson);
       } else {
-        SessionController.isLogin = false;
+        user = null;
       }
+
+      isLogin = isLoginData == 'true';
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Error retrieving user data: $e');
+      user = null;
+      isLogin = false;
+    }
+  }
+
+  /// Clears user session data from local storage and resets session state.
+  ///
+  /// Returns a [Future] that completes when the data is cleared.
+  Future<void> clearSession() async {
+    try {
+      await _localStorage.clearValue('token');
+      await _localStorage.clearValue('isLogin');
+      user = null;
+      isLogin = false;
+    } catch (e) {
+      debugPrint('Error clearing session: $e');
+      rethrow;
     }
   }
 }

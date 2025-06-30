@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_chip.dart';
 import 'package:sage/app/components/status_bar_style.dart';
-import 'package:sage/app/components/step_progress_bar.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
-import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/onboarding_service.dart';
 
@@ -22,33 +19,33 @@ class UpdateInterestsScreen extends StatefulWidget {
 class _UpdateInterestsScreenState extends State<UpdateInterestsScreen> {
   TextEditingController pinController = TextEditingController();
   List<String> allInterests = [
-      "Fitness",
-      "Science and Math",
-      "Outdoors",
-      "Travel",
-      "Wellness",
-      "Food",
-      "Games",
-      "Tech",
-      "Home",
-      "Art",
-      "Learning",
-      "Entertainment",
-      "Community",
-      "Fashion",
-      "Shopping",
-      "Movies",
-      "Sports",
-      "Movies",
-      "Parenting",
-      "Spirituality and Religion",
-      "Music",
-      "Finances",
-      "Animals",
-      "Dancing",
-      "History",
-      "Photography",
-    ];
+    "Fitness",
+    "Science and Math",
+    "Outdoors",
+    "Travel",
+    "Wellness",
+    "Food",
+    "Games",
+    "Tech",
+    "Home",
+    "Art",
+    "Learning",
+    "Entertainment",
+    "Community",
+    "Fashion",
+    "Shopping",
+    "Movies",
+    "Sports",
+    "Movies",
+    "Parenting",
+    "Spirituality and Religion",
+    "Music",
+    "Finances",
+    "Animals",
+    "Dancing",
+    "History",
+    "Photography",
+  ];
 
   Set<String> selectedInterests = {};
 

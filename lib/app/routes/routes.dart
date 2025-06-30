@@ -46,6 +46,13 @@ class Routes {
         //     builder: (_) => LoginScreen(prefilledEmail: email),
         //   );
 
+        case RoutesName.subscription:
+          final showSkip = settings.arguments as bool? ?? false;
+          return MaterialPageRoute(
+            builder: (_) => SubscriptionScreen(showSkip: showSkip),
+            settings: settings,
+          );
+
         default:
           return MaterialPageRoute(
             builder: builder,
