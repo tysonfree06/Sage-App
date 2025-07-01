@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
+import 'package:sage/model/radeem_model.dart';
+import 'package:sage/view/points/invite.dart';
+import 'package:sage/view/points/radeem_offer_detail.dart';
 import 'package:sage/view/profile/change_password.dart';
 import 'package:sage/view/profile/edit_profile.dart';
 import 'package:sage/view/profile/update_gift_preference.dart';
@@ -8,7 +11,7 @@ import 'package:sage/view/subscription/subscription.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.splash;
+  static String initialRoute() => RoutesName.invite;
 
   // Map of all route names to their corresponding widget builders
   static final Map<String, Widget Function(BuildContext)> _routes = {
@@ -31,6 +34,8 @@ class Routes {
     RoutesName.updateInterests: (_) => const UpdateInterestsScreen(),
     RoutesName.updateGiftPreference: (_) => const UpdateGiftPreferenceScreen(),
     RoutesName.subscription: (_) => const SubscriptionScreen(),
+    RoutesName.redeemOfferDetail: (_) => RedeemOfferScreen(offer: offers[0]),
+    RoutesName.invite: (_) => const InviteScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
