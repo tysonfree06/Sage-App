@@ -59,3 +59,11 @@ class NoInternetException extends AppException {
   NoInternetException([String? message])
       : super(message, 'No Internet Connection');
 }
+
+// Exception class representing a login failure error.
+class LoginFailureException extends AppException {
+  /// Constructor for creating a [LoginFailureException] instance.
+  ///
+  /// The [message] parameter represents the error message.
+  LoginFailureException([String? message]) : super(message, 'Login Failed: ');
+}

@@ -9,7 +9,6 @@ class UserModel {
     required this.id,
     required this.name,
     required this.email,
-    required this.password,
     required this.verified,
     required this.interests,
     required this.giftPreferences,
@@ -33,7 +32,6 @@ class UserModel {
   final String id;
   final String name;
   final String email;
-  final String password;
   final bool verified;
   final List<String> interests;
   final List<String> giftPreferences;
@@ -55,7 +53,6 @@ class UserModel {
     String? id,
     String? name,
     String? email,
-    String? password,
     bool? verified,
     List<String>? interests,
     List<String>? giftPreferences,
@@ -75,7 +72,6 @@ class UserModel {
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
-      password: password ?? this.password,
       verified: verified ?? this.verified,
       interests: interests ?? this.interests,
       giftPreferences: giftPreferences ?? this.giftPreferences,

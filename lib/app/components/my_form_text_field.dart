@@ -41,10 +41,18 @@ class MyFormTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create a FocusNode to prevent interaction with the field when readOnly
+    final FocusNode focusNode = FocusNode();
+
+    // If the field is read-only, disable the focus functionality
+    if (readOnly) {
+      focusNode.canRequestFocus = false;
+    }
     return TextFormField(
-      controller: controller,
-      initialValue: initialValue,
-      readOnly: readOnly,
+      controller: controller ?? TextEditingController(text: initialValue),
+      // readOnly: readOnly,
+      enabled: !readOnly,
+      focusNode: focusNode,
       cursorColor: context.colors.mainGreenLight,
       textCapitalization: textCapitalization,
       textInputAction: textInputAction,
@@ -56,6 +64,7 @@ class MyFormTextField extends StatelessWidget {
       onSaved: onSaved,
       autovalidateMode: autovalidateMode,
       decoration: InputDecoration(
+        errorMaxLines: 3,
         hintText: !label ? hint : null,
         labelText: label ? hint : null,
         prefixIcon: prefixIcon,

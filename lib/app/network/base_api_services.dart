@@ -1,13 +1,21 @@
 /// Abstract class for defining base API services.
 abstract class BaseApiServices {
-  /// Fetches data from the API using a GET request.
-  ///
-  /// Takes a [url] parameter representing the endpoint URL.
-  Future<dynamic> getApi(String url);
-
-  /// Sends data to the API using a POST request.
-  ///
-  /// Takes a [url] parameter representing the endpoint URL and a [data] parameter
-  /// representing the data to be sent.
-  Future<dynamic> postApi(String url, dynamic data);
+  Future<Map<String, dynamic>> get({
+    required String url,
+  });
+  Future<Map<String, dynamic>> post({
+    required String url,
+    required Map<String, dynamic> data,
+  });
+  Future<Map<String, dynamic>> put({
+    required String url,
+    required Map<String, dynamic> data,
+  });
+  Future<Map<String, dynamic>> patch({
+    required String url,
+    required Map<String, dynamic> data,
+  });
+  Future<Map<String, dynamic>> delete({
+    required String url,
+  });
 }

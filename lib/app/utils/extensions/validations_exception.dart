@@ -1,39 +1,68 @@
 extension EmailValidatorExtension on String {
   bool emailValidator() {
-    final emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(this);
+    final emailValid = RegExp(
+      r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$',
+    ).hasMatch(this);
     return emailValid;
   }
 }
 
+extension UrlValidatorExtension on String {
+  bool urlValidator() {
+    final urlValid = RegExp(
+      r'^(http://www\.|https://www\.|http://|https://)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(this);
+    return urlValid;
+  }
+}
+
 extension PasswordValidatorExtension on String {
-  bool isValidPassword() {
-    // At least 8 characters, one uppercase, one lowercase, one number
-    return RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$').hasMatch(this);
+  bool passwordValidator() {
+    final passwordValid = RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+    ).hasMatch(this);
+    // Minimum 8 characters, 1 uppercase, 1 number, 1 special character
+    return passwordValid;
+  }
+
+  bool lessSecurePasswordValidator() {
+    return length >= 8; // Checks if the password length is >= 8
   }
 }
 
 extension NameValidatorExtension on String {
-  bool isValidName() {
-    return RegExp(r'^[A-Za-z\s]{2,}$').hasMatch(this);
+  bool nameValidator() {
+    final nameValid = RegExp(
+      r'^[a-zA-Z\s]+$', // Only letters and spaces
+    ).hasMatch(this);
+    return nameValid;
   }
 }
 
-extension PhoneValidatorExtension on String {
-  bool isValidPhoneNumber() {
-    return RegExp(r'^\+?[0-9]{7,15}$').hasMatch(this);
+extension ExperienceValidatorExtension on String {
+  bool experienceValidator() {
+    final experienceValid = RegExp(
+      r'^[0-9]+$', // Only digits
+    ).hasMatch(this);
+    return experienceValid;
   }
 }
 
-extension EmptyFieldValidatorExtension on String {
-  bool isNotEmptyField() {
-    return trim().isNotEmpty;
+extension UsernameValidatorExtension on String {
+  bool usernameValidator() {
+    final usernameValid = RegExp(
+      r'^[a-zA-Z0-9_-]{3,15}$',
+      // Alphanumeric, with underscores or hyphens, between 3 to 15 characters
+    ).hasMatch(this);
+    return usernameValid;
   }
 }
 
-extension InvitationCodeValidatorExtension on String {
-  bool isValidInvitationCode() {
-    // Assuming alphanumeric with optional dashes/underscores, length 4-10
-    return RegExp(r'^[A-Za-z0-9_-]{4,10}$').hasMatch(this);
+extension AddressValidatorExtension on String {
+  bool addressValidator() {
+    final addressValid = RegExp(
+      r'^[a-zA-Z0-9\s,.-]+$', // Letters, numbers, spaces, commas, periods, and hyphens
+    ).hasMatch(this);
+    return addressValid;
   }
 }
-

@@ -139,7 +139,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 textColor: context.colors.red,
                 //onTap: () => SettingService.showDeleteAccountDialog(context),
               ),
-              SizedBox(height: 70.h),
+              SizedBox(height: 43.h),
               MyButton(
                 label: context.l10n.settings_logout,
                 // onPressed: () => SettingService.goToWelcomeScreen(context),

@@ -5,6 +5,7 @@ import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/validations_exception.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/login_service.dart';
@@ -18,8 +19,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final loginService = LoginService();
   final formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.text = 'malirazaansari45@gmail.com';
+    passwordController.text = '12345678';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +75,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 10.h),
                 MyFormTextField(
+                  controller: emailController,
                   hint: context.l10n.login_email_hint,
                   suffixIcon: Assets.icons.email.svg(),
+                  textCapitalization: TextCapitalization.none,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return context.l10n.error_email_required;
+                    } else if (!value.emailValidator()) {
+                      return context.l10n.error_email_invalid;
+                    }
+                    return null;
+                  },
+                  readOnly: isLoading,
                 ),
                 SizedBox(height: 15.h),
                 Align(
@@ -82,6 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   valueListenable: _obscurePassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      controller: passwordController,
                       hint: context.l10n.login_password_hint,
                       obscureText: obscure,
                       suffixIcon: GestureDetector(
@@ -90,6 +115,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? Assets.icons.visibilityOff.svg()
                             : Assets.icons.visibilityOn.svg(),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return context.l10n.error_password_required;
+                        } else if (!value.lessSecurePasswordValidator()) {
+                          return context.l10n.error_password_strength;
+                        }
+                        return null;
+                      },
+                      readOnly: isLoading,
                     );
                   },
                 ),
@@ -106,8 +140,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 40.h),
                 MyButton(
                   label: context.l10n.login,
-                  onPressed: () {
-                    LoginService.goToHome(context);
+                  isLoading: isLoading,
+                  onPressed: () async {
+                    if (!formKey.currentState!.validate()) return;
+                    setState(() => isLoading = true);
+                    await loginService.login(
+                      context,
+                      email: emailController.text.trim(),
+                      password: passwordController.text.trim(),
+                    );
+                    setState(() => isLoading = false);
                   },
                 ),
                 SizedBox(height: 20.h),

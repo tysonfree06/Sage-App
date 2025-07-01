@@ -20,7 +20,6 @@ class HomeScreen extends StatelessWidget {
       id: '1',
       name: 'Sarah Ali',
       email: 'sarah@example.com',
-      password: 'password',
       verified: true,
       interests: ['Cooking', 'Traveling', 'Hiking', 'Reading', 'Photography'],
       giftPreferences: ['Books', 'Perfume', 'Flowers', 'Chocolates', 'Gadgets'],

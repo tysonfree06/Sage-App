@@ -1,6 +1,16 @@
 class AppUrl {
-  static String baseUrl = 'https://reqres.in';
-  static String loginEndPint = '$baseUrl/api/login';
-  static String popularMoviesListEndPoint =
-      'https://www.episodate.com/api/most-popular?page=1';
+  static String baseUrl = 'http://sprint.ml-bench.com';
+  
+  static String login = '$baseUrl/api/auth/login';
+  static String signup = '$baseUrl/api/auth/signup';
+  static String sendOtp = '$baseUrl/api/auth/send-otp';
+  static String verifyOtp = '$baseUrl/api/auth/verify-otp';
+  static String forgotPassword = '$baseUrl/api/auth/forgot-password';
+  static String resetPassword = '$baseUrl/api/auth/reset-password';
+  static String profileSetup = '$baseUrl/api/auth/profile-setup';
+  static String preferences = '$baseUrl/api/auth/prefernces';
+  static String profileUpdate = '$baseUrl/api/user/profile-update';
+  static String updatePassword = '$baseUrl/api/user/update-password';
+  static String interests = '$baseUrl/api/user/preferences/interests';
+  static String gifts = '$baseUrl/api/user/preferences/gifts';  
 }
