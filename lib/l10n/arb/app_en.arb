@@ -244,5 +244,37 @@
   "home_days": "Days",
   "home_hrs": "Hrs",
   "home_mins": "Mins",
-  "home_sec": "Sec"
+  "home_sec": "Sec",
+
+  "@_REDEEM_OFFER_SCREEN": {},
+  "redeem_topbar_title":"Redeem Offer Details",
+  "redeem_btn_title":"Raffle For 500 Points",
+  "redeem_total_points":"Your Total Points",
+  "redeem_invite_your_friends":"Invite your friends to earn more points",
+  "redeem_invite":"Invite",
+  "redeem_available_offers":"Available Offers",
+  "redeem_no_offer_available":"No Offer Available!!",
+  "redeem_past_redemptions":"Past Redemptions",
+  "redeem_no_past_redemptions":"No Past Redemptions!!",
+  "redeem_search_offers":"Search offers...",
+
+  "@_REDEEM_OFFER_DIALOG": {},
+  "redeem_dialog_title":"Redeem Offer?",
+  "redeem_dialog_subtitle":"Are you sure you want to use 500 points for this offer???? it will be deducted from your points",
+  "redeem_dialog_cancel":"Cancel",
+  "redeem_dialog_yes_sure":"Yes, Sure",
+  "redeem_date":"Redemption Date",
+  "redeem_past":"Past",
+
+  "@_REFER_SCREEN": {},
+  "refer_topbar_title":"Refer a Friend",
+  "refer_link":"Invitation Registration Link",
+  "refer_code":"Your Invitation Code",
+  "refer_total_points":"Total Referral Points",
+  "refer_total_member":"Total Referrals",
+  "refer_to_friends_title":"Invite Friends & Earn More!!",
+  "refer_to_friends_subtitle":"Earn extra points by inviting friends to join. When you get 4 referrals you'll earn an extra 500!",
+  "refer_terms_disclaimers":"Referral Terms & Disclaimers",
+  "refer_terms_disclaimers_1":"Redeem to access past challenges for more practice. Just by practicing healthy relationship habits you’ll earn points for discounts and prizes!",
+  "refer_terms_disclaimers_2":"refels & Prizes for Healthy Habits: Just by practicing healthy relationship habits you’ll earn points for discounts and prizes!"
 }
