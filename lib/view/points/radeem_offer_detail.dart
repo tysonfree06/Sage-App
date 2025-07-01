@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
-import 'package:sage/app/components/my_text_button.dart';
+import 'package:sage/app/components/my_dialog.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
@@ -13,7 +13,7 @@ final List<RedeemOfferDetails> offers = [
   RedeemOfferDetails(
     backendId: '1',
     offerId: '#2345679012',
-    isPast: true,
+    isPast: false,
     title: 'Daily Challenge Vault',
     points: 210,
     startDate: DateTime(2025, 4, 10),
@@ -68,7 +68,8 @@ class RedeemOfferScreen extends StatelessWidget {
                       color: context.colors.chipBg,
                       borderRadius: BorderRadius.circular(80),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -130,7 +131,6 @@ class RedeemOfferScreen extends StatelessWidget {
                         firstFontSize: 16.sp,
                         firstFontWeight: FontWeight.w600,
                         firstColor: context.colors.textLightGreen,
-          
                         second: 'Pts',
                         secondFontSize: 15.sp,
                         secondFontWeight: FontWeight.w500,
@@ -153,7 +153,8 @@ class RedeemOfferScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
-                      color: context.colors.textDarkGreen.withValues(alpha: 0.40),
+                      color:
+                          context.colors.textDarkGreen.withValues(alpha: 0.40),
                     ),
                   ),
                 ],
@@ -167,7 +168,7 @@ class RedeemOfferScreen extends StatelessWidget {
                   color: context.colors.textDarkGreen.withValues(alpha: 0.60),
                 ),
               ),
-          
+
               // const Spacer(),
               if (offer.isPast == true && offer.redemptionDate != null) ...[
                 Padding(
@@ -177,7 +178,8 @@ class RedeemOfferScreen extends StatelessWidget {
                       color: context.colors.chipBg,
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -186,7 +188,8 @@ class RedeemOfferScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen.withValues(alpha: 0.60),
+                            color: context.colors.textDarkGreen
+                                .withValues(alpha: 0.60),
                           ),
                         ),
                         Text(
@@ -206,7 +209,23 @@ class RedeemOfferScreen extends StatelessWidget {
                 SizedBox(height: 30.h),
                 MyButton(
                   label: context.l10n.redeem_btn_title,
-                  onPressed: () {},
+                  onPressed: () {
+
+                    showDialog<void>(
+                      context: context,
+                      builder: (_) => MyDialog(
+                        image: Assets.images.dialog.infoBlue,
+                        titleFirst: context.l10n.dialog_redeem,
+                        titleSecond: context.l10n.redeem_dialog_second_title,
+                        subtitle: context.l10n.dialog_redeem_offer_subtitle,
+                        confirmLabel: context.l10n.redeem_dialog_yes_sure,
+                        onConfirm: () {
+                          // do stuff
+                        },
+                      ),
+                    );
+
+                  },
                 ),
                 SizedBox(height: 30.h),
               ],
