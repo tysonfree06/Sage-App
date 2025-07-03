@@ -9,7 +9,6 @@ class RedeemOfferDetails {
     required this.endDate,
     this.backendId = '',
     this.offerId = '',
-    this.isPast = false,
     this.title = '',
     this.points = 0,
     this.description = '',
@@ -25,9 +24,6 @@ class RedeemOfferDetails {
 
   @JsonKey(name: 'offerId')
   final String offerId;
-
-  @JsonKey(name: 'isPast')
-  final bool isPast;
 
   @JsonKey(name: 'title')
   final String title;
@@ -78,7 +74,6 @@ class RedeemOfferDetails {
     return RedeemOfferDetails(
       backendId: backendId ?? this.backendId,
       offerId: offerId ?? this.offerId,
-      isPast: isPast ?? this.isPast,
       title: title ?? this.title,
       points: points ?? this.points,
       startDate: startDate ?? this.startDate,

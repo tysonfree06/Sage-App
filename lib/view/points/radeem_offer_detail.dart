@@ -7,13 +7,12 @@ import 'package:sage/app/components/my_dialog.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/model/radeem_model.dart';
+import 'package:sage/model/redeem/radeem_model.dart';
 
 final List<RedeemOfferDetails> offers = [
   RedeemOfferDetails(
     backendId: '1',
     offerId: '#2345679012',
-    isPast: false,
     title: 'Daily Challenge Vault',
     points: 210,
     startDate: DateTime(2025, 4, 10),
@@ -47,19 +46,19 @@ class RedeemOfferScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Card(
-                shape: RoundedRectangleBorder(
+              Container(
+                height: 215.h,
+                decoration: BoxDecoration(
+                  color: context.colors.mainGreenDark,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                clipBehavior: Clip.antiAlias,
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Image.network(
-                    offer.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
+                clipBehavior: Clip.hardEdge,
+                child: Image.network(
+                  offer.imageUrl,
+                  fit: BoxFit.cover,
                 ),
               ),
+
               SizedBox(height: 15.h),
               Row(
                 children: [
@@ -75,7 +74,7 @@ class RedeemOfferScreen extends StatelessWidget {
                       children: [
                         Text(
                           offer.offerId,
-                          style: TextStyle(
+                          style: context.typography.title.copyWith(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                             color: context.colors.textLightGreen,
@@ -87,20 +86,19 @@ class RedeemOfferScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 10.w),
-                  if (offer.isPast)
+                  if (offer.endDate.isBefore(DateTime.now()) || offer.redemptionDate != null)
                     Container(
                       decoration: BoxDecoration(
-                        color: context.colors.yellow.withValues(alpha: 0.19),
+                        color: const Color(0x30D4B843),
                         borderRadius: BorderRadius.circular(80),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
+                      padding: EdgeInsets.symmetric(horizontal: 29.w, vertical: 10.h,),
                       child: Text(
                         context.l10n.redeem_past,
-                        style: TextStyle(
+                        style: context.typography.title.copyWith(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: context.colors.yellow,
+                          color: const Color(0xFFD4B843),
                         ),
                       ),
                     ),
@@ -112,7 +110,7 @@ class RedeemOfferScreen extends StatelessWidget {
                   Expanded(
                     child: Text(
                       offer.title,
-                      style: TextStyle(
+                      style: context.typography.title.copyWith(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
                         color: context.colors.textDarkGreen,
@@ -150,7 +148,7 @@ class RedeemOfferScreen extends StatelessWidget {
                   SizedBox(width: 5.w),
                   Text(
                     '${dateFormat.format(offer.startDate)} - ${dateFormat.format(offer.endDate)}',
-                    style: TextStyle(
+                    style: context.typography.title.copyWith(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
                       color:
@@ -162,15 +160,13 @@ class RedeemOfferScreen extends StatelessWidget {
               SizedBox(height: 18.h),
               Text(
                 offer.description,
-                style: TextStyle(
+                style: context.typography.title.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: context.colors.textDarkGreen.withValues(alpha: 0.60),
                 ),
               ),
-
-              // const Spacer(),
-              if (offer.isPast == true && offer.redemptionDate != null) ...[
+              if (offer.endDate.isBefore(DateTime.now()) || offer.redemptionDate != null)...[
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 30.h),
                   child: Container(
@@ -185,7 +181,7 @@ class RedeemOfferScreen extends StatelessWidget {
                       children: [
                         Text(
                           context.l10n.redeem_date,
-                          style: TextStyle(
+                          style: context.typography.title.copyWith(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                             color: context.colors.textDarkGreen
@@ -194,7 +190,7 @@ class RedeemOfferScreen extends StatelessWidget {
                         ),
                         Text(
                           dateFormat.format(offer.redemptionDate!),
-                          style: TextStyle(
+                          style: context.typography.title.copyWith(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w500,
                             color: context.colors.textDarkGreen,
@@ -210,7 +206,6 @@ class RedeemOfferScreen extends StatelessWidget {
                 MyButton(
                   label: context.l10n.redeem_btn_title,
                   onPressed: () {
-
                     showDialog<void>(
                       context: context,
                       builder: (_) => MyDialog(
@@ -224,7 +219,6 @@ class RedeemOfferScreen extends StatelessWidget {
                         },
                       ),
                     );
-
                   },
                 ),
                 SizedBox(height: 30.h),

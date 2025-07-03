@@ -8,11 +8,14 @@ import 'package:sage/view/home/home.dart';
 import 'package:sage/view/home/ideas.dart';
 import 'package:sage/view/home/points.dart';
 import 'package:sage/view/home/settings.dart';
+import 'package:sage/view/points/invite.dart';
+import 'package:sage/view/points/radeem_offer_detail.dart';
+import 'package:sage/view/points/redeem_points.dart';
 
 List<Widget> pages = [
   const HomeScreen(),
   const IdeaScreen(),
-  const PointScreen(),
+  const RedeemPointsScreen(),
   const SettingScreen(),
 ];
 

@@ -34,7 +34,7 @@ class InviteScreen extends StatelessWidget {
                   children: [
                     Text(
                       context.l10n.refer_link,
-                      style: TextStyle(
+                      style: context.typography.title.copyWith(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
                         color: context.colors.white.withValues(alpha: 0.50),
@@ -43,7 +43,7 @@ class InviteScreen extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Text(
                       'https://www.btcusdt-market.com/auth',
-                      style: TextStyle(
+                      style: context.typography.title.copyWith(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
                           color: context.colors.white),
@@ -51,7 +51,7 @@ class InviteScreen extends StatelessWidget {
                     SizedBox(height: 28.h),
                     Text(
                       context.l10n.refer_code,
-                      style: TextStyle(
+                      style: context.typography.title.copyWith(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
                         color: context.colors.white.withValues(alpha: 0.50),
@@ -60,7 +60,7 @@ class InviteScreen extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Text(
                       'nzkKFg',
-                      style: TextStyle(
+                      style: context.typography.title.copyWith(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
                           color: context.colors.white),
@@ -99,7 +99,7 @@ class InviteScreen extends StatelessWidget {
                           ),
                           Text(
                             context.l10n.refer_total_points,
-                            style: TextStyle(
+                            style: context.typography.title.copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
                               color: context.colors.textDarkGreen
@@ -129,7 +129,7 @@ class InviteScreen extends StatelessWidget {
                           SizedBox(height: 10.h),
                           Text(
                             '03',
-                            style: TextStyle(
+                            style: context.typography.title.copyWith(
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w500,
                               color: context.colors.white,
@@ -137,7 +137,7 @@ class InviteScreen extends StatelessWidget {
                           ),
                           Text(
                             context.l10n.refer_total_points,
-                            style: TextStyle(
+                            style: context.typography.title.copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
                               color: context.colors.white,
@@ -152,7 +152,7 @@ class InviteScreen extends StatelessWidget {
               SizedBox(height: 25.h),
               Text(
                 context.l10n.refer_to_friends_title,
-                style: TextStyle(
+                style: context.typography.title.copyWith(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: context.colors.textDarkGreen,
@@ -171,7 +171,7 @@ class InviteScreen extends StatelessWidget {
                   children: [
                     Text(
                       context.l10n.refer_to_friends_subtitle,
-                      style: TextStyle(
+                      style: context.typography.title.copyWith(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
                         color: context.colors.textDarkGreen,
@@ -193,7 +193,7 @@ class InviteScreen extends StatelessWidget {
               SizedBox(height: 25.h),
               Text(
                 context.l10n.refer_terms_disclaimers,
-                style: TextStyle(
+                style: context.typography.title.copyWith(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: context.colors.textDarkGreen,
@@ -271,7 +271,7 @@ class _TermRow extends StatelessWidget {
           child:
           Text(
             text,
-            style: TextStyle(
+            style: context.typography.title.copyWith(
               fontSize: 13.sp,
               fontWeight: FontWeight.w500,
               color: context.colors.textDarkGreen.withValues(alpha: 0.60),
