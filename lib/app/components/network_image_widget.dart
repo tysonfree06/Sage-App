@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:flutter/material.dart';
 
-//custom network image widget, we will used this widget show images, also handled exceptions
-// this widget is generic, we can change it and this change will appear across the app
+//custom network image widgets, we will used this widgets show images, also handled exceptions
+// this widgets is generic, we can change it and this change will appear across the app
 class NetworkImageWidget extends StatelessWidget {
   const NetworkImageWidget({
     required this.imageUrl,

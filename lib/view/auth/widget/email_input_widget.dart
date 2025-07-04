@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/utils/extensions/validations_exception.dart';
 
-/// A widget representing the email input field.
+/// A widgets representing the email input field.
 
 class EmailInputWidget extends StatefulWidget {
   const EmailInputWidget({super.key});

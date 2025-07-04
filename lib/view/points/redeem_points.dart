@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
-import 'package:sage/app/components/colored_rich_text.dart';
-import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/radeem_model.dart';
+import 'package:sage/services/views/redeem_points_service.dart';
+import 'package:sage/view/points/widgets/offer_card.dart';
 
 class RedeemPointsScreen extends StatefulWidget {
   const RedeemPointsScreen({super.key});
@@ -149,6 +148,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: context.colors.white,
         title: Text(context.l10n.redeem_point_topbar_title),
         centerTitle: true,
       ),
@@ -226,7 +226,9 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
                         ),
                       ),
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          RedeemPointsService.goToInvite(context);
+                        },
                         style: OutlinedButton.styleFrom(
                           visualDensity: VisualDensity.compact,
                           side: BorderSide(
@@ -295,6 +297,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
                   _buildEmptyState(context.l10n.redeem_no_past_redemptions)
                 else
                   ListView.separated(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     itemCount: pastRedemptions.length,
                     separatorBuilder: (_, __) => SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
@@ -332,7 +335,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
   }
 }
 
-class OfferCard extends StatelessWidget {
+/*class OfferCard extends StatelessWidget {
   const OfferCard({
     required this.giftCard,
     super.key,
@@ -351,17 +354,13 @@ class OfferCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            RoutesName.redeemOfferDetail,
-          );
+          Navigator.pushNamed(context, RoutesName.redeemOfferDetail,);
         },
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
-          // margin: EdgeInsets.symmetric(horizontal: 16.w),
           child: Padding(
             padding: EdgeInsets.all(12.w),
             child: Column(
@@ -467,4 +466,4 @@ class OfferCard extends StatelessWidget {
       ),
     );
   }
-}
+}*/

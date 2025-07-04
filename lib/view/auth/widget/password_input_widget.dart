@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 
-/// A widget representing the password input field.
+/// A widgets representing the password input field.
 
 class PasswordInputWidget extends StatefulWidget {
   const PasswordInputWidget({super.key});

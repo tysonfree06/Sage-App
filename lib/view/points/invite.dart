@@ -11,8 +11,8 @@ class InviteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.white,
       appBar: AppBar(
+        backgroundColor: context.colors.white,
         leading: const BackButton(),
         title: Text(context.l10n.refer_topbar_title),
         centerTitle: true,
