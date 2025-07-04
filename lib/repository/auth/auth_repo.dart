@@ -11,4 +11,36 @@ class AuthRepository {
       data: data,
     );
   }
+
+  Future<Map<String, dynamic>> signup(Map<String, dynamic> data) async {
+    return _apiServices.post(
+      url: AppUrl.signup,
+      data: data,
+    );
+  }
+
+  Future<Map<String, dynamic>> sendOtp(Map<String, dynamic> data) async {
+    return _apiServices.post(
+      url: AppUrl.sendOtp,
+      data: data,
+    );
+  }
+  Future<Map<String, dynamic>> verifyOtp(Map<String, dynamic> data) async {
+    return _apiServices.post(
+      url: AppUrl.verifyOtp,
+      data: data,
+    );
+  }
+  Future<Map<String, dynamic>> forgotPassword(Map<String, dynamic> data) async {
+    return _apiServices.post(
+      url: AppUrl.forgotPassword,
+      data: data,
+    );
+  }
+  Future<Map<String, dynamic>> resetPassword(Map<String, dynamic> data) async {
+    return _apiServices.post(
+      url: AppUrl.resetPassword,
+      data: data,
+    );
+  }
 }

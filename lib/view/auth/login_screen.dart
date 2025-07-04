@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final ValueNotifier<bool> isFormFilled = ValueNotifier(false);
   bool isLoading = false;
 
   @override
@@ -31,6 +32,24 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     emailController.text = 'malirazaansari45@gmail.com';
     passwordController.text = '12345678';
+    emailController.addListener(_updateButtonState);
+    passwordController.addListener(_updateButtonState);
+    _updateButtonState();
+  }
+
+  void _updateButtonState() {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    isFormFilled.value = email.isNotEmpty && password.isNotEmpty;
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    _obscurePassword.dispose();
+    isFormFilled.dispose();
+    super.dispose();
   }
 
   @override
@@ -80,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   suffixIcon: Assets.icons.email.svg(),
                   textCapitalization: TextCapitalization.none,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return context.l10n.error_email_required;
@@ -109,6 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: passwordController,
                       hint: context.l10n.login_password_hint,
                       obscureText: obscure,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.none,
                       suffixIcon: GestureDetector(
                         onTap: () => _obscurePassword.value = !obscure,
                         child: obscure
@@ -138,18 +160,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 40.h),
-                MyButton(
-                  label: context.l10n.login,
-                  isLoading: isLoading,
-                  onPressed: () async {
-                    if (!formKey.currentState!.validate()) return;
-                    setState(() => isLoading = true);
-                    await loginService.login(
-                      context,
-                      email: emailController.text.trim(),
-                      password: passwordController.text.trim(),
+                ValueListenableBuilder<bool>(
+                  valueListenable: isFormFilled,
+                  builder: (_, isFilled, __) {
+                    return MyButton(
+                      label: context.l10n.login,
+                      isLoading: isLoading,
+                      onPressed: isFilled && !isLoading
+                          ? () async {
+                              if (!formKey.currentState!.validate()) return;
+                              setState(() => isLoading = true);
+                              await loginService.login(
+                                context,
+                                email: emailController.text.trim(),
+                                password: passwordController.text.trim(),
+                              );
+                              setState(() => isLoading = false);
+                            }
+                          : null,
                     );
-                    setState(() => isLoading = false);
                   },
                 ),
                 SizedBox(height: 20.h),

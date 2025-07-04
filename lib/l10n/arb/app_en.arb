@@ -17,6 +17,7 @@
   "error_address_invalid": "Address can only contain letters, numbers, spaces, commas, periods, and hyphens.",
   "error_confirm_password_required": "Confirm Password is required.",
   "error_confirm_password_mismatch": "Confirm Password does not match Password.",
+  "error_invite_code_length": "Invitation code should be 6 characters.",
 
   "@_BottomSheets": {},
   "locations_sheet_setting":"Go To Settings",
@@ -99,7 +100,7 @@
   "lets_invitation_hint": "Enter invitation code",
   "lets_read_and_agree": "I have read and agree with the ",
   "lets_terms_conditions": "terms & conditions",
-  "lets_and": "and",
+  "lets_and": " and ",
   "lets_privacy_policy": "privacy policy",
   "lets_already_have_an_account":"Already have an account? ",
   "lets_login":"Login",

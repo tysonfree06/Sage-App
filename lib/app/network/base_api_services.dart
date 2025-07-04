@@ -18,4 +18,9 @@ abstract class BaseApiServices {
   Future<Map<String, dynamic>> delete({
     required String url,
   });
+  Future<Map<String, dynamic>> multipartUpload({
+    required String url,
+    required String filePath,
+    required String fileFieldName,
+  });
 }

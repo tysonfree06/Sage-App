@@ -3,7 +3,7 @@ import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.splash;
+  static String initialRoute() => RoutesName.signup;
 
   // Map of all route names to their corresponding widget builders
   static final Map<String, Widget Function(BuildContext)> _routes = {

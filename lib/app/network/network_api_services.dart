@@ -69,7 +69,6 @@ class NetworkApiService implements BaseApiServices {
     return headers;
   }
 
-  /// Utility function to parse responses
   Map<String, dynamic> _parseResponse(http.Response response) {
     try {
       final Map<String, dynamic> responseJson =
@@ -81,132 +80,10 @@ class NetworkApiService implements BaseApiServices {
     }
   }
 
-  /// Handles GET request
-  @override
-  Future<Map<String, dynamic>> get({
-    required String url,
-  }) async {
-    LogManager.logRequest('GET', url, null);
-
-    try {
-      final response = await http
-          .get(Uri.parse(url), headers: await _getHeaders(url))
-          .timeout(const Duration(seconds: 20));
-
-      LogManager.logResponse(response.statusCode.toString(), response.body);
-      return returnResponse(response);
-    } on Exception catch (e) {
-      _handleError(e, message: 'GET request failed');
-      rethrow;
-    }
-  }
-
-  /// Handles POST request
-  @override
-  Future<Map<String, dynamic>> post({
-    required String url,
-    required Map<String, dynamic> data,
-    Map<String, dynamic>? params,
-  }) async {
-    LogManager.logRequest('POST', url, data);
-
-    try {
-      final response = await http
-          .post(
-            Uri.parse(url),
-            headers: await _getHeaders(url),
-            body: jsonEncode(data),
-          )
-          .timeout(const Duration(seconds: 10));
-
-      LogManager.logResponse(response.statusCode.toString(), response.body);
-      //On status code 400 code should not reach here else go straight to exception but code is reaching here and thats the problem
-      // How did i know the response is printing in terminal that should not happen if status code is not 200/201
-      return returnResponse(response);
-    } on Exception catch (e) {
-      _handleError(e, message: 'POST request failed');
-      rethrow;
-    }
-  }
-
-  /// Handles PUT request
-  @override
-  Future<Map<String, dynamic>> put({
-    required String url,
-    required Map<String, dynamic> data,
-    Map<String, dynamic>? params,
-  }) async {
-    LogManager.logRequest('PUT', url, data);
-
-    try {
-      final response = await http
-          .put(
-            Uri.parse(url),
-            headers: await _getHeaders(url),
-            body: jsonEncode(data),
-          )
-          .timeout(const Duration(seconds: 10));
-
-      LogManager.logResponse(response.statusCode.toString(), response.body);
-      return _parseResponse(response);
-    } on Exception catch (e) {
-      _handleError(e, message: 'PUT request failed');
-      rethrow;
-    }
-  }
-
-  /// Handles PATCH request
-  @override
-  Future<Map<String, dynamic>> patch({
-    required String url,
-    required Map<String, dynamic> data,
-    Map<String, dynamic>? params,
-  }) async {
-    LogManager.logRequest('PATCH', url, data);
-
-    try {
-      final response = await http
-          .patch(
-            Uri.parse(url),
-            headers: await _getHeaders(url),
-            body: jsonEncode(data),
-          )
-          .timeout(const Duration(seconds: 10));
-
-      LogManager.logResponse(response.statusCode.toString(), response.body);
-      return returnResponse(response);
-    } on Exception catch (e) {
-      _handleError(e, message: 'PATCH request failed');
-      rethrow;
-    }
-  }
-
-  /// Handles DELETE request
-  @override
-  Future<Map<String, dynamic>> delete({
-    required String url,
-    Map<String, dynamic>? params,
-  }) async {
-    LogManager.logRequest('DELETE', url, params ?? {});
-
-    try {
-      final response = await http
-          .delete(Uri.parse(url), headers: await _getHeaders(url))
-          .timeout(const Duration(seconds: 10));
-
-      LogManager.logResponse(response.statusCode.toString(), response.body);
-      return returnResponse(response);
-    } on Exception catch (e) {
-      _handleError(e, message: 'DELETE request failed');
-      rethrow;
-    }
-  }
-
   /// Utility function for parsing the response and handling errors
-  /// Not called anywhere fix this issue
   Map<String, dynamic> returnResponse(http.Response response) {
     if (kDebugMode) {
-      debugPrint(response.statusCode.toString());
+      debugPrint('From Return Response: ${response.statusCode}');
     }
     switch (response.statusCode) {
       case 200:
@@ -223,6 +100,158 @@ class NetworkApiService implements BaseApiServices {
         );
       default:
         throw FetchDataException('Unexpected error occurred');
+    }
+  }
+
+  /// Handles GET request
+  @override
+  Future<Map<String, dynamic>> get({
+    required String url,
+  }) async {
+    LogManager.logRequest('GET', url, null);
+
+    final response = await http
+        .get(Uri.parse(url), headers: await _getHeaders(url))
+        .timeout(const Duration(seconds: 20));
+
+    LogManager.logResponse(response.statusCode.toString(), response.body);
+    // This is handling all the errors so no need for try catch
+    return returnResponse(response);
+  }
+
+  /// Handles POST request
+  @override
+  Future<Map<String, dynamic>> post({
+    required String url,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? params,
+  }) async {
+    LogManager.logRequest('POST', url, data);
+
+    final response = await http
+        .post(
+          Uri.parse(url),
+          headers: await _getHeaders(url),
+          body: jsonEncode(data),
+        )
+        .timeout(const Duration(seconds: 10));
+
+    LogManager.logResponse(response.statusCode.toString(), response.body);
+    return returnResponse(response);
+  }
+
+  /// Handles PUT request
+  @override
+  Future<Map<String, dynamic>> put({
+    required String url,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? params,
+  }) async {
+    LogManager.logRequest('PUT', url, data);
+
+    final response = await http
+        .put(
+          Uri.parse(url),
+          headers: await _getHeaders(url),
+          body: jsonEncode(data),
+        )
+        .timeout(const Duration(seconds: 10));
+
+    LogManager.logResponse(response.statusCode.toString(), response.body);
+    return _parseResponse(response);
+  }
+
+  /// Handles PATCH request
+  @override
+  Future<Map<String, dynamic>> patch({
+    required String url,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? params,
+  }) async {
+    LogManager.logRequest('PATCH', url, data);
+
+    final response = await http
+        .patch(
+          Uri.parse(url),
+          headers: await _getHeaders(url),
+          body: jsonEncode(data),
+        )
+        .timeout(const Duration(seconds: 10));
+
+    LogManager.logResponse(response.statusCode.toString(), response.body);
+    return returnResponse(response);
+  }
+
+  /// Handles DELETE request
+  @override
+  Future<Map<String, dynamic>> delete({
+    required String url,
+    Map<String, dynamic>? params,
+  }) async {
+    LogManager.logRequest('DELETE', url, params ?? {});
+
+    final response = await http
+        .delete(Uri.parse(url), headers: await _getHeaders(url))
+        .timeout(const Duration(seconds: 10));
+
+    LogManager.logResponse(response.statusCode.toString(), response.body);
+    return returnResponse(response);
+  }
+
+  /// Handles Multipart request
+  @override
+  Future<Map<String, dynamic>> multipartUpload({
+    required String url,
+    required String filePath,
+    required String fileFieldName,
+  }) async {
+    try {
+      // Create multipart request
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+
+      // Add file to upload
+      final file = await http.MultipartFile.fromPath(fileFieldName, filePath);
+      request.files.add(file);
+
+      // Get headers (including auth if needed)
+      final defaultHeaders = await _getHeaders(url);
+
+      // Merge default headers with any additional headers
+      request.headers.addAll({
+        ...defaultHeaders,
+      });
+
+      // Remove content-type from headers as it will be set automatically
+      request.headers.remove('Content-Type');
+
+      // Send the request
+      LogManager.logRequest('MULTIPART', url, {
+        'filePath': filePath,
+        'fileFieldName': fileFieldName,
+      });
+
+      final response =
+          await request.send().timeout(const Duration(seconds: 30));
+
+      // Get the response
+      final responseStr = await response.stream.bytesToString();
+      LogManager.logResponse(response.statusCode.toString(), responseStr);
+
+      // Convert to regular http.Response for our existing returnResponse method
+      return returnResponse(
+        http.Response(
+          responseStr,
+          response.statusCode,
+          request: response.request,
+        ),
+      );
+    } catch (e, stackTrace) {
+      _handleError(
+        e,
+        message: 'Multipart upload failed',
+        stackTrace: stackTrace,
+      );
+      rethrow;
     }
   }
 }

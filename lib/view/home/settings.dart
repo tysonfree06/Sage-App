@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/my_button.dart';
+import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
@@ -142,7 +143,13 @@ class _SettingScreenState extends State<SettingScreen> {
               SizedBox(height: 43.h),
               MyButton(
                 label: context.l10n.settings_logout,
-                // onPressed: () => SettingService.goToWelcomeScreen(context),
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    RoutesName.welcome,
+                    (route) => false,
+                  );
+                },
               ),
             ],
           ),

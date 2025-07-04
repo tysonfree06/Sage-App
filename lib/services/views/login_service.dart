@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/model/user/user_model.dart';
@@ -39,35 +40,43 @@ class LoginService {
     required String email,
     required String password,
   }) async {
+    final data = {
+      'email': email,
+      'password': password,
+    };
+
     try {
-      final data = {
-        'email': email,
-        'password': password,
-      };
-      // Login the user and retrieve both the user data and token
       final response = await _authRepository.login(data);
 
       final String token = response['token'] as String;
       final Map<String, dynamic> userData =
           response['user'] as Map<String, dynamic>;
 
-      // Save the token and user in the session
+      // Save session data
       await SessionController().saveToken(token);
       SessionController().user = UserModel.fromJson(userData);
 
-      // Show success message
       if (context.mounted) {
-        context.flushBarSuccessMessage(message: 'Login Success');
+        context.flushBarSuccessMessage(message: 'Login successful');
+        goToHome(context);
       }
 
-      // Navigate to the home screen
-      if (context.mounted) goToHome(context);
+      debugPrint('[LoginService] ✅ Login success for ${userData['email']}');
     } catch (e) {
-      // Handle login failure
-      if (context.mounted) {
-        context.flushBarErrorMessage(message: 'Login Failed: $e');
+      // Developer logging
+      if (e is AppException) {
+        debugPrint('[LoginService] ❌ Login failed: ${e.debugMessage}');
+      } else {
+        debugPrint('[LoginService] ❌ Unexpected error: $e');
       }
-      // rethrow;
+
+      // Show user-friendly error
+      if (context.mounted) {
+        final errorMessage = (e is AppException)
+            ? e.userMessage
+            : 'Something went wrong. Please try again.';
+        context.flushBarErrorMessage(message: errorMessage);
+      }
     }
   }
 }

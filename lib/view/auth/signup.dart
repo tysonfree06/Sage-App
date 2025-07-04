@@ -5,6 +5,7 @@ import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/validations_exception.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/signup_service.dart';
@@ -24,6 +25,63 @@ class _SignupScreenState extends State<SignupScreen> {
   // ValueNotifiers to toggle visibility
   final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
   final ValueNotifier<bool> _obscureConfirmPassword = ValueNotifier(true);
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final TextEditingController inviteCodeController = TextEditingController();
+
+  final ValueNotifier<bool> isFormFilled = ValueNotifier(false);
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fill form with test data
+    _fillFormForTesting();
+
+    emailController.addListener(_updateButtonState);
+    passwordController.addListener(_updateButtonState);
+    nameController.addListener(_updateButtonState);
+    confirmPasswordController.addListener(_updateButtonState);
+    inviteCodeController.addListener(_updateButtonState);
+  }
+
+  void _fillFormForTesting() {
+    nameController.text = "MLB Test User";
+    emailController.text = "mlbenchpvtltd+SAGE99@gmail.com";
+    passwordController.text = "12345678";
+    confirmPasswordController.text = "12345678";
+  }
+
+  @override
+  void dispose() {
+    emailController.removeListener(_updateButtonState);
+    passwordController.removeListener(_updateButtonState);
+    nameController.removeListener(_updateButtonState);
+    confirmPasswordController.removeListener(_updateButtonState);
+    inviteCodeController.removeListener(_updateButtonState);
+
+    emailController.dispose();
+    passwordController.dispose();
+    nameController.dispose();
+    confirmPasswordController.dispose();
+    inviteCodeController.dispose();
+    _obscurePassword.dispose();
+    _obscureConfirmPassword.dispose();
+    isFormFilled.dispose();
+    super.dispose();
+  }
+
+  void _updateButtonState() {
+    final isFilled = nameController.text.trim().isNotEmpty &&
+        emailController.text.trim().isNotEmpty &&
+        passwordController.text.trim().isNotEmpty &&
+        confirmPasswordController.text.trim().isNotEmpty &&
+        isChecked;
+    isFormFilled.value = isFilled;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +130,20 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   SizedBox(height: 10.h),
                   MyFormTextField(
+                    controller: nameController,
                     hint: context.l10n.lets_name_hint,
                     suffixIcon: Assets.icons.user.svg(),
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.name,
+                    readOnly: isLoading,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return context.l10n.error_name_required;
+                      } else if (!value.nameValidator()) {
+                        return context.l10n.error_name_invalid;
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 15.h),
                   Align(
@@ -88,8 +158,21 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   SizedBox(height: 10.h),
                   MyFormTextField(
+                    controller: emailController,
                     hint: context.l10n.lets_email_hint,
                     suffixIcon: Assets.icons.email.svg(),
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    textCapitalization: TextCapitalization.none,
+                    readOnly: isLoading,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return context.l10n.error_email_required;
+                      } else if (!value.emailValidator()) {
+                        return context.l10n.error_email_invalid;
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 15.h),
                   Align(
@@ -107,6 +190,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     valueListenable: _obscurePassword,
                     builder: (_, obscure, __) {
                       return MyFormTextField(
+                        controller: passwordController,
                         hint: context.l10n.lets_password_hint,
                         obscureText: obscure,
                         suffixIcon: GestureDetector(
@@ -115,6 +199,18 @@ class _SignupScreenState extends State<SignupScreen> {
                               ? Assets.icons.visibilityOff.svg()
                               : Assets.icons.visibilityOn.svg(),
                         ),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.visiblePassword,
+                        textCapitalization: TextCapitalization.none,
+                        readOnly: isLoading,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return context.l10n.error_password_required;
+                          } else if (!value.lessSecurePasswordValidator()) {
+                            return context.l10n.error_password_strength;
+                          }
+                          return null;
+                        },
                       );
                     },
                   ),
@@ -134,6 +230,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     valueListenable: _obscureConfirmPassword,
                     builder: (_, obscure, __) {
                       return MyFormTextField(
+                        controller: confirmPasswordController,
                         hint: context.l10n.lets_password_hint,
                         obscureText: obscure,
                         suffixIcon: GestureDetector(
@@ -142,6 +239,18 @@ class _SignupScreenState extends State<SignupScreen> {
                               ? Assets.icons.visibilityOff.svg()
                               : Assets.icons.visibilityOn.svg(),
                         ),
+                        textInputAction: TextInputAction.done,
+                        keyboardType: TextInputType.visiblePassword,
+                        textCapitalization: TextCapitalization.none,
+                        readOnly: isLoading,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return context.l10n.error_confirm_password_required;
+                          } else if (value != passwordController.text) {
+                            return context.l10n.error_confirm_password_mismatch;
+                          }
+                          return null;
+                        },
                       );
                     },
                   ),
@@ -171,18 +280,35 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   SizedBox(height: 10.h),
-                  MyFormTextField(hint: context.l10n.lets_invitation_hint),
+                  MyFormTextField(
+                    controller: inviteCodeController,
+                    hint: context.l10n.lets_invitation_hint,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.characters,
+                    readOnly: isLoading,
+                    validator: (value) {
+                      if (value != null &&
+                          value.isNotEmpty &&
+                          value.length != 6) {
+                        return context.l10n.error_invite_code_length;
+                      }
+                      return null;
+                    },
+                  ),
                   SizedBox(height: 16.h),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Checkbox(
                         value: isChecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isChecked = value!;
-                          });
-                        },
+                        onChanged: isLoading
+                            ? null
+                            : (bool? value) {
+                                setState(() {
+                                  isChecked = value!;
+                                  _updateButtonState();
+                                });
+                              },
                       ),
                       Flexible(
                         child: Padding(
@@ -201,7 +327,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               MyTextButton(
                                 label: context.l10n.lets_terms_conditions,
-                                onPressed: () {},
+                                onPressed: isLoading ? null : () {},
                               ),
                               Text(
                                 context.l10n.lets_and,
@@ -212,7 +338,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               MyTextButton(
                                 label: context.l10n.lets_privacy_policy,
-                                onPressed: () {},
+                                onPressed: isLoading ? null : () {},
                               ),
                             ],
                           ),
@@ -221,10 +347,38 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                   SizedBox(height: 35.h),
-                  MyButton(
-                    label: context.l10n.login_signup,
-                    onPressed: () {
-                      SignupService.showVerificationSheet(context);
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isFormFilled,
+                    builder: (_, isFilled, __) {
+                      return MyButton(
+                        label: context.l10n.login_signup,
+                        isLoading: isLoading,
+                        onPressed: isFilled && !isLoading
+                            ? () async {
+                                if (!formKey.currentState!.validate()) return;
+
+                                setState(() => isLoading = true);
+                                try {
+                                  await SignupService().signup(
+                                    context,
+                                    name: nameController.text.trim(),
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text.trim(),
+                                    confirmPassword:
+                                        confirmPasswordController.text.trim(),
+                                    inviteCode:
+                                        inviteCodeController.text.trim(),
+                                  );
+                                } catch (e) {
+                                  // Handle error
+                                } finally {
+                                  if (mounted) {
+                                    setState(() => isLoading = false);
+                                  }
+                                }
+                              }
+                            : null,
+                      );
                     },
                   ),
                   SizedBox(height: 20.h),
@@ -243,9 +397,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       SizedBox(width: 5.w),
                       MyTextButton(
                         label: context.l10n.lets_login,
-                        onPressed: () {
-                          SignupService.goToLogin(context);
-                        },
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                SignupService.goToLogin(context);
+                              },
                       ),
                     ],
                   ),

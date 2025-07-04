@@ -1,69 +1,72 @@
+import 'dart:convert';
+
 /// Base class for custom application exceptions.
 class AppException implements Exception {
-  // Prefix for the exception
+  AppException([this._message, this._prefix, this._rawBody]);
 
-  /// Constructor for creating an [AppException] instance.
-  ///
-  /// The [message] parameter represents the message associated with the exception,
-  /// and the [prefix] parameter represents the prefix for the exception.
-  AppException([this._message, this._prefix]);
-
-  final String? _message; // Message associated with the exception
+  final String? _message;
   final String? _prefix;
+  final String? _rawBody;
+
+  /// User-friendly message for UI
+  String get userMessage => _message ?? 'Something went wrong';
+
+  /// Developer-friendly debug info
+  String get debugMessage {
+    return '$_prefix: ${_message ?? 'No message'}'
+        '${_rawBody != null ? '\nRaw Body: $_rawBody' : ''}';
+  }
 
   @override
-  String toString() {
-    return '$_message$_prefix'; // Returns the formatted error message
-  }
+  String toString() => userMessage;
 }
 
 /// Exception class representing a fetch data error during communication.
 class FetchDataException extends AppException {
-  /// Constructor for creating a [FetchDataException] instance.
-  ///
-  /// The [message] parameter represents the error message.
   FetchDataException([String? message])
       : super(message, 'Error During Communication');
 }
 
 /// Exception class representing a bad request error.
 class BadRequestException extends AppException {
-  /// Constructor for creating a [BadRequestException] instance.
-  ///
-  /// The [message] parameter represents the error message.
-  BadRequestException([String? message]) : super(message, 'Invalid request');
+  BadRequestException([String? responseBody])
+      : super(_extractMessage(responseBody), 'Bad Request', responseBody);
+
+  static String _extractMessage(String? responseBody) {
+    try {
+      final Map<String, dynamic> json =
+          jsonDecode(responseBody ?? '{}') as Map<String, dynamic>;
+      return json['msg'] as String? ?? 'Invalid request';
+    } catch (_) {
+      return 'Invalid request';
+    }
+  }
 }
 
 /// Exception class representing an unauthorized request error.
 class UnauthorisedException extends AppException {
-  /// Constructor for creating an [UnauthorisedException] instance.
-  ///
-  /// The [message] parameter represents the error message.
-  UnauthorisedException([String? message])
-      : super(message, 'Unauthorised request');
+  UnauthorisedException([String? responseBody])
+      : super(_extractMessage(responseBody), 'Unauthorised', responseBody);
+
+  static String _extractMessage(String? responseBody) {
+    try {
+      final Map<String, dynamic> json =
+          jsonDecode(responseBody ?? '{}') as Map<String, dynamic>;
+      return json['msg'] as String? ?? 'You are not authorized';
+    } catch (_) {
+      return 'You are not authorized';
+    }
+  }
 }
 
 /// Exception class representing an invalid input error.
 class InvalidInputException extends AppException {
-  /// Constructor for creating an [InvalidInputException] instance.
-  ///
-  /// The [message] parameter represents the error message.
-  InvalidInputException([String? message]) : super(message, 'Invalid Input');
+  InvalidInputException([String? message])
+      : super(message ?? 'Invalid input provided', 'Invalid Input');
 }
 
 /// Exception class representing a no internet connection error.
 class NoInternetException extends AppException {
-  /// Constructor for creating a [NoInternetException] instance.
-  ///
-  /// The [message] parameter represents the error message.
   NoInternetException([String? message])
-      : super(message, 'No Internet Connection');
-}
-
-// Exception class representing a login failure error.
-class LoginFailureException extends AppException {
-  /// Constructor for creating a [LoginFailureException] instance.
-  ///
-  /// The [message] parameter represents the error message.
-  LoginFailureException([String? message]) : super(message, 'Login Failed: ');
+      : super(message ?? 'Please check your internet connection', 'Network');
 }

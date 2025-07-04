@@ -46,7 +46,7 @@ class MyButton extends StatelessWidget {
         ),
         child: isLoading
             ? const LoadingWidget(
-                size: 20,
+                size: 27,
               )
             : Text(
                 label,

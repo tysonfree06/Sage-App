@@ -8,7 +8,6 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/radeem_model.dart';
-import 'package:sage/view/points/radeem_offer_detail.dart';
 
 class RedeemPointsScreen extends StatefulWidget {
   const RedeemPointsScreen({super.key});
@@ -30,7 +29,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       redemptionDate: DateTime(2023, 12, 31),
       description: 'Use this coupon to get 10% discount',
       imageUrl:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
       startDate: DateTime(2023, 01, 01),
@@ -40,7 +39,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       redemptionDate: DateTime(2023, 12, 31),
       description: 'Use this coupon to get 10% discount',
       imageUrl:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
       startDate: DateTime(2023, 01, 01),
@@ -49,7 +48,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       points: 50,
       description: 'Get free shipping on orders over \$50',
       imageUrl:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
       startDate: DateTime(2023, 01, 01),
@@ -58,7 +57,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       points: 50,
       description: 'Get free shipping on orders over \$50',
       imageUrl:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
       startDate: DateTime(2023, 01, 01),
@@ -67,31 +66,34 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       points: 50,
       description: 'Get free shipping on orders over \$50',
       imageUrl:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-    ),RedeemOfferDetails(
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    ),
+    RedeemOfferDetails(
       startDate: DateTime(2023, 01, 01),
       endDate: DateTime(2023, 12, 31),
       title: 'Free Shipping',
       points: 50,
       description: 'Get free shipping on orders over \$50',
       imageUrl:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-    ),RedeemOfferDetails(
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    ),
+    RedeemOfferDetails(
       startDate: DateTime(2023, 01, 01),
       endDate: DateTime(2023, 12, 31),
       title: 'Free Shipping',
       points: 50,
       description: 'Get free shipping on orders over \$50',
       imageUrl:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-    ),RedeemOfferDetails(
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    ),
+    RedeemOfferDetails(
       startDate: DateTime(2023, 01, 01),
       endDate: DateTime(2023, 12, 31),
       title: 'Free Shipping',
       points: 50,
       description: 'Get free shipping on orders over \$50',
       imageUrl:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
     ),
   ];
 
@@ -302,7 +304,6 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
               ],
             ),
           ),
-
         ],
 
         /*SizedBox(height: 20.h),
@@ -345,119 +346,122 @@ class OfferCard extends StatelessWidget {
         ? DateFormat('MMM dd, yyyy').format(giftCard.redemptionDate!)
         : '';
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: () {
           Navigator.pushNamed(
             context,
-            RoutesName.redeemPoints,
+            RoutesName.redeemOfferDetail,
           );
         },
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  // Offer image
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      giftCard.imageUrl,
-                      width: 90,
-                      height: 90,
-                      fit: BoxFit.cover,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          // margin: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Padding(
+            padding: EdgeInsets.all(12.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    // Offer image
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        giftCard.imageUrl,
+                        width: 90,
+                        height: 90,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            giftCard.title,
+                            style: context.typography.title.copyWith(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: context.colors.textDarkGreen,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          Text(
+                            giftCard.description,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: context.typography.bodySmall.copyWith(
+                              color: context.colors.textDarkGreen
+                                  .withValues(alpha: 0.6),
+                            ),
+                          ),
+                          SizedBox(height: 15.h),
+                          Row(
+                            children: [
+                              Assets.images.redHeart.image(
+                                height: 16.h,
+                                width: 16.w,
+                              ),
+                              SizedBox(width: 5.w),
+                              ColoredRichText(
+                                first: '${giftCard.points}',
+                                firstFontSize: 13.sp,
+                                firstFontWeight: FontWeight.w600,
+                                firstColor: context.colors.textLightGreen,
+                                second: 'Pts',
+                                secondFontSize: 12.sp,
+                                secondFontWeight: FontWeight.w500,
+                                secondColor: const Color(0xFF000000),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (giftCard.redemptionDate != null) ...[
+                  SizedBox(height: 12.h),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: context.colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          giftCard.title,
+                          context.l10n.redeem_date,
                           style: context.typography.title.copyWith(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: context.colors.textDarkGreen,
-                          ),
-                        ),
-                        SizedBox(height: 6.h),
-                        Text(
-                          giftCard.description,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: context.typography.bodySmall.copyWith(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
                             color: context.colors.textDarkGreen
                                 .withValues(alpha: 0.6),
                           ),
                         ),
-                        SizedBox(height: 15.h),
-                        Row(
-                          children: [
-                            Assets.images.redHeart.image(
-                              height: 16.h,
-                              width: 16.w,
-                            ),
-                            SizedBox(width: 5.w),
-                            ColoredRichText(
-                              first: '${giftCard.points}',
-                              firstFontSize: 13.sp,
-                              firstFontWeight: FontWeight.w600,
-                              firstColor: context.colors.textLightGreen,
-                              second: 'Pts',
-                              secondFontSize: 12.sp,
-                              secondFontWeight: FontWeight.w500,
-                              secondColor: const Color(0xFF000000),
-                            ),
-                          ],
+                        Text(
+                          redemptionDateFormatted,
+                          style: context.typography.title.copyWith(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
+                            color: context.colors.textDarkGreen,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ],
-              ),
-              if (giftCard.redemptionDate != null) ...[
-                SizedBox(height: 12.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: context.colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        context.l10n.redeem_date,
-                        style: context.typography.title.copyWith(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.textDarkGreen
-                              .withValues(alpha: 0.6),
-                        ),
-                      ),
-                      Text(
-                        redemptionDateFormatted,
-                        style: context.typography.title.copyWith(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.textDarkGreen,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
-            ],
+            ),
           ),
         ),
       ),
