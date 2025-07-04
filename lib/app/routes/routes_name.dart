@@ -18,7 +18,7 @@ class RoutesName {
   static const String updateInterests = 'update_interests_screen';
   static const String updateGiftPreference = 'update_gift_preference_screen';
   static const String subscription = 'subscription_screen';
-  static const String redeemOfferDetail = 'redeem_offer_detail_screen';
-  static const String invite = 'invite_screen';
-  static const String redeemPoints = 'redeem_point_screen';
+  static const String offerDetail = 'offer_detail_screen';
+  static const String invitation = 'invitation_screen';
+  static const String redeemPoint = 'redeem_point_screen';
 }

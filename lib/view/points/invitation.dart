@@ -5,8 +5,8 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 
-class InviteScreen extends StatelessWidget {
-  const InviteScreen({super.key});
+class InvitationScreen extends StatelessWidget {
+  const InvitationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

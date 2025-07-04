@@ -6,7 +6,7 @@ import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/radeem_model.dart';
 import 'package:sage/services/views/redeem_points_service.dart';
-import 'package:sage/view/points/widgets/offer_card.dart';
+import 'package:sage/view/points/widgets/offer_tile.dart';
 
 class RedeemPointsScreen extends StatefulWidget {
   const RedeemPointsScreen({super.key});
@@ -21,78 +21,134 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
 
   final List<RedeemOfferDetails> giftCards = [
     RedeemOfferDetails(
-      startDate: DateTime(2023, 01, 01),
-      endDate: DateTime(2023, 12, 31),
-      title: '10% off Coupon',
-      points: 100,
-      redemptionDate: DateTime(2023, 12, 31),
-      description: 'Use this coupon to get 10% discount',
+      backendId: '1',
+      offerId: '#2345679012',
+      title: 'Daily Challenge Vault',
+      points: 210,
+      startDate: DateTime(2025, 4, 10),
+      endDate: DateTime(2025, 4, 12),
+      redemptionDate: DateTime(2025, 4, 10),
+      description:
+          "Redeem to access past daily challenges for more practice. Just by practicing healthy relationship habits you'll earn points for discounts and prizes! Just by practicing healthy relationship habits you'll earn points for discounts and prizes!\n\nUnlimited Chats with Sage AI: Sage AI assists with unbiased advice, personalized ideas for dates and more!!\n\nDiscounts & Prizes for Healthy Habits: Just by practicing healthy relationship habits you'll earn points for discounts and prizes!\n\nUnlimited Saved Ideas: Keep track of all the ideas for your relationship!!",
       imageUrl:
           'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
-      startDate: DateTime(2023, 01, 01),
-      endDate: DateTime(2023, 12, 31),
-      title: '10% off Coupon',
-      points: 100,
-      redemptionDate: DateTime(2023, 12, 31),
-      description: 'Use this coupon to get 10% discount',
+      backendId: '2',
+      offerId: '#3456789013',
+      title: 'Weekend Wellness Pack',
+      points: 300,
+      startDate: DateTime(2025, 5, 1),
+      endDate: DateTime(2025, 5, 5),
+      // no redemptionDate
+      description:
+          "A special wellness pack to help you recharge over the weekend with meditation, yoga, and healthy eating guides.",
       imageUrl:
-          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
-      startDate: DateTime(2023, 01, 01),
-      endDate: DateTime(2023, 12, 31),
-      title: 'Shipping',
-      points: 50,
-      description: 'Get free shipping on orders over \$50',
+      backendId: '3',
+      offerId: '#4567890124',
+      title: 'Relationship Builder Kit',
+      points: 250,
+      startDate: DateTime(2025, 6, 15),
+      endDate: DateTime(2025, 6, 20),
+      redemptionDate: DateTime(2025, 6, 16),
+      description:
+          "Tools and guides to strengthen your relationship with activities and communication exercises.",
       imageUrl:
-          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
-      startDate: DateTime(2023, 01, 01),
-      endDate: DateTime(2023, 12, 31),
-      title: ' Shipping',
-      points: 50,
-      description: 'Get free shipping on orders over \$50',
+      backendId: '4',
+      offerId: '#5678901235',
+      title: 'Healthy Habits Booster',
+      points: 180,
+      startDate: DateTime(2025, 7, 5),
+      endDate: DateTime(2025, 7, 10),
+      // no redemptionDate
+      description:
+          "Boost your daily routine with quick, healthy habits designed to improve your lifestyle and relationships.",
       imageUrl:
-          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
-      startDate: DateTime(2023, 01, 01),
-      endDate: DateTime(2023, 12, 31),
-      title: 'Free Shipping',
-      points: 50,
-      description: 'Get free shipping on orders over \$50',
+      backendId: '5',
+      offerId: '#6789012346',
+      title: 'Date Night Inspiration',
+      points: 150,
+      startDate: DateTime(2025, 8, 12),
+      endDate: DateTime(2025, 8, 15),
+      redemptionDate: DateTime(2025, 8, 13),
+      description:
+          "Ideas and tips for unforgettable date nights that bring you closer.",
       imageUrl:
-          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
-      startDate: DateTime(2023, 01, 01),
-      endDate: DateTime(2023, 12, 31),
-      title: 'Free Shipping',
-      points: 50,
-      description: 'Get free shipping on orders over \$50',
+      backendId: '6',
+      offerId: '#7890123457',
+      title: 'Mindfulness Challenge',
+      points: 220,
+      startDate: DateTime(2025, 9, 1),
+      endDate: DateTime(2025, 9, 7),
+      redemptionDate: DateTime(2025, 9, 2),
+      description:
+          "A week-long mindfulness challenge to help you stay present and improve your emotional health.",
       imageUrl:
-          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
-      startDate: DateTime(2023, 01, 01),
-      endDate: DateTime(2023, 12, 31),
-      title: 'Free Shipping',
-      points: 50,
-      description: 'Get free shipping on orders over \$50',
+      backendId: '7',
+      offerId: '#8901234568',
+      title: 'Communication Mastery',
+      points: 270,
+      startDate: DateTime(2025, 10, 10),
+      endDate: DateTime(2025, 10, 15),
+      // no redemptionDate
+      description:
+          "Master effective communication skills for stronger and healthier relationships.",
       imageUrl:
-          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
-      startDate: DateTime(2023, 01, 01),
-      endDate: DateTime(2023, 12, 31),
-      title: 'Free Shipping',
-      points: 50,
-      description: 'Get free shipping on orders over \$50',
+      backendId: '8',
+      offerId: '#9012345679',
+      title: 'Self-Care Essentials',
+      points: 200,
+      startDate: DateTime(2025, 11, 1),
+      endDate: DateTime(2025, 11, 5),
+      redemptionDate: DateTime(2025, 11, 2),
+      description:
+          "Essentials for self-care routines that nurture your mind, body, and soul.",
       imageUrl:
-          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1486308510493-cb6b2df05e6e?auto=format&fit=crop&w=800&q=80',
+    ),
+    RedeemOfferDetails(
+      backendId: '9',
+      offerId: '#0123456780',
+      title: 'Gratitude Journal',
+      points: 130,
+      startDate: DateTime(2025, 12, 1),
+      endDate: DateTime(2025, 12, 3),
+      redemptionDate: DateTime(2025, 12, 2),
+      description:
+          "A digital gratitude journal to help you focus on the positive aspects of your relationships.",
+      imageUrl:
+          'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80',
+    ),
+    RedeemOfferDetails(
+      backendId: '10',
+      offerId: '#1234567891',
+      title: 'Stress Relief Toolkit',
+      points: 190,
+      startDate: DateTime(2025, 12, 15),
+      endDate: DateTime(2025, 12, 20),
+      redemptionDate: DateTime(2025, 12, 16),
+      description:
+          "Techniques and tools to help manage stress and improve emotional well-being.",
+      imageUrl:
+          'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80',
     ),
   ];
 
@@ -288,7 +344,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
                     itemCount: availableOffers.length,
                     separatorBuilder: (_, __) => SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
-                      return OfferCard(giftCard: availableOffers[index]);
+                      return OfferTile(offer: availableOffers[index]);
                     },
                   ),
 
@@ -301,7 +357,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
                     itemCount: pastRedemptions.length,
                     separatorBuilder: (_, __) => SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
-                      return OfferCard(giftCard: pastRedemptions[index]);
+                      return OfferTile(offer: pastRedemptions[index]);
                     },
                   ),
               ],

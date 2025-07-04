@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
+import 'package:sage/model/redeem/radeem_model.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.redeemPoints;
+  static String initialRoute() => RoutesName.splash;
 
   // Map of all route names to their corresponding widgets builders
   static final Map<String, Widget Function(BuildContext)> _routes = {
@@ -25,10 +26,9 @@ class Routes {
     RoutesName.changePassword: (_) => const ChangePasswordScreen(),
     RoutesName.updateInterests: (_) => const UpdateInterestsScreen(),
     RoutesName.updateGiftPreference: (_) => const UpdateGiftPreferenceScreen(),
-    RoutesName.subscription: (_) => const SubscriptionScreen(),
-    RoutesName.redeemOfferDetail: (_) => RedeemOfferScreen(offer: offers[0]),
-    RoutesName.invite: (_) => const InviteScreen(),
-    RoutesName.redeemPoints: (_) => const RedeemPointsScreen(),
+    // RoutesName.subscription: (_) => const SubscriptionScreen(),
+    RoutesName.invitation: (_) => const InvitationScreen(),
+    RoutesName.redeemPoint: (_) => const RedeemPointsScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -48,6 +48,13 @@ class Routes {
           final showSkip = settings.arguments as bool? ?? false;
           return MaterialPageRoute(
             builder: (_) => SubscriptionScreen(showSkip: showSkip),
+            settings: settings,
+          );
+
+        case RoutesName.offerDetail:
+          final offer = settings.arguments! as RedeemOfferDetails;
+          return MaterialPageRoute(
+            builder: (_) => OfferDetailScreen(offer: offer),
             settings: settings,
           );
 

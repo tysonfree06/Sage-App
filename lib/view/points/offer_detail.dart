@@ -9,36 +9,8 @@ import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/radeem_model.dart';
 
-final List<RedeemOfferDetails> offers = [
-  RedeemOfferDetails(
-    backendId: '1',
-    offerId: '#2345679012',
-    title: 'Daily Challenge Vault',
-    points: 210,
-    startDate: DateTime(2025, 4, 10),
-    endDate: DateTime(2025, 4, 12),
-    redemptionDate: DateTime(2025, 4, 10),
-    description:
-        "Redeem to access past daily challenges for more practice. Just by practicing healthy relationship habits you'll earn points for discounts and prizes! Just by practicing healthy relationship habits you'll earn points for discounts and prizes!\n\nUnlimited Chats with Sage AI: Sage AI assists with unbiased advice, personalized ideas for dates and more!!\n\nDiscounts & Prizes for Healthy Habits: Just by practicing healthy relationship habits you'll earn points for discounts and prizes!\n\nUnlimited Saved Ideas: Keep track of all the ideas for your relationship!!",
-    imageUrl:
-        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-  ),
-  RedeemOfferDetails(
-    backendId: '2',
-    offerId: '#2345679012',
-    title: 'Daily Challenge Vault',
-    points: 210,
-    startDate: DateTime(2025, 4, 10),
-    endDate: DateTime(2025, 4, 12),
-    description:
-        "Redeem to access past daily challenges for more practice. Just by practicing healthy relationship habits you'll earn points for discounts and prizes! Just by practicing healthy relationship habits you'll earn points for discounts and prizes!\n\nUnlimited Chats with Sage AI: Sage AI assists with unbiased advice, personalized ideas for dates and more!!\n\nDiscounts & Prizes for Healthy Habits: Just by practicing healthy relationship habits you'll earn points for discounts and prizes!\n\nUnlimited Saved Ideas: Keep track of all the ideas for your relationship!!",
-    imageUrl:
-        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-  ),
-];
-
-class RedeemOfferScreen extends StatelessWidget {
-  const RedeemOfferScreen({required this.offer, super.key});
+class OfferDetailScreen extends StatelessWidget {
+  const OfferDetailScreen({required this.offer, super.key});
 
   final RedeemOfferDetails offer;
 

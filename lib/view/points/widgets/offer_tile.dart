@@ -8,26 +8,26 @@ import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/radeem_model.dart';
 import 'package:sage/services/views/redeem_points_service.dart';
 
-class OfferCard extends StatelessWidget {
-  const OfferCard({
-    required this.giftCard,
+class OfferTile extends StatelessWidget {
+  const OfferTile({
+    required this.offer,
     super.key,
   });
 
-  final RedeemOfferDetails giftCard;
+  final RedeemOfferDetails offer;
   static final _dateFormat = DateFormat('MMM dd, yyyy');
 
   @override
   Widget build(BuildContext context) {
-    final redemptionDateFormatted = giftCard.redemptionDate != null
-        ? _dateFormat.format(giftCard.redemptionDate!)
+    final redemptionDateFormatted = offer.redemptionDate != null
+        ? _dateFormat.format(offer.redemptionDate!)
         : null;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
-        onTap: () => RedeemPointsService.goToDetailScreen(context),
+        onTap: () => RedeemPointsService.goToDetailScreen(context, offer),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -55,7 +55,7 @@ class OfferCard extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.network(
-            giftCard.imageUrl,
+            offer.imageUrl,
             width: 90,
             height: 90,
             fit: BoxFit.cover,
@@ -67,7 +67,7 @@ class OfferCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                giftCard.title,
+                offer.title,
                 style: context.typography.title.copyWith(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
@@ -76,7 +76,7 @@ class OfferCard extends StatelessWidget {
               ),
               SizedBox(height: 6.h),
               Text(
-                giftCard.description,
+                offer.description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: context.typography.bodySmall.copyWith(
@@ -92,7 +92,7 @@ class OfferCard extends StatelessWidget {
                   ),
                   SizedBox(width: 5.w),
                   ColoredRichText(
-                    first: '${giftCard.points}',
+                    first: '${offer.points}',
                     firstFontSize: 13.sp,
                     firstFontWeight: FontWeight.w600,
                     firstColor: context.colors.textLightGreen,
