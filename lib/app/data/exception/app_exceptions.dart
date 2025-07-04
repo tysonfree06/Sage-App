@@ -23,8 +23,18 @@ class AppException implements Exception {
 
 /// Exception class representing a fetch data error during communication.
 class FetchDataException extends AppException {
-  FetchDataException([String? message])
-      : super(message, 'Error During Communication');
+  FetchDataException([String? responseBody])
+      : super(_extractMessage(responseBody), 'Error During Communication');
+
+  static String _extractMessage(String? responseBody) {
+    try {
+      final Map<String, dynamic> json =
+          jsonDecode(responseBody ?? '{}') as Map<String, dynamic>;
+      return json['msg'] as String? ?? 'Invalid request';
+    } catch (_) {
+      return 'Invalid request';
+    }
+  }
 }
 
 /// Exception class representing a bad request error.

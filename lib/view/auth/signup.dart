@@ -358,24 +358,21 @@ class _SignupScreenState extends State<SignupScreen> {
                                 if (!formKey.currentState!.validate()) return;
 
                                 setState(() => isLoading = true);
-                                try {
-                                  await SignupService().signup(
-                                    context,
-                                    name: nameController.text.trim(),
-                                    email: emailController.text.trim(),
-                                    password: passwordController.text.trim(),
-                                    confirmPassword:
-                                        confirmPasswordController.text.trim(),
-                                    inviteCode:
-                                        inviteCodeController.text.trim(),
-                                  );
-                                } catch (e) {
-                                  // Handle error
-                                } finally {
+                                await SignupService()
+                                    .signup(
+                                  context,
+                                  name: nameController.text.trim(),
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text.trim(),
+                                  confirmPassword:
+                                      confirmPasswordController.text.trim(),
+                                  inviteCode: inviteCodeController.text.trim(),
+                                )
+                                    .then((_) {
                                   if (mounted) {
                                     setState(() => isLoading = false);
                                   }
-                                }
+                                });
                               }
                             : null,
                       );

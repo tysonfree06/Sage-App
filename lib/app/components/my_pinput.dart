@@ -14,11 +14,13 @@ class MyPinput extends StatelessWidget {
     this.validator,
     this.onCompleted,
     this.onChanged,
+    this.enabled = true,
   });
 
   final TextEditingController controller;
   final FocusNode? focusNode;
   final int length;
+  final bool enabled;
   final String? Function(String?)? validator;
   final void Function(String)? onCompleted;
   final void Function(String)? onChanged;
@@ -42,6 +44,7 @@ class MyPinput extends StatelessWidget {
     return Pinput(
       controller: controller,
       focusNode: focusNode,
+      enabled: enabled,
       length: length,
       defaultPinTheme: basePinTheme,
       focusedPinTheme: basePinTheme.copyWith(

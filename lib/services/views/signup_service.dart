@@ -10,16 +10,12 @@ class SignupService {
   final AuthRepository _authRepository = AuthRepository();
   static void showVerificationSheet(
     BuildContext context, {
-    String email = 'abc@example.com',
+    required String email,
   }) {
     MyBottomSheet.show<void>(
       context,
       child: AccountVerificationSheet(
         email: email,
-        onPressed: () {
-          Navigator.of(context).pop();
-          goToOnBoarding(context);
-        },
       ),
     );
   }
@@ -38,6 +34,64 @@ class SignupService {
       RoutesName.onBoarding,
       (route) => false,
     );
+  }
+
+  Future<void> sendOtp({
+    required BuildContext context,
+    required String email,
+  }) async {
+    try {
+      final Map<String, dynamic> data = {
+        'email': email,
+      };
+      await _authRepository.sendOtp(data);
+      if (context.mounted) {
+        context.flushBarSuccessMessage(message: 'OTP sent to your email...');
+      }
+    } catch (e) {
+      if (e is AppException) {
+        debugPrint('[SignupService] ❌ ${e.debugMessage}');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: e.userMessage);
+        }
+      } else {
+        debugPrint('[SignupService] ❌ Unexpected: $e');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: 'Something went wrong');
+        }
+      }
+    }
+  }
+
+  Future<void> verifyOtp({
+    required BuildContext context,
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      final Map<String, dynamic> data = {
+        'email': email,
+        'otp': otp,
+      };
+      await _authRepository.verifyOtp(data);
+
+      if (context.mounted) {
+        context.flushBarSuccessMessage(message: 'Account Verified...');
+        goToOnBoarding(context);
+      }
+    } catch (e) {
+      if (e is AppException) {
+        debugPrint('[SignupService] ❌ ${e.debugMessage}');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: e.userMessage);
+        }
+      } else {
+        debugPrint('[SignupService] ❌ Unexpected: $e');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: 'Something went wrong');
+        }
+      }
+    }
   }
 
   Future<void> signup(
@@ -64,7 +118,8 @@ class SignupService {
         context.flushBarSuccessMessage(message: 'Signup successful!');
         showVerificationSheet(
           context,
-        ); // or goToHome(context) if already verified
+          email: email,
+        );
       }
     } catch (e) {
       if (e is AppException) {
