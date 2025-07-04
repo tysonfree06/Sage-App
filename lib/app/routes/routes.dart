@@ -26,50 +26,31 @@ class Routes {
     RoutesName.changePassword: (_) => const ChangePasswordScreen(),
     RoutesName.updateInterests: (_) => const UpdateInterestsScreen(),
     RoutesName.updateGiftPreference: (_) => const UpdateGiftPreferenceScreen(),
-    // RoutesName.subscription: (_) => const SubscriptionScreen(),
     RoutesName.invitation: (_) => const InvitationScreen(),
     RoutesName.redeemPoint: (_) => const RedeemPointsScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final builder = _routes[settings.name];
-    if (builder != null) {
-      /// If arguments are needed for a screen, handle them here
-      switch (settings.name) {
-        /// Example with arguments (uncomment and update when needed)
-        ///
-        // case RoutesName.login:
-        //   final email = settings.arguments as String?;
-        //   return MaterialPageRoute(
-        //     builder: (_) => LoginScreen(prefilledEmail: email),
-        //   );
-
-        case RoutesName.subscription:
-          final showSkip = settings.arguments as bool? ?? false;
-          return MaterialPageRoute(
-            builder: (_) => SubscriptionScreen(showSkip: showSkip),
-            settings: settings,
-          );
-
-        case RoutesName.offerDetail:
-          final offer = settings.arguments! as RedeemOfferDetails;
-          return MaterialPageRoute(
-            builder: (_) => OfferDetailScreen(offer: offer),
-            settings: settings,
-          );
-
-        default:
-          return MaterialPageRoute(
-            builder: builder,
-            settings: settings,
-          );
-      }
+    switch (settings.name) {
+      case RoutesName.subscription:
+        final showSkip = settings.arguments as bool? ?? false;
+        return MaterialPageRoute(
+          builder: (_) => SubscriptionScreen(showSkip: showSkip),
+          settings: settings,
+        );
+      case RoutesName.offerDetail:
+        final offer = settings.arguments! as RedeemOfferDetails;
+        return MaterialPageRoute(
+          builder: (_) => OfferDetailScreen(offer: offer),
+          settings: settings,
+        );
+      default:
+        final builder = _routes[settings.name];
+        if (builder != null) {
+          return MaterialPageRoute(builder: builder, settings: settings);
+        }
+        return MaterialPageRoute(builder: (_) => const UnknownRouteScreen());
     }
-
-    // Fallback screen for undefined routes
-    return MaterialPageRoute(
-      builder: (_) => const UnknownRouteScreen(),
-    );
   }
 }
 
