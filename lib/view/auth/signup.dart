@@ -239,7 +239,6 @@ class _SignupScreenState extends State<SignupScreen> {
                               ? Assets.icons.visibilityOff.svg()
                               : Assets.icons.visibilityOn.svg(),
                         ),
-                        textInputAction: TextInputAction.done,
                         keyboardType: TextInputType.visiblePassword,
                         textCapitalization: TextCapitalization.none,
                         readOnly: isLoading,
@@ -368,11 +367,13 @@ class _SignupScreenState extends State<SignupScreen> {
                                       confirmPasswordController.text.trim(),
                                   inviteCode: inviteCodeController.text.trim(),
                                 )
-                                    .then((_) {
-                                  if (mounted) {
-                                    setState(() => isLoading = false);
-                                  }
-                                });
+                                    .then(
+                                  (_) {
+                                    if (mounted) {
+                                      setState(() => isLoading = false);
+                                    }
+                                  },
+                                );
                               }
                             : null,
                       );

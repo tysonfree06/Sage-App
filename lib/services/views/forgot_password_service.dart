@@ -7,12 +7,18 @@ import 'package:sage/repository/auth/auth_repo.dart';
 class ForgotPasswordService {
   final AuthRepository _authRepository = AuthRepository();
 
-  static void goToResetPassword(
-    BuildContext context,
-  ) {
+  static void goToResetPassword({
+    required BuildContext context,
+    required String email,
+    required String otp,
+  }) {
     Navigator.pushNamed(
       context,
       RoutesName.resetPassword,
+      arguments: {
+        'email': email,
+        'otp': otp,
+      },
     );
   }
 
@@ -59,7 +65,7 @@ class ForgotPasswordService {
 
       if (context.mounted) {
         context.flushBarSuccessMessage(message: 'Account Verified...');
-        goToResetPassword(context);
+        goToResetPassword(context: context, email: email, otp: otp);
       }
     } catch (e) {
       if (e is AppException) {

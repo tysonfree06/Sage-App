@@ -13,7 +13,6 @@ class Routes {
     RoutesName.login: (_) => const LoginScreen(),
     RoutesName.signup: (_) => const SignupScreen(),
     RoutesName.forgotPassword: (_) => const ForgotPassword(),
-    RoutesName.resetPassword: (_) => const ResetPassword(),
     RoutesName.home: (_) => const HomeScreen(),
     RoutesName.onBoarding: (_) => const OnBoardingScreen(),
     RoutesName.step1: (_) => const Step1Screen(),
@@ -38,12 +37,23 @@ class Routes {
           builder: (_) => SubscriptionScreen(showSkip: showSkip),
           settings: settings,
         );
+
       case RoutesName.offerDetail:
         final offer = settings.arguments! as RedeemOfferDetails;
         return MaterialPageRoute(
           builder: (_) => OfferDetailScreen(offer: offer),
           settings: settings,
         );
+
+      case RoutesName.resetPassword:
+        final args = settings.arguments! as Map<String, String>;
+        final email = args['email']!;
+        final otp = args['otp']!;
+        return MaterialPageRoute(
+          builder: (_) => ResetPassword(email: email, otp: otp),
+          settings: settings,
+        );
+
       default:
         final builder = _routes[settings.name];
         if (builder != null) {
