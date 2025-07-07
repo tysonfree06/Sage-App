@@ -33,6 +33,7 @@ class OfferDetailScreen extends StatelessWidget {
             children: [
               Container(
                 height: 215.h,
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: context.colors.mainGreenDark,
                   borderRadius: BorderRadius.circular(20),
@@ -43,7 +44,6 @@ class OfferDetailScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-
               SizedBox(height: 15.h),
               Row(
                 children: [
@@ -71,13 +71,17 @@ class OfferDetailScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 10.w),
-                  if (offer.endDate.isBefore(DateTime.now()) || offer.redemptionDate != null)
+                  if (offer.endDate.isBefore(DateTime.now()) ||
+                      offer.redemptionDate != null)
                     Container(
                       decoration: BoxDecoration(
                         color: const Color(0x30D4B843),
                         borderRadius: BorderRadius.circular(80),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 29.w, vertical: 10.h,),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 29.w,
+                        vertical: 10.h,
+                      ),
                       child: Text(
                         context.l10n.redeem_past,
                         style: context.typography.title.copyWith(
@@ -151,65 +155,76 @@ class OfferDetailScreen extends StatelessWidget {
                   color: context.colors.textDarkGreen.withValues(alpha: 0.60),
                 ),
               ),
-              if (offer.endDate.isBefore(DateTime.now()) || offer.redemptionDate != null)...[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 30.h),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: context.colors.chipBg,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          context.l10n.redeem_date,
-                          style: context.typography.title.copyWith(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen
-                                .withValues(alpha: 0.60),
-                          ),
-                        ),
-                        Text(
-                          dateFormat.format(offer.redemptionDate!),
-                          style: context.typography.title.copyWith(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 30.h),
-              ] else ...[
-                SizedBox(height: 30.h),
-                MyButton(
-                  label: context.l10n.redeem_btn_title,
-                  onPressed: () {
-                    showDialog<void>(
-                      context: context,
-                      builder: (_) => MyDialog(
-                        image: Assets.images.dialog.infoBlue,
-                        titleFirst: context.l10n.dialog_redeem,
-                        titleSecond: context.l10n.redeem_dialog_second_title,
-                        subtitle: context.l10n.dialog_redeem_offer_subtitle,
-                        confirmLabel: context.l10n.redeem_dialog_yes_sure,
-                        onConfirm: () {
-                          // do stuff
-                        },
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(height: 30.h),
-              ],
+              SizedBox(height: 30.h),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+          left: 16.w,
+          right: 16.w,
+          bottom: MediaQuery.of(context).padding.bottom + 16.h,
+        ),
+        child: (offer.endDate.isBefore(DateTime.now()) || offer.redemptionDate != null)
+            ? Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: context.colors.chipBg,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    context.l10n.redeem_date,
+                    style: context.typography.title.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: context.colors.textDarkGreen.withAlpha(153),
+                    ),
+                  ),
+                  Text(
+                    offer.redemptionDate != null
+                        ? dateFormat.format(offer.redemptionDate!)
+                        : '-',
+                    style: context.typography.title.copyWith(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
+                      color: context.colors.textDarkGreen,
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          ],
+        )
+            : Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MyButton(
+              label: context.l10n.redeem_btn_title,
+              onPressed: () {
+                showDialog<void>(
+                  context: context,
+                  builder: (_) => MyDialog(
+                    image: Assets.images.dialog.infoBlue,
+                    titleFirst: context.l10n.dialog_redeem,
+                    titleSecond: context.l10n.redeem_dialog_second_title,
+                    subtitle: context.l10n.dialog_redeem_offer_subtitle,
+                    confirmLabel: context.l10n.redeem_dialog_yes_sure,
+                    onConfirm: () {
+                      // do stuff
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

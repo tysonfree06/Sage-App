@@ -112,19 +112,6 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
           'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=800&q=80',
     ),
     RedeemOfferDetails(
-      backendId: '8',
-      offerId: '#9012345679',
-      title: 'Self-Care Essentials',
-      points: 200,
-      startDate: DateTime(2025, 11, 1),
-      endDate: DateTime(2025, 11, 5),
-      redemptionDate: DateTime(2025, 11, 2),
-      description:
-          "Essentials for self-care routines that nurture your mind, body, and soul.",
-      imageUrl:
-          'https://images.unsplash.com/photo-1486308510493-cb6b2df05e6e?auto=format&fit=crop&w=800&q=80',
-    ),
-    RedeemOfferDetails(
       backendId: '9',
       offerId: '#0123456780',
       title: 'Gratitude Journal',
@@ -276,7 +263,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
                           style: context.typography.body.copyWith(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFFFFFFFF),
+                            color: Colors.white,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -286,6 +273,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
                           RedeemPointsService.goToInvite(context);
                         },
                         style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 5.w),
                           visualDensity: VisualDensity.compact,
                           side: BorderSide(
                             color: context.colors.yellow,
@@ -390,136 +378,3 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
     );
   }
 }
-
-/*class OfferCard extends StatelessWidget {
-  const OfferCard({
-    required this.giftCard,
-    super.key,
-  });
-
-  final RedeemOfferDetails giftCard;
-
-  @override
-  Widget build(BuildContext context) {
-    final redemptionDateFormatted = giftCard.redemptionDate != null
-        ? DateFormat('MMM dd, yyyy').format(giftCard.redemptionDate!)
-        : '';
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: () {
-          Navigator.pushNamed(context, RoutesName.redeemOfferDetail,);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(12.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    // Offer image
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        giftCard.imageUrl,
-                        width: 90,
-                        height: 90,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(width: 10.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            giftCard.title,
-                            style: context.typography.title.copyWith(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                              color: context.colors.textDarkGreen,
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
-                          Text(
-                            giftCard.description,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: context.typography.bodySmall.copyWith(
-                              color: context.colors.textDarkGreen
-                                  .withValues(alpha: 0.6),
-                            ),
-                          ),
-                          SizedBox(height: 15.h),
-                          Row(
-                            children: [
-                              Assets.images.redHeart.image(
-                                height: 16.h,
-                                width: 16.w,
-                              ),
-                              SizedBox(width: 5.w),
-                              ColoredRichText(
-                                first: '${giftCard.points}',
-                                firstFontSize: 13.sp,
-                                firstFontWeight: FontWeight.w600,
-                                firstColor: context.colors.textLightGreen,
-                                second: 'Pts',
-                                secondFontSize: 12.sp,
-                                secondFontWeight: FontWeight.w500,
-                                secondColor: const Color(0xFF000000),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                if (giftCard.redemptionDate != null) ...[
-                  SizedBox(height: 12.h),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          context.l10n.redeem_date,
-                          style: context.typography.title.copyWith(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen
-                                .withValues(alpha: 0.6),
-                          ),
-                        ),
-                        Text(
-                          redemptionDateFormatted,
-                          style: context.typography.title.copyWith(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}*/

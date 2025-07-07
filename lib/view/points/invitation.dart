@@ -73,6 +73,7 @@ class InvitationScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Container(
+                      height: 102.h,
                       padding:
                           EdgeInsets.symmetric(vertical: 9.h, horizontal: 12.w),
                       decoration: BoxDecoration(
@@ -113,8 +114,8 @@ class InvitationScreen extends StatelessWidget {
                   SizedBox(width: 13.w),
                   Expanded(
                     child: Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 9.h, horizontal: 12.w),
+                      height: 102.h,
+                      padding: EdgeInsets.symmetric(vertical: 9.h, horizontal: 12.w),
                       decoration: BoxDecoration(
                         color: context.colors.mainGreenLight,
                         borderRadius: BorderRadius.circular(12),
@@ -123,8 +124,8 @@ class InvitationScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Assets.icons.userProfile.svg(
-                            width: 30.w,
-                            height: 30.h,
+                            width: 26.w,
+                            height: 26.h,
                           ),
                           SizedBox(height: 10.h),
                           Text(
@@ -136,7 +137,7 @@ class InvitationScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            context.l10n.refer_total_points,
+                            context.l10n.refer_total_member,
                             style: context.typography.title.copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
@@ -262,9 +263,14 @@ class _TermRow extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Assets.icons.shareArrow.svg(
-          width: 15,
-          height: 14,
+        Column(
+          children: [
+            SizedBox(height: 4.h),
+            Assets.icons.shareArrow.svg(
+              width: 15,
+              height: 14,
+            ),
+          ],
         ),
         SizedBox(width: 8.w),
         Expanded(
