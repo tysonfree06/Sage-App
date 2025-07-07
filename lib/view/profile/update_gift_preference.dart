@@ -7,16 +7,17 @@ import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/services/views/onboarding_service.dart';
 
 class UpdateGiftPreferenceScreen extends StatefulWidget {
   const UpdateGiftPreferenceScreen({super.key});
 
   @override
-  State<UpdateGiftPreferenceScreen> createState() => _UpdateGiftPreferenceScreenState();
+  State<UpdateGiftPreferenceScreen> createState() =>
+      _UpdateGiftPreferenceScreenState();
 }
 
-class _UpdateGiftPreferenceScreenState extends State<UpdateGiftPreferenceScreen> {
+class _UpdateGiftPreferenceScreenState
+    extends State<UpdateGiftPreferenceScreen> {
   TextEditingController pinController = TextEditingController();
   List<String> preferences = [
     "Experiences",
@@ -38,7 +39,6 @@ class _UpdateGiftPreferenceScreenState extends State<UpdateGiftPreferenceScreen>
 
   @override
   Widget build(BuildContext context) {
-
     return LightStatusBar(
       child: Scaffold(
         appBar: AppBar(
@@ -76,34 +76,34 @@ class _UpdateGiftPreferenceScreenState extends State<UpdateGiftPreferenceScreen>
                   children: preferences
                       .map(
                         (item) => MyChip(
-                      label: item,
-                      isSelected: selectedPreferences.contains(item),
-                      onChanged: (selected) {
-                        setState(() {
-                          if (selected) {
-                            if (selectedPreferences.length < 5) {
-                              selectedPreferences.add(item);
-                            } else {
-                              // Optional: Show a toast or alert to limit 5
-                              context.flushBarErrorMessage(
-                                message:
-                                'You can select up to 5 interests only.',
-                              );
-                            }
-                          } else {
-                            selectedPreferences.remove(item);
-                          }
-                        });
-                      },
-                    ),
-                  )
+                          label: item,
+                          isSelected: selectedPreferences.contains(item),
+                          onChanged: (selected) {
+                            setState(() {
+                              if (selected) {
+                                if (selectedPreferences.length < 5) {
+                                  selectedPreferences.add(item);
+                                } else {
+                                  // Optional: Show a toast or alert to limit 5
+                                  context.flushBarErrorMessage(
+                                    message:
+                                        'You can select up to 5 interests only.',
+                                  );
+                                }
+                              } else {
+                                selectedPreferences.remove(item);
+                              }
+                            });
+                          },
+                        ),
+                      )
                       .toList(),
                 ),
                 const Spacer(),
                 MyButton(
                   label: context.l10n.interests_update,
                   onPressed: () {
-                    OnboardingService.goToStep3(context);
+                    // OnboardingService.goToStep3(context);
                   },
                 ),
                 SizedBox(height: 30.h),

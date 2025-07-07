@@ -13,8 +13,8 @@ abstract class ThemeFactory {
   static ThemeData lightThemeData() => ThemeData.light().copyWith(
         extensions: [colorSchemeLight, createTypography(colorSchemeLight)],
         scaffoldBackgroundColor: colorSchemeLight.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
+        appBarTheme: AppBarTheme(
+          backgroundColor: colorSchemeLight.white,
           elevation: 0,
           scrolledUnderElevation: 0,
         ),

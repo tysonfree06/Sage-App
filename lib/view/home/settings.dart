@@ -5,6 +5,7 @@ import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/view/home/widgets/settings_tile.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -73,37 +74,37 @@ class _SettingScreenState extends State<SettingScreen> {
               SettingTile(
                 icon: Assets.icons.edit.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_edit_profile,
-                //onTap: () => SettingService.goToEditProfileScreen(context),
+                onTap: () => SettingService.goToEditProfileScreen(context),
               ),
               SizedBox(height: 10.h),
               SettingTile(
                 icon: Assets.icons.interest.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_update_interests,
-                //onTap: () => SettingService.goToChangePasswordScreen(context),
+                onTap: () => SettingService.goToUpdateInterestScreen(context),
               ),
               SizedBox(height: 10.h),
               SettingTile(
                 icon: Assets.icons.gift.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_update_gifts_preferences,
-                //onTap: () => SettingService.goToEditProfileScreen(context),
+                onTap: () => SettingService.goToUpdatePrefScreen(context),
               ),
               SizedBox(height: 10.h),
               SettingTile(
                 icon: Assets.icons.lock.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_change_password,
-                //onTap: () => SettingService.goToEditProfileScreen(context),
+                onTap: () => SettingService.goToChangePasswordScreen(context),
               ),
               SizedBox(height: 10.h),
               SettingTile(
                 icon: Assets.icons.subscription.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_subscription,
-                //onTap: () => SettingService.goToEditProfileScreen(context),
+                onTap: () => SettingService.goToNoSubscriptionScreen(context),
               ),
               SizedBox(height: 10.h),
               SettingTile(
                 icon: Assets.icons.delete.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_remove_partner,
-                //onTap: () => SettingService.goToEditProfileScreen(context),
+                onTap: () => SettingService.showRemovePartnerDialog(context),
               ),
               SizedBox(height: 20.h),
               const Divider(),
@@ -117,7 +118,7 @@ class _SettingScreenState extends State<SettingScreen> {
               SettingTile(
                 icon: Assets.icons.contact.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_contact_us,
-                //onTap: () => SettingService.goToEditProfileScreen(context),
+                onTap: () => SettingService.goToContactUsScreen(context),
               ),
               SizedBox(height: 10.h),
               SettingTile(
@@ -138,7 +139,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 icon: Assets.icons.deleteRed.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_delete_account,
                 textColor: context.colors.red,
-                //onTap: () => SettingService.showDeleteAccountDialog(context),
+                onTap: () => SettingService.showDeleteAccountDialog(context),
               ),
               SizedBox(height: 43.h),
               MyButton(

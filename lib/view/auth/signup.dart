@@ -31,6 +31,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final TextEditingController inviteCodeController = TextEditingController();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
 
   final ValueNotifier<bool> isFormFilled = ValueNotifier(false);
   bool isLoading = false;
@@ -71,6 +73,9 @@ class _SignupScreenState extends State<SignupScreen> {
     _obscurePassword.dispose();
     _obscureConfirmPassword.dispose();
     isFormFilled.dispose();
+
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
@@ -86,7 +91,9 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return AuthScaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -186,32 +193,30 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   SizedBox(height: 10.h),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _obscurePassword,
-                    builder: (_, obscure, __) {
-                      return MyFormTextField(
-                        controller: passwordController,
-                        hint: context.l10n.lets_password_hint,
-                        obscureText: obscure,
-                        suffixIcon: GestureDetector(
-                          onTap: () => _obscurePassword.value = !obscure,
-                          child: obscure
-                              ? Assets.icons.visibilityOff.svg()
-                              : Assets.icons.visibilityOn.svg(),
-                        ),
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.visiblePassword,
-                        textCapitalization: TextCapitalization.none,
-                        readOnly: isLoading,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return context.l10n.error_password_required;
-                          } else if (!value.lessSecurePasswordValidator()) {
-                            return context.l10n.error_password_strength;
-                          }
-                          return null;
-                        },
-                      );
+                  MyFormTextField(
+                    focusNode: _passwordFocusNode,
+                    controller: passwordController,
+                    hint: context.l10n.lets_password_hint,
+                    obscureText: _obscurePassword.value,
+                    suffixIcon: GestureDetector(
+                      onTap: () => setState(
+                        () => _obscurePassword.value = !_obscurePassword.value,
+                      ),
+                      child: _obscurePassword.value
+                          ? Assets.icons.visibilityOff.svg()
+                          : Assets.icons.visibilityOn.svg(),
+                    ),
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.visiblePassword,
+                    textCapitalization: TextCapitalization.none,
+                    readOnly: isLoading,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return context.l10n.error_password_required;
+                      } else if (!value.lessSecurePasswordValidator()) {
+                        return context.l10n.error_password_strength;
+                      }
+                      return null;
                     },
                   ),
                   SizedBox(height: 15.h),
@@ -226,31 +231,29 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   SizedBox(height: 10.h),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _obscureConfirmPassword,
-                    builder: (_, obscure, __) {
-                      return MyFormTextField(
-                        controller: confirmPasswordController,
-                        hint: context.l10n.lets_password_hint,
-                        obscureText: obscure,
-                        suffixIcon: GestureDetector(
-                          onTap: () => _obscureConfirmPassword.value = !obscure,
-                          child: obscure
-                              ? Assets.icons.visibilityOff.svg()
-                              : Assets.icons.visibilityOn.svg(),
-                        ),
-                        keyboardType: TextInputType.visiblePassword,
-                        textCapitalization: TextCapitalization.none,
-                        readOnly: isLoading,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return context.l10n.error_confirm_password_required;
-                          } else if (value != passwordController.text) {
-                            return context.l10n.error_confirm_password_mismatch;
-                          }
-                          return null;
-                        },
-                      );
+                  MyFormTextField(
+                    controller: confirmPasswordController,
+                    hint: context.l10n.lets_password_hint,
+                    obscureText: _obscureConfirmPassword.value,
+                    suffixIcon: GestureDetector(
+                      onTap: () => setState(
+                        () => _obscureConfirmPassword.value =
+                            !_obscureConfirmPassword.value,
+                      ),
+                      child: _obscureConfirmPassword.value
+                          ? Assets.icons.visibilityOff.svg()
+                          : Assets.icons.visibilityOn.svg(),
+                    ),
+                    keyboardType: TextInputType.visiblePassword,
+                    textCapitalization: TextCapitalization.none,
+                    readOnly: isLoading,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return context.l10n.error_confirm_password_required;
+                      } else if (value != passwordController.text) {
+                        return context.l10n.error_confirm_password_mismatch;
+                      }
+                      return null;
                     },
                   ),
                   SizedBox(height: 15.h),
@@ -363,8 +366,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                   name: nameController.text.trim(),
                                   email: emailController.text.trim(),
                                   password: passwordController.text.trim(),
-                                  confirmPassword:
-                                      confirmPasswordController.text.trim(),
                                   inviteCode: inviteCodeController.text.trim(),
                                 )
                                     .then(

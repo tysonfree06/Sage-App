@@ -4,82 +4,110 @@ import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_chip.dart';
 import 'package:sage/app/components/status_bar_style.dart';
-import 'package:sage/app/components/step_progress_bar.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
-import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/services/views/onboarding_service.dart';
 
 class Step2Screen extends StatefulWidget {
-  const Step2Screen({super.key});
+  const Step2Screen({
+    Key? key,
+    required this.onNext,
+    this.initialSelectedInterests = const {},
+  }) : super(key: key);
+
+  final Set<String> initialSelectedInterests;
+  final void Function(Set<String> selectedInterests) onNext;
 
   @override
   State<Step2Screen> createState() => _Step2ScreenState();
 }
 
 class _Step2ScreenState extends State<Step2Screen> {
-  TextEditingController pinController = TextEditingController();
-  List<String> allInterests = [
-      "Fitness",
-      "Science and Math",
-      "Outdoors",
-      "Travel",
-      "Wellness",
-      "Food",
-      "Games",
-      "Tech",
-      "Home",
-      "Art",
-      "Learning",
-      "Entertainment",
-      "Community",
-      "Fashion",
-      "Shopping",
-      "Movies",
-      "Sports",
-      "Movies",
-      "Parenting",
-      "Spirituality and Religion",
-      "Music",
-      "Finances",
-      "Animals",
-      "Dancing",
-      "History",
-      "Photography",
-    ];
+  // local copy of the prop, so we don't mutate widget.initialSelectedInterests
+  late Set<String> _selectedInterests;
 
-  Set<String> selectedInterests = {};
+  final List<String> _allInterests = [
+    'Fitness',
+    'Science and Math',
+    'Outdoors',
+    'Travel',
+    'Wellness',
+    'Food',
+    'Games',
+    'Tech',
+    'Home',
+    'Art',
+    'Learning',
+    'Entertainment',
+    'Community',
+    'Fashion',
+    'Shopping',
+    'Movies',
+    'Sports',
+    'Parenting',
+    'Spirituality and Religion',
+    'Music',
+    'Finances',
+    'Animals',
+    'Dancing',
+    'History',
+    'Photography',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // make a mutable copy
+    _selectedInterests = Set.from(widget.initialSelectedInterests);
+  }
+
+  // only allow Next when exactly 5 interests are chosen
+  bool get _canProceed => _selectedInterests.length == 5;
+
+  void _onChipToggled(String item, bool selected) {
+    setState(() {
+      if (selected) {
+        if (_selectedInterests.length < 5) {
+          _selectedInterests.add(item);
+        } else {
+          context.flushBarErrorMessage(
+            message: context.l10n.onboarding_step2_limit_5_interests,
+          );
+        }
+      } else {
+        _selectedInterests.remove(item);
+      }
+    });
+  }
+
+  void _submit() {
+    if (_canProceed) {
+      widget.onNext(_selectedInterests);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return LightStatusBar(
       child: Scaffold(
-        appBar: AppBar(
-          leading: BackButton(color: context.colors.mainGreenLight),
-          centerTitle: true,
-          title: SizedBox(
-            width: context.mediaQueryWidth / 2,
-            child: const StepProgressBar(totalSteps: 4, currentStep: 1),
-          ),
-        ),
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
             child: Column(
               children: [
+                SizedBox(height: 24.h),
                 Center(
                   child: ColoredRichText(
                     first: context.l10n.onboarding_step2,
                     second: context.l10n.onboarding_steps_4,
-                  
                     firstFontSize: 15.sp,
-                      secondFontSize: 15.sp,
-                      firstFontWeight: FontWeight.w600,
-                      secondFontWeight: FontWeight.w600,
+                    secondFontSize: 15.sp,
+                    firstFontWeight: FontWeight.w600,
+                    secondFontWeight: FontWeight.w600,
                   ),
                 ),
+                SizedBox(height: 8.h),
                 Center(
                   child: Text(
                     context.l10n.onboarding_step2_select_your_top_5_interests,
@@ -91,42 +119,28 @@ class _Step2ScreenState extends State<Step2Screen> {
                   ),
                 ),
                 SizedBox(height: 24.h),
+
+                // Chips grid
                 Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 10.w,
                   runSpacing: 10.h,
-                  children: allInterests
-                      .map(
-                        (item) => MyChip(
-                          label: item,
-                          isSelected: selectedInterests.contains(item),
-                          onChanged: (selected) {
-                            setState(() {
-                              if (selected) {
-                                if (selectedInterests.length < 5) {
-                                  selectedInterests.add(item);
-                                } else {
-                                  // Optional: Show a toast or alert to limit 5
-                                  context.flushBarErrorMessage(
-                                    message:
-                                        'You can select up to 5 interests only.',
-                                  );
-                                }
-                              } else {
-                                selectedInterests.remove(item);
-                              }
-                            });
-                          },
-                        ),
-                      )
-                      .toList(),
+                  children: _allInterests.map((item) {
+                    return MyChip(
+                      label: item,
+                      isSelected: _selectedInterests.contains(item),
+                      onChanged: (isSelected) =>
+                          _onChipToggled(item, isSelected),
+                    );
+                  }).toList(),
                 ),
+
                 const Spacer(),
+
+                // Next button, disabled until exactly 5 are selected
                 MyButton(
                   label: context.l10n.onboarding_step2_next,
-                  onPressed: () {
-                    OnboardingService.goToStep3(context);
-                  },
+                  onPressed: _canProceed ? _submit : null,
                 ),
                 SizedBox(height: 30.h),
               ],

@@ -99,7 +99,6 @@ class SignupService {
     required String name,
     required String email,
     required String password,
-    required String confirmPassword,
     String? inviteCode,
   }) async {
     try {
@@ -107,7 +106,6 @@ class SignupService {
         'name': name,
         'email': email,
         'password': password,
-        'confirmPassword': confirmPassword,
         if (inviteCode?.isNotEmpty ?? false) 'inviteCode': inviteCode,
       };
 

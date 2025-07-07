@@ -24,6 +24,12 @@ class SubscriptionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyScaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: !showSkip
+            ? BackButton(
+                color: context.colors.mainGreenLight,
+              )
+            : null,
         actions: [
           if (showSkip)
             MyTextButton(

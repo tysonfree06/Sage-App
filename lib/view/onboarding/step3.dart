@@ -3,25 +3,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_chip.dart';
-import 'package:sage/app/components/status_bar_style.dart';
-import 'package:sage/app/components/step_progress_bar.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
-import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/services/views/onboarding_service.dart';
 
 class Step3Screen extends StatefulWidget {
-  const Step3Screen({super.key});
+  const Step3Screen({
+    Key? key,
+    required this.onNext,
+    this.initialSelectedPrefs = const {},
+  }) : super(key: key);
+
+  final void Function(Set<String>) onNext;
+  final Set<String> initialSelectedPrefs;
 
   @override
   State<Step3Screen> createState() => _Step3ScreenState();
 }
 
 class _Step3ScreenState extends State<Step3Screen> {
-  TextEditingController pinController = TextEditingController();
-  List<String> preferences = [
+  late Set<String> _selectedPrefs;
+
+  final List<String> _preferences = [
     "Experiences",
     "Tech & Gadgets",
     "Jewelry",
@@ -35,91 +39,96 @@ class _Step3ScreenState extends State<Step3Screen> {
     "Home & Decor",
     "Food & Gourmet",
     "Travel & Adventure",
-    "Event Tickets"
+    "Event Tickets",
   ];
-  Set<String> selectedPreferences = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPrefs = Set.from(widget.initialSelectedPrefs);
+  }
+
+  bool get _canProceed => _selectedPrefs.length == 5;
+
+  void _onChipToggled(String item, bool selected) {
+    setState(() {
+      if (selected) {
+        if (_selectedPrefs.length < 5) {
+          _selectedPrefs.add(item);
+        } else {
+          context.flushBarErrorMessage(
+            message: context.l10n.onboarding_step3_limit_5_preferences,
+          );
+        }
+      } else {
+        _selectedPrefs.remove(item);
+      }
+    });
+  }
+
+  void _submit() {
+    if (_canProceed) {
+      widget.onNext(_selectedPrefs);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    
-    return LightStatusBar(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: BackButton(color: context.colors.mainGreenLight),
-          centerTitle: true,
-          title: SizedBox(
-            width: context.mediaQueryWidth / 2,
-            child: const StepProgressBar(totalSteps: 4, currentStep: 2),
-          ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
-            child: Column(
-              children: [
-                Center(
-                  child: ColoredRichText(
-                    first: context.l10n.onboarding_step3,
-                    second: context.l10n.onboarding_steps_4,
-                   firstFontSize: 15.sp,
-                      secondFontSize: 15.sp,
-                      firstFontWeight: FontWeight.w600,
-                      secondFontWeight: FontWeight.w600,
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
+          child: Column(
+            children: [
+              SizedBox(height: 24.h),
+              Center(
+                child: ColoredRichText(
+                  first: context.l10n.onboarding_step3,
+                  second: context.l10n.onboarding_steps_4,
+                  firstFontSize: 15.sp,
+                  secondFontSize: 15.sp,
+                  firstFontWeight: FontWeight.w600,
+                  secondFontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Center(
+                child: Text(
+                  context
+                      .l10n.onboarding_step3_select_your_top_5_gift_preferences,
+                  style: context.typography.title.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 24.sp,
+                    color: context.colors.textDarkGreen,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                Center(
-                  child: Text(
-                    context.l10n.onboarding_step3_select_your_top_5_gift_preferences,
-                    style: context.typography.title.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 24.sp,
-                      color: context.colors.textDarkGreen,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(height: 24.h),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 10.w,
-                  runSpacing: 10.h,
-                  children: preferences
-                      .map(
-                        (item) => MyChip(
-                      label: item,
-                      isSelected: selectedPreferences.contains(item),
-                      onChanged: (selected) {
-                        setState(() {
-                          if (selected) {
-                            if (selectedPreferences.length < 5) {
-                              selectedPreferences.add(item);
-                            } else {
-                              // Optional: Show a toast or alert to limit 5
-                              context.flushBarErrorMessage(
-                                message:
-                                'You can select up to 5 preferences only.',
-                              );
-                            }
-                          } else {
-                            selectedPreferences.remove(item);
-                          }
-                        });
-                      },
-                    ),
-                  )
-                      .toList(),
-                ),
+              ),
+              SizedBox(height: 24.h),
 
-                const Spacer(),
-                MyButton(
-                  label: context.l10n.onboarding_step3_next,
-                  onPressed: () {
-                    OnboardingService.goToStep4(context);
-                  },
-                ),
-                SizedBox(height: 30.h),
-              ],
-            ),
+              // Preference chips
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 10.w,
+                runSpacing: 10.h,
+                children: _preferences.map((item) {
+                  return MyChip(
+                    label: item,
+                    isSelected: _selectedPrefs.contains(item),
+                    onChanged: (sel) => _onChipToggled(item, sel),
+                  );
+                }).toList(),
+              ),
+
+              const Spacer(),
+
+              // Next button: enabled only when exactly 5 prefs picked
+              MyButton(
+                label: context.l10n.onboarding_step3_next,
+                onPressed: _canProceed ? _submit : null,
+              ),
+              SizedBox(height: 30.h),
+            ],
           ),
         ),
       ),

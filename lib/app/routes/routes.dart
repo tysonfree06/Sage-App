@@ -6,7 +6,6 @@ import 'package:sage/view/views.dart';
 class Routes {
   static String initialRoute() => RoutesName.splash;
 
-  // Map of all route names to their corresponding widgets builders
   static final Map<String, Widget Function(BuildContext)> _routes = {
     RoutesName.splash: (_) => const SplashScreen(),
     RoutesName.welcome: (_) => const WelcomeScreen(),
@@ -15,11 +14,7 @@ class Routes {
     RoutesName.forgotPassword: (_) => const ForgotPassword(),
     RoutesName.home: (_) => const HomeScreen(),
     RoutesName.onBoarding: (_) => const OnBoardingScreen(),
-    RoutesName.step1: (_) => const Step1Screen(),
-    RoutesName.step2: (_) => const Step2Screen(),
-    RoutesName.step3: (_) => const Step3Screen(),
-    RoutesName.step4: (_) => const Step4Screen(),
-    RoutesName.analyzeData: (_) => const AnalyzeDataScreen(),
+    RoutesName.onBoardingFlow: (_) => const OnboardingFlowScreen(),
     RoutesName.navigation: (_) => const NavigationScreen(),
     RoutesName.editProfile: (_) => const EditProfileScreen(),
     RoutesName.changePassword: (_) => const ChangePasswordScreen(),
@@ -27,6 +22,7 @@ class Routes {
     RoutesName.updateGiftPreference: (_) => const UpdateGiftPreferenceScreen(),
     RoutesName.invitation: (_) => const InvitationScreen(),
     RoutesName.redeemPoint: (_) => const RedeemPointsScreen(),
+    RoutesName.contactUs: (_) => const ContactUsScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -38,6 +34,12 @@ class Routes {
           settings: settings,
         );
 
+      case RoutesName.analyzeData:
+        final payload = settings.arguments! as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => AnalyzeDataScreen(payload: payload),
+          settings: settings,
+        );
       case RoutesName.offerDetail:
         final offer = settings.arguments! as RedeemOfferDetails;
         return MaterialPageRoute(

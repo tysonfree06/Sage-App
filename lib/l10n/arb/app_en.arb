@@ -168,6 +168,9 @@
   "onboarding_step4_add_partner_with_code": "Add partner with the code that your partner has shared with you.",
   "onboarding_step4_connect": "Connect",
   "onboarding_step4_will_add_later": "Will Add Later",
+  "onboarding_error_complete_all_fields":"Please complete the form",
+  "onboarding_step2_limit_5_interests":"You can only select up to 5 interests only",
+  "onboarding_step3_limit_5_preferences":"You can only select up to 5 preferences only",
 
   "@_SETTINGS_SCREEN": {},
   "settings_title":"Settings & More",
@@ -296,5 +299,11 @@
   "refer_to_friends_subtitle":"Earn extra points by inviting friends to join. When you get 4 referrals you'll earn an extra 500!",
   "refer_terms_disclaimers":"Referral Terms & Disclaimers",
   "refer_terms_disclaimers_1":"Redeem to access past challenges for more practice. Just by practicing healthy relationship habits you’ll earn points for discounts and prizes!",
-  "refer_terms_disclaimers_2":"Refels & Prizes for Healthy Habits: Just by practicing healthy relationship habits you’ll earn points for discounts and prizes!"
+  "refer_terms_disclaimers_2":"Refels & Prizes for Healthy Habits: Just by practicing healthy relationship habits you’ll earn points for discounts and prizes!",
+  
+  "@_CONTEXT_US_SCREEN": {},
+  "contact_us_title":"Contact Us",
+  "contact_us_description":"If you wanted to ask anything and need help about anything you can contact us at",
+  "contact_us_email":"sage@contactteam.com"
+
 }

@@ -45,7 +45,7 @@ class OnBoardingScreen extends StatelessWidget {
                   MyButton(
                     label: context.l10n.onboarding_start,
                     onPressed: () {
-                      OnboardingService.goToStep1(context);
+                      OnboardingService.goToOnBoarding(context);
                     },
                   ),
                   // SizedBox(height: 12.h),

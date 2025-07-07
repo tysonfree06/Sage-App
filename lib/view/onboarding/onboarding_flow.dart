@@ -1,0 +1,186 @@
+import 'package:flutter/material.dart';
+import 'package:sage/app/components/step_progress_bar.dart';
+import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/general_extensions.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/onboarding_service.dart';
+import 'package:sage/view/views.dart';
+
+class OnboardingFlowScreen extends StatefulWidget {
+  const OnboardingFlowScreen({super.key});
+
+  @override
+  _OnboardingFlowScreenState createState() => _OnboardingFlowScreenState();
+}
+
+class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
+  final _pageController = PageController();
+  final sessionController = SessionController();
+  int _currentStep = 0;
+
+  // Step 1
+  String? loveLanguage;
+  String? apologyLanguage;
+  String? communicationStyle;
+  String? budgetLevel;
+  String? relationshipStatus;
+  String? anniversaryDate;
+  String? dateOfBirth;
+  String? city;
+  String? stateName;
+  String? country;
+
+  // Step 2 & 3
+  Set<String> interests = {};
+  Set<String> giftPreferences = {};
+
+  // Step 4
+  String? partnerId;
+
+  void nextStep() {
+    if (_currentStep < 3) {
+      setState(() => _currentStep++);
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      _submitAllData();
+    }
+  }
+
+  void previousStep() {
+    if (_currentStep > 0) {
+      setState(() => _currentStep--);
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  void _submitAllData() {
+    final payload = {
+      'userId': sessionController.user?.id ?? '',
+      'name': sessionController.user?.name ?? '',
+      'image': sessionController.user?.image ?? '',
+      'loveLanguage': loveLanguage,
+      'apologyLanguage': apologyLanguage,
+      'communicationStyle': communicationStyle,
+      'budgetLevel': budgetLevel,
+      'relationshipStatus': relationshipStatus,
+      'anniversaryDate': anniversaryDate,
+      'dateOfBirth': dateOfBirth,
+      'city': city,
+      'state': stateName,
+      'country': country,
+      'partnerId': partnerId,
+      'interests': interests.toList(),
+      'giftPreferences': giftPreferences.toList(),
+    };
+    //FIXME: This is not a part of onboarding so exit the flow and push this screen to stack (it will also remove previous items in stack)
+    OnboardingService.goToDataAnalysis(
+      context,
+      payload: payload,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: _currentStep == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _currentStep > 0) previousStep();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: context.colors.white,
+          leading: BackButton(
+            onPressed: previousStep,
+            color: context.colors.mainGreenLight,
+          ),
+          centerTitle: true,
+          title: SizedBox(
+            width: context.mediaQueryWidth / 2,
+            child: StepProgressBar(
+              totalSteps: 4,
+              currentStep: _currentStep,
+            ),
+          ),
+        ),
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            // ─── STEP 1 ───
+            Step1Screen(
+              initialLoveLanguage: loveLanguage,
+              initialApologyLanguage: apologyLanguage,
+              initialCommunicationStyle: communicationStyle,
+              initialBudgetLevel: budgetLevel,
+              initialRelationshipStatus: relationshipStatus,
+              initialAnniversaryDate: anniversaryDate,
+              initialDateOfBirth: dateOfBirth,
+              initialCity: city,
+              initialState: stateName,
+              initialCountry: country,
+              onNext: (
+                String loveLang,
+                String apologyLang,
+                String commStyle,
+                String budget,
+                String relStatus,
+                String annivDate,
+                String dob,
+                String cityVal,
+                String stateVal,
+                String countryVal,
+              ) {
+                loveLanguage = loveLang;
+                apologyLanguage = apologyLang;
+                communicationStyle = commStyle;
+                budgetLevel = budget;
+                relationshipStatus = relStatus;
+                anniversaryDate = annivDate;
+                dateOfBirth = dob;
+                city = cityVal;
+                stateName = stateVal;
+                country = countryVal;
+                nextStep();
+              },
+            ),
+
+            // ─── STEP 2 ───
+            Step2Screen(
+              initialSelectedInterests: interests,
+              onNext: (Set<String> selectedInterests) {
+                interests = selectedInterests;
+                nextStep();
+              },
+            ),
+
+            // ─── STEP 3 ───
+            Step3Screen(
+              initialSelectedPrefs: giftPreferences,
+              onNext: (Set<String> selectedPrefs) {
+                giftPreferences = selectedPrefs;
+                nextStep();
+              },
+            ),
+
+            // ─── STEP 4 ───
+            Step4Screen(
+              initialPartnerId: partnerId,
+              onNext: (String? selectedPartnerId) {
+                partnerId = selectedPartnerId;
+                nextStep();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

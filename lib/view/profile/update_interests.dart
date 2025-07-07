@@ -7,7 +7,6 @@ import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/services/views/onboarding_service.dart';
 
 class UpdateInterestsScreen extends StatefulWidget {
   const UpdateInterestsScreen({super.key});
@@ -34,7 +33,6 @@ class _UpdateInterestsScreenState extends State<UpdateInterestsScreen> {
     "Community",
     "Fashion",
     "Shopping",
-    "Movies",
     "Sports",
     "Movies",
     "Parenting",
@@ -115,7 +113,7 @@ class _UpdateInterestsScreenState extends State<UpdateInterestsScreen> {
                 MyButton(
                   label: context.l10n.interests_update,
                   onPressed: () {
-                    OnboardingService.goToStep3(context);
+                    // OnboardingService.goToStep3(context);
                   },
                 ),
                 SizedBox(height: 30.h),
