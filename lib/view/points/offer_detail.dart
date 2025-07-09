@@ -22,7 +22,14 @@ class OfferDetailScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: context.colors.white,
         leading: const BackButton(),
-        title: Text(context.l10n.redeem_topbar_title),
+        title: Text(
+          context.l10n.redeem_topbar_title,
+          style: context.typography.title.copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: 20.sp,
+            color: context.colors.textDarkGreen,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -166,66 +173,67 @@ class OfferDetailScreen extends StatelessWidget {
           right: 16.w,
           bottom: MediaQuery.of(context).padding.bottom + 16.h,
         ),
-        child: (offer.endDate.isBefore(DateTime.now()) || offer.redemptionDate != null)
+        child: (offer.endDate.isBefore(DateTime.now()) ||
+                offer.redemptionDate != null)
             ? Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: context.colors.chipBg,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    context.l10n.redeem_date,
-                    style: context.typography.title.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.textDarkGreen.withAlpha(153),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: context.colors.chipBg,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          context.l10n.redeem_date,
+                          style: context.typography.title.copyWith(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: context.colors.textDarkGreen.withAlpha(153),
+                          ),
+                        ),
+                        Text(
+                          offer.redemptionDate != null
+                              ? dateFormat.format(offer.redemptionDate!)
+                              : '-',
+                          style: context.typography.title.copyWith(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w500,
+                            color: context.colors.textDarkGreen,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    offer.redemptionDate != null
-                        ? dateFormat.format(offer.redemptionDate!)
-                        : '-',
-                    style: context.typography.title.copyWith(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w500,
-                      color: context.colors.textDarkGreen,
-                    ),
-                  ),
-
                 ],
-              ),
-            ),
-          ],
-        )
+              )
             : Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            MyButton(
-              label: context.l10n.redeem_btn_title,
-              onPressed: () {
-                showDialog<void>(
-                  context: context,
-                  builder: (_) => MyDialog(
-                    image: Assets.images.dialog.infoBlue,
-                    titleFirst: context.l10n.dialog_redeem,
-                    titleSecond: context.l10n.redeem_dialog_second_title,
-                    subtitle: context.l10n.dialog_redeem_offer_subtitle,
-                    confirmLabel: context.l10n.redeem_dialog_yes_sure,
-                    onConfirm: () {
-                      // do stuff
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  MyButton(
+                    label: context.l10n.redeem_btn_title,
+                    onPressed: () {
+                      showDialog<void>(
+                        context: context,
+                        builder: (_) => MyDialog(
+                          image: Assets.images.dialog.infoBlue,
+                          titleFirst: context.l10n.dialog_redeem,
+                          titleSecond: context.l10n.redeem_dialog_second_title,
+                          subtitle: context.l10n.dialog_redeem_offer_subtitle,
+                          confirmLabel: context.l10n.redeem_dialog_yes_sure,
+                          onConfirm: () {
+                            // do stuff
+                          },
+                        ),
+                      );
                     },
                   ),
-                );
-              },
-            ),
-          ],
-        ),
+                ],
+              ),
       ),
     );
   }

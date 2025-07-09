@@ -14,7 +14,14 @@ class InvitationScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: context.colors.white,
         leading: const BackButton(),
-        title: Text(context.l10n.refer_topbar_title),
+        title: Text(
+          context.l10n.refer_topbar_title,
+          style: context.typography.title.copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: 20.sp,
+            color: context.colors.textDarkGreen,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -115,7 +122,8 @@ class InvitationScreen extends StatelessWidget {
                   Expanded(
                     child: Container(
                       height: 102.h,
-                      padding: EdgeInsets.symmetric(vertical: 9.h, horizontal: 12.w),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 9.h, horizontal: 12.w),
                       decoration: BoxDecoration(
                         color: context.colors.mainGreenLight,
                         borderRadius: BorderRadius.circular(12),
@@ -228,6 +236,7 @@ class InvitationScreen extends StatelessWidget {
 
 class _RewardLeaf extends StatelessWidget {
   const _RewardLeaf({required this.points});
+
   final String points;
 
   @override
@@ -256,6 +265,7 @@ class _RewardLeaf extends StatelessWidget {
 
 class _TermRow extends StatelessWidget {
   const _TermRow({required this.text});
+
   final String text;
 
   @override
@@ -274,8 +284,7 @@ class _TermRow extends StatelessWidget {
         ),
         SizedBox(width: 8.w),
         Expanded(
-          child:
-          Text(
+          child: Text(
             text,
             style: context.typography.title.copyWith(
               fontSize: 13.sp,

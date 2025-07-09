@@ -153,7 +153,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
 
   List<RedeemOfferDetails> getFilteredAvailableOffers() {
     return giftCards
-        .where((giftCard) => giftCard.redemptionDate == null)
+        .where((giftCard) => giftCard.redemptionDate == null && giftCard.endDate.isAfter(DateTime.now()))
         .toList();
   }
 
@@ -192,7 +192,14 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: context.colors.white,
-        title: Text(context.l10n.redeem_point_topbar_title),
+        title: Text(
+          context.l10n.redeem_point_topbar_title,
+          style: context.typography.title.copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: 20.sp,
+            color: context.colors.textDarkGreen,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Column(
