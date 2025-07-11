@@ -203,53 +203,50 @@ class NetworkApiService implements BaseApiServices {
     required String filePath,
     required String fileFieldName,
   }) async {
+    // 1. Ensure file exists
+    final file = File(filePath);
+    if (!await file.exists()) {
+      throw FetchDataException('File not found at path: $filePath');
+    }
+
+    // 2. Build URI with any query params
+    final uri = Uri.parse(url);
+
+    // 3. Create and populate request
+    final request = http.MultipartRequest('POST', uri)
+      ..files.add(await http.MultipartFile.fromPath(fileFieldName, filePath))
+      ..headers.addAll(await _getHeaders(url)) // auth, etc
+      ..headers.remove('Content-Type'); // let MultipartRequest set it
+
+    // 5. Log full details (including size, name)
+    final stat = await file.stat();
+    LogManager.logRequest('MULTIPART', uri.toString(), {
+      // 'fileName': 'Image', //basename(filePath),
+      'fileSize': stat.size,
+      'fieldName': fileFieldName,
+    });
+
     try {
-      // Create multipart request
-      final request = http.MultipartRequest('POST', Uri.parse(url));
+      // 6. Send + read with a single timeout
+      final streamed = await request.send();
+      final responseStr = await streamed.stream
+          .transform(utf8.decoder)
+          .join()
+          .timeout(const Duration(seconds: 45));
 
-      // Add file to upload
-      final file = await http.MultipartFile.fromPath(fileFieldName, filePath);
-      request.files.add(file);
+      LogManager.logResponse(
+        streamed.statusCode.toString(),
+        responseStr,
+      );
 
-      // Get headers (including auth if needed)
-      final defaultHeaders = await _getHeaders(url);
-
-      // Merge default headers with any additional headers
-      request.headers.addAll({
-        ...defaultHeaders,
-      });
-
-      // Remove content-type from headers as it will be set automatically
-      request.headers.remove('Content-Type');
-
-      // Send the request
-      LogManager.logRequest('MULTIPART', url, {
-        'filePath': filePath,
-        'fileFieldName': fileFieldName,
-      });
-
-      final response =
-          await request.send().timeout(const Duration(seconds: 30));
-
-      // Get the response
-      final responseStr = await response.stream.bytesToString();
-      LogManager.logResponse(response.statusCode.toString(), responseStr);
-
-      // Convert to regular http.Response for our existing returnResponse method
+      // 7. Parse & handle errors
       return returnResponse(
-        http.Response(
-          responseStr,
-          response.statusCode,
-          request: response.request,
-        ),
+        http.Response(responseStr, streamed.statusCode),
       );
-    } catch (e, stackTrace) {
-      _handleError(
-        e,
-        message: 'Multipart upload failed',
-        stackTrace: stackTrace,
-      );
-      rethrow;
+    } catch (e, st) {
+      _handleError(e, message: 'Multipart upload failed', stackTrace: st);
+      // no rethrow needed
+      rethrow; // (unreachable, but keeps the analyzer happy)
     }
   }
 }

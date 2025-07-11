@@ -3,7 +3,7 @@ import 'package:sage/app/network/base_api_services.dart';
 import 'package:sage/app/network/network_api_services.dart';
 import 'package:sage/app/utils/app_url.dart';
 
-class ImageRepository {
+class ImageUploadRepository {
   final BaseApiServices _apiServices = NetworkApiService();
 
   Future<String?> uploadImage(String imagePath) async {

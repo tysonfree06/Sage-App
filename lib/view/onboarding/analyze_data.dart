@@ -31,9 +31,6 @@ class _AnalyzeDataScreenState extends State<AnalyzeDataScreen> {
       appBar: AppBar(
         backgroundColor: context.colors.mainGreenDark,
         toolbarHeight: 0,
-        // leading: BackButton(
-        //   color: context.colors.mainGreenLight,
-        // ),
       ),
       body: Padding(
         padding: EdgeInsets.all(AppDimensions.medium),

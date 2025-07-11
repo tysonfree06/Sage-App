@@ -22,6 +22,7 @@ class UserModel {
     required this.image,
     required this.loveLanguage,
     required this.relationshipStatus,
+    this.partnerId,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -45,6 +46,7 @@ class UserModel {
   final String image;
   final String loveLanguage;
   final String relationshipStatus;
+  final String? partnerId;
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
@@ -66,6 +68,7 @@ class UserModel {
     String? image,
     String? loveLanguage,
     String? relationshipStatus,
+    String? partnerId,
   }) {
     return UserModel(
       location: location ?? this.location,
@@ -85,6 +88,7 @@ class UserModel {
       image: image ?? this.image,
       loveLanguage: loveLanguage ?? this.loveLanguage,
       relationshipStatus: relationshipStatus ?? this.relationshipStatus,
+      partnerId: partnerId ?? this.partnerId,
     );
   }
 }

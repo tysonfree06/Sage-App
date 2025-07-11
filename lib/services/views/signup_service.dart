@@ -3,7 +3,7 @@ import 'package:sage/app/components/my_bottom_sheet.dart';
 import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
-import 'package:sage/repository/auth/auth_repo.dart';
+import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/view/auth/widget/account_verification_sheet.dart';
 
 class SignupService {

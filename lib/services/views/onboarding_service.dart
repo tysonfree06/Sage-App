@@ -4,46 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
-import 'package:sage/repository/auth/auth_repo.dart';
+import 'package:sage/repository/user_repo.dart';
 
 class OnboardingService {
-  final AuthRepository _authRepository = AuthRepository();
-
-  // static void goToStep1(
-  //   BuildContext context,
-  // ) {
-  //   Navigator.pushNamed(
-  //     context,
-  //     RoutesName.step1,
-  //   );
-  // }
-
-  // static void goToStep2(
-  //   BuildContext context,
-  // ) {
-  //   Navigator.pushNamed(
-  //     context,
-  //     RoutesName.step2,
-  //   );
-  // }
-
-  // static void goToStep3(
-  //   BuildContext context,
-  // ) {
-  //   Navigator.pushNamed(
-  //     context,
-  //     RoutesName.step3,
-  //   );
-  // }
-
-  // static void goToStep4(
-  //   BuildContext context,
-  // ) {
-  //   Navigator.pushNamed(
-  //     context,
-  //     RoutesName.step4,
-  //   );
-  // }
+  final UserRepository _userRepository = UserRepository();
 
   static Future<void> goToOnBoarding(BuildContext context) async {
     await Navigator.pushNamed(
@@ -79,7 +43,7 @@ class OnboardingService {
     required Map<String, dynamic> payload,
   }) async {
     try {
-      await _authRepository.login(payload);
+      await _userRepository.updateProfile(payload);
 
       if (context.mounted) {
         context.flushBarSuccessMessage(message: 'Data Uploaded');
@@ -88,7 +52,7 @@ class OnboardingService {
           () => Navigator.pushNamedAndRemoveUntil(
             context,
             RoutesName.subscription,
-            arguments: true,
+            arguments: true, //Show Skip Button
             (route) => false,
           ),
         );
