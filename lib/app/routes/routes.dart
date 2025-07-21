@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
-import 'package:sage/model/redeem/radeem_model.dart';
+import 'package:sage/model/redeem/redeem_model.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.splash;
+  static String initialRoute() => RoutesName.navigation;
 
   static final Map<String, Widget Function(BuildContext)> _routes = {
     RoutesName.splash: (_) => const SplashScreen(),

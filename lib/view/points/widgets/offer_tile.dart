@@ -5,7 +5,7 @@ import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/model/redeem/radeem_model.dart';
+import 'package:sage/model/redeem/redeem_model.dart';
 import 'package:sage/services/views/redeem_points_service.dart';
 
 class OfferTile extends StatelessWidget {
