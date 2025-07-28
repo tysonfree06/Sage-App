@@ -7,9 +7,11 @@ import 'package:sage/model/user/user_model.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
 import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/splash_services.dart';
 
 class LoginService {
   final AuthRepository _authRepository = AuthRepository();
+  final SplashServices _splashServices = SplashServices();
 
   static void goToForgotPassword(BuildContext context) {
     Navigator.pushNamed(
@@ -44,17 +46,22 @@ class LoginService {
       'email': email,
       'password': password,
     };
-
+    if (context.mounted) await _splashServices.fetchPartner(context);
     try {
       final response = await _authRepository.login(data);
-
       final String token = response['token'] as String;
       final Map<String, dynamic> userData =
           response['user'] as Map<String, dynamic>;
-
       // Save session data
+      //save token
       await SessionController().saveToken(token);
-      SessionController().user = UserModel.fromJson(userData);
+      debugPrint('Token saved: ${SessionController().token}');
+
+      //save user
+      SessionController().user = UserModel.fromJson(
+        userData,
+      );
+      debugPrint('User saved: ${SessionController().user}');
 
       if (context.mounted) {
         context.flushBarSuccessMessage(message: 'Login successful');
@@ -62,12 +69,17 @@ class LoginService {
       }
 
       debugPrint('[LoginService] ✅ Login success for ${userData['email']}');
-    } catch (e) {
+    } catch (e, stackTrace) {
       // Developer logging
       if (e is AppException) {
         debugPrint('[LoginService] ❌ Login failed: ${e.debugMessage}');
       } else {
         debugPrint('[LoginService] ❌ Unexpected error: $e');
+
+        // Print first 15 lines of the stack trace
+        final lines = stackTrace.toString().split('\n');
+        final limitedStack = lines.take(15).join('\n');
+        debugPrint('[LoginService] 🔍 StackTrace:\n$limitedStack');
       }
 
       // Show user-friendly error

@@ -5,50 +5,66 @@ part 'user_model.g.dart';
 @JsonSerializable()
 class UserModel {
   UserModel({
-    required this.location,
+    this.location,
     required this.id,
     required this.name,
     required this.email,
-    required this.verified,
-    required this.interests,
-    required this.giftPreferences,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.anniversaryDate,
-    required this.apologyLanguage,
-    required this.budgetLevel,
-    required this.communicationStyle,
-    required this.dateOfBirth,
-    required this.image,
-    required this.loveLanguage,
-    required this.relationshipStatus,
+    this.verified,
+    this.interests,
+    this.giftPreferences,
+    this.createdAt,
+    this.updatedAt,
+    this.anniversaryDate,
+    this.apologyLanguage,
+    this.budgetLevel,
+    this.communicationStyle,
+    this.dateOfBirth,
+    this.partnerCode,
+    this.image,
+    this.loveLanguage,
+    this.relationshipStatus,
     this.partnerId,
+    this.subscriptionActive,
+    this.mineinvitationCode,
+    this.mineParterCode,
+    this.referrals,
+    this.points,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 
-  final Location location;
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+
+  final Location? location;
+
   @JsonKey(name: '_id')
-  final String id;
-  final String name;
+  String id;
+  String name;
   final String email;
-  final bool verified;
-  final List<String> interests;
-  final List<String> giftPreferences;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final DateTime anniversaryDate;
-  final String apologyLanguage;
-  final String budgetLevel;
-  final String communicationStyle;
-  final DateTime dateOfBirth;
-  final String image;
-  final String loveLanguage;
-  final String relationshipStatus;
+  final bool? verified;
+  final List<String>? interests;
+  final List<String>? giftPreferences;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final DateTime? anniversaryDate;
+  final String? apologyLanguage;
+  final String? budgetLevel;
+  final String? communicationStyle;
+  final DateTime? dateOfBirth;
+  final String? partnerCode;
+  final String? image;
+  final String? loveLanguage;
+  final String? relationshipStatus;
   final String? partnerId;
 
-  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+  // 🔽 New fields
+  @JsonKey(name: 'subscription')
+  final Subscription? subscriptionActive;
+  final String? mineinvitationCode;
+  final int? mineParterCode;
+  final List<dynamic>? referrals;
+  final int? points;
 
   UserModel copyWith({
     Location? location,
@@ -65,10 +81,16 @@ class UserModel {
     String? budgetLevel,
     String? communicationStyle,
     DateTime? dateOfBirth,
+    String? partnerCode,
     String? image,
     String? loveLanguage,
     String? relationshipStatus,
     String? partnerId,
+    Subscription? subscriptionActive,
+    String? mineinvitationCode,
+    int? mineParterCode,
+    List<dynamic>? referrals,
+    int? points,
   }) {
     return UserModel(
       location: location ?? this.location,
@@ -85,10 +107,16 @@ class UserModel {
       budgetLevel: budgetLevel ?? this.budgetLevel,
       communicationStyle: communicationStyle ?? this.communicationStyle,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      partnerCode: partnerCode ?? this.partnerCode,
       image: image ?? this.image,
       loveLanguage: loveLanguage ?? this.loveLanguage,
       relationshipStatus: relationshipStatus ?? this.relationshipStatus,
       partnerId: partnerId ?? this.partnerId,
+      subscriptionActive: subscriptionActive ?? this.subscriptionActive,
+      mineinvitationCode: mineinvitationCode ?? this.mineinvitationCode,
+      mineParterCode: mineParterCode ?? this.mineParterCode,
+      referrals: referrals ?? this.referrals,
+      points: points ?? this.points,
     );
   }
 }
@@ -96,18 +124,19 @@ class UserModel {
 @JsonSerializable()
 class Location {
   Location({
-    required this.city,
-    required this.state,
-    required this.country,
+    this.city,
+    this.state,
+    this.country,
   });
 
   factory Location.fromJson(Map<String, dynamic> json) =>
       _$LocationFromJson(json);
-  final String city;
-  final String state;
-  final String country;
 
   Map<String, dynamic> toJson() => _$LocationToJson(this);
+
+  final String? city;
+  final String? state;
+  final String? country;
 
   Location copyWith({
     String? city,
@@ -120,4 +149,16 @@ class Location {
       country: country ?? this.country,
     );
   }
+}
+
+@JsonSerializable()
+class Subscription {
+  Subscription({this.active});
+
+  factory Subscription.fromJson(Map<String, dynamic> json) =>
+      _$SubscriptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SubscriptionToJson(this);
+
+  final bool? active;
 }

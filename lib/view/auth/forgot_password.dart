@@ -76,6 +76,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return AuthScaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         leading: BackButton(
           color: context.colors.white,
         ),
@@ -164,7 +165,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       : () async {
                           if (!formKey.currentState!.validate()) return;
                           setState(() => isLoading = true);
-                          await ForgotPasswordService().verifyOtp(
+                          await ForgotPasswordService().verifyResetOtp(
                             context: context,
                             email: emailController.text.trim(),
                             otp: pinController.text,

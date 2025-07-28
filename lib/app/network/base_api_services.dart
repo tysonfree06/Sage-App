@@ -1,3 +1,5 @@
+import 'dart:io';
+
 /// Abstract class for defining base API services.
 abstract class BaseApiServices {
   Future<Map<String, dynamic>> get({
@@ -17,10 +19,16 @@ abstract class BaseApiServices {
   });
   Future<Map<String, dynamic>> delete({
     required String url,
+    required Map<String, dynamic> data,
   });
+  // Future<Map<String, dynamic>> multipartUpload({
+  //   required String url,
+  //   required String filePath,
+  //   required String fileFieldName,
+  // });
+
   Future<Map<String, dynamic>> multipartUpload({
     required String url,
-    required String filePath,
-    required String fileFieldName,
+    required File file,
   });
 }

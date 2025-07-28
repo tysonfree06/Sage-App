@@ -1,6 +1,8 @@
+//FIXME: Remove this comment after generated files fix #muttas
 import 'package:json_annotation/json_annotation.dart';
 
-part 'radeem_model.g.dart';
+// part 'radeem_model.g.dart';
+part 'redeem_model.g.dart';
 
 @JsonSerializable()
 class RedeemOfferDetails {
@@ -19,16 +21,12 @@ class RedeemOfferDetails {
   factory RedeemOfferDetails.fromJson(Map<String, dynamic> json) =>
       _$RedeemOfferDetailsFromJson(json);
 
-  @JsonKey(name: 'backendId')
   final String backendId;
 
-  @JsonKey(name: 'offerId')
   final String offerId;
 
-  @JsonKey(name: 'title')
   final String title;
 
-  @JsonKey(name: 'points')
   final int points;
 
   @JsonKey(
@@ -62,7 +60,6 @@ class RedeemOfferDetails {
   RedeemOfferDetails copyWith({
     String? backendId,
     String? offerId,
-    bool? isPast,
     String? title,
     int? points,
     DateTime? startDate,
@@ -86,13 +83,17 @@ class RedeemOfferDetails {
 
   Map<String, dynamic> toJson() => _$RedeemOfferDetailsToJson(this);
 
-  // Helper functions to handle DateTime serialization/deserialization
-  static DateTime _dateTimeFromJson(String date) => DateTime.parse(date);
+  static DateTime _dateTimeFromJson(String date) {
+    if (date.isEmpty) {
+      throw FormatException('Invalid date string');
+    }
+    return DateTime.parse(date);
+  }
 
   static String _dateTimeToJson(DateTime date) => date.toIso8601String();
 
   static DateTime? _nullableDateTimeFromJson(String? date) =>
-      date == null ? null : DateTime.parse(date);
+      date == null || date.isEmpty ? null : DateTime.parse(date);
 
   static String? _nullableDateTimeToJson(DateTime? date) =>
       date?.toIso8601String();

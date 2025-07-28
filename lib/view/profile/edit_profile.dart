@@ -113,9 +113,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         user?.relationshipStatus ?? _relationshipStatuses.first;
     _anniversaryDate = user?.anniversaryDate;
     _dob = user?.dateOfBirth;
-    _city = user?.location.city ?? _cities.first;
-    _state = user?.location.state ?? _states.first;
-    _country = user?.location.country ?? _countries.first;
+    _city = user?.location?.city ?? _cities.first;
+    _state = user?.location?.state ?? _states.first;
+    _country = user?.location?.country ?? _countries.first;
     _uploadedUrl = user?.image;
   }
 
@@ -140,22 +140,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
     if (source == null) return;
+
     final file = await _pickerService.pickImage(source: source);
-    if (file == null) return;
+    if (file == null || !mounted) return;
 
     setState(() => _busy = true);
-    try {
-      final url = await _service.uploadProfileImage(file);
+
+    // Service now handles all error display internally
+    final url = await _service.uploadProfileImage(context, file: file);
+
+    if (mounted) {
       setState(() {
-        _localImage = file;
-        _uploadedUrl = url;
+        _busy = false;
+        if (url != null) {
+          _localImage = file;
+          _uploadedUrl = url;
+        }
       });
-    } catch (_) {
-      if (mounted) {
-        context.flushBarErrorMessage(message: 'Image upload failed');
-      }
-    } finally {
-      setState(() => _busy = false);
     }
   }
 
@@ -230,11 +231,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onChanged: (v) => setState(() => _apologyLanguage = v!)),
               SizedBox(height: 16.h),
               _buildDropdown(
-                  label: context
-                      .l10n.onboarding_step1_what_is_your_communication_style,
-                  value: _communicationStyle,
-                  items: _communicationStyles,
-                  onChanged: (v) => setState(() => _communicationStyle = v!)),
+                label: context
+                    .l10n.onboarding_step1_what_is_your_communication_style,
+                value: _communicationStyle,
+                items: _communicationStyles,
+                onChanged: (v) => setState(() {
+                  _communicationStyle = v!;
+                }),
+              ),
               SizedBox(height: 16.h),
               _buildDropdown(
                   label: context.l10n.onboarding_step1_budget_level,

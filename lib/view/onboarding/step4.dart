@@ -91,7 +91,10 @@ class _Step4ScreenState extends State<Step4Screen> {
               SizedBox(height: 35.h),
 
               // PIN input
-              MyPinput(controller: _pinController),
+              MyPinput(
+                controller: _pinController,
+                length: 5,
+              ),
 
               const Spacer(),
 

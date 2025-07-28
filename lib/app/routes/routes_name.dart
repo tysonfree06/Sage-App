@@ -23,4 +23,6 @@ class RoutesName {
   static const String invitation = 'invitation_screen';
   static const String redeemPoint = 'redeem_point_screen';
   static const String contactUs = 'contact_us_screen';
+  static const String exploreIdeas = 'explore_ideas_screen';
+  static const String savedIdeas = 'saved_ideas_screen';
 }

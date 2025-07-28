@@ -123,3 +123,4 @@ lib/l10n/arb/app_localizations.dart
 lib/l10n/arb/app_localizations_en.dart
 lib/l10n/arb/app_localizations_fr.dart
 lib/l10n/intl_en.arb
+.env

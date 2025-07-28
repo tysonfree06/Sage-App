@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 
 class InvitationScreen extends StatelessWidget {
   const InvitationScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final sessionController = SessionController();
+    final referalCode = sessionController.user?.mineinvitationCode ?? '';
+
+    // const String referalCode = 'nzkKFg';
     return Scaffold(
       appBar: AppBar(
         backgroundColor: context.colors.white,
@@ -28,7 +34,6 @@ class InvitationScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.h),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 width: double.infinity,
@@ -40,23 +45,6 @@ class InvitationScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      context.l10n.refer_link,
-                      style: context.typography.title.copyWith(
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w500,
-                        color: context.colors.white.withValues(alpha: 0.50),
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      'https://www.btcusdt-market.com/auth',
-                      style: context.typography.title.copyWith(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.white),
-                    ),
-                    SizedBox(height: 28.h),
-                    Text(
                       context.l10n.refer_code,
                       style: context.typography.title.copyWith(
                         fontSize: 15.sp,
@@ -65,12 +53,30 @@ class InvitationScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 4.h),
-                    Text(
-                      'nzkKFg',
-                      style: context.typography.title.copyWith(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.white),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          referalCode,
+                          style: context.typography.title.copyWith(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
+                              color: context.colors.white),
+                        ),
+                        SizedBox(width: 8.w),
+                        GestureDetector(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(text: referalCode));
+                            if (context.mounted) {
+                              context.flushBarSuccessMessage(
+                                message: 'Copied to clipboard',
+                              );
+                            }
+                          },
+                          child:
+                              Assets.icons.copy.svg(height: 12.h, width: 12.w),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -190,10 +196,10 @@ class InvitationScreen extends StatelessWidget {
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _RewardLeaf(points: "500"),
-                        _RewardLeaf(points: "500"),
-                        _RewardLeaf(points: "500"),
-                        _RewardLeaf(points: "1000"),
+                        _RewardLeaf(points: '500'),
+                        _RewardLeaf(points: '500'),
+                        _RewardLeaf(points: '500'),
+                        _RewardLeaf(points: '1000'),
                       ],
                     ),
                   ],

@@ -1,3 +1,4 @@
+//FIXME: Remove this comment after generated files fix #muttas
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
@@ -153,7 +154,9 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
 
   List<RedeemOfferDetails> getFilteredAvailableOffers() {
     return giftCards
-        .where((giftCard) => giftCard.redemptionDate == null && giftCard.endDate.isAfter(DateTime.now()))
+        .where((giftCard) =>
+            giftCard.redemptionDate == null &&
+            giftCard.endDate.isAfter(DateTime.now()))
         .toList();
   }
 

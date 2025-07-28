@@ -12,7 +12,8 @@ import 'package:sage/view/points/redeem_points.dart';
 List<Widget> pages = [
   const HomeScreen(),
   const IdeaScreen(),
-  const RedeemPointsScreen(),
+  const RedeemPointsScreen(), //FIXME: Remove this comment after generated files fix #muttas
+  // const SizedBox(), //remove this line when RedeemPointsScreen is ready
   const SettingScreen(),
 ];
 

@@ -5,6 +5,7 @@ import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/settings_service.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -20,6 +21,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final ValueNotifier<bool> _obscureOldPassword = ValueNotifier(true);
   final ValueNotifier<bool> _obscureNewPassword = ValueNotifier(true);
   final ValueNotifier<bool> _obscureConfirmPassword = ValueNotifier(true);
+
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmNewPasswordController = TextEditingController();
+
+  bool get isFilled =>
+      oldPasswordController.text.isNotEmpty &&
+      newPasswordController.text.isNotEmpty &&
+      confirmNewPasswordController.text.isNotEmpty;
+
+  @override
+  void dispose() {
+    _obscureOldPassword.dispose();
+    _obscureNewPassword.dispose();
+    _obscureConfirmPassword.dispose();
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmNewPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +81,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   valueListenable: _obscureOldPassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      controller: oldPasswordController,
                       hint: context.l10n.change_old_password_hint,
                       obscureText: obscure,
                       suffixIcon: GestureDetector(
@@ -89,6 +111,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   valueListenable: _obscureNewPassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      controller: newPasswordController,
                       hint: context.l10n.reset_new_password_hint,
                       obscureText: obscure,
                       suffixIcon: GestureDetector(
@@ -119,6 +142,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   valueListenable: _obscureConfirmPassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      controller: confirmNewPasswordController,
                       hint: context.l10n.reset_confirm_password_hint,
                       obscureText: obscure,
                       suffixIcon: GestureDetector(
@@ -144,11 +168,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           ),
           child: MyButton(
             label: context.l10n.change_update,
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-
-              }
-            },
+            onPressed: isFilled
+                ? () async {
+                    if (formKey.currentState!.validate()) {
+                      await SettingService().changePassword(
+                        context: context,
+                        oldPassword: oldPasswordController.text.trim(),
+                        newPassword: newPasswordController.text.trim(),
+                        confirmPassword:
+                            confirmNewPasswordController.text.trim(),
+                      );
+                    }
+                  }
+                : null,
           ),
         ),
       ),

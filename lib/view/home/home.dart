@@ -5,35 +5,61 @@ import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/model/user/user_model.dart';
+import 'package:sage/repository/auth_repo.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/view/home/widgets/countdown_timer.dart';
 import 'package:sage/view/home/widgets/user_content.dart';
 import 'package:sage/view/home/widgets/user_not_available.dart';
 import 'package:sage/view/home/widgets/vertical_dashed_divider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final SessionController _sessionController = SessionController();
+  final AuthRepository _userAuth = AuthRepository();
+
+  UserModel? partner;
+
+  Future<void> getPartner() async {
+    if (!SessionController().isPartnerFetched) {
+      final String partnerCode = _sessionController.user?.partnerCode ?? '';
+      try {
+        final response = await _userAuth.getPartner(partnerCode);
+        setState(() {
+          partner = UserModel.fromJson(
+            response['partner'] as Map<String, dynamic>,
+          );
+          SessionController().partner = UserModel.fromJson(
+            response['partner'] as Map<String, dynamic>,
+          );
+          SessionController().isPartnerFetched = true;
+        });
+
+        debugPrint('✅ Partner Fetched');
+      } catch (e) {
+        debugPrint('❌ Error fetching partner: $e');
+      }
+    } else {
+      partner = SessionController().partner;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPartner();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final dummyUser = UserModel(
-      location: Location(city: 'Lahore', state: 'Punjab', country: 'Pakistan'),
-      id: '1',
-      name: 'Sarah Ali',
-      email: 'sarah@example.com',
-      verified: true,
-      interests: ['Cooking', 'Traveling', 'Hiking', 'Reading', 'Photography'],
-      giftPreferences: ['Books', 'Perfume', 'Flowers', 'Chocolates', 'Gadgets'],
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      anniversaryDate: DateTime(2022, 5, 20),
-      apologyLanguage: 'Accepting Responsibility',
-      budgetLevel: 'Moderate',
-      communicationStyle: 'Assertive',
-      dateOfBirth: DateTime(1995, 3, 14),
-      image: 'https://picsum.photos/200',
-      loveLanguage: 'Quality Time',
-      relationshipStatus: 'Engaged',
-    );
+    //get user form session
+    final user = _sessionController.user!;
+    // final partner = _sessionController.partner;
 
     return LightStatusBar(
       child: Scaffold(
@@ -76,7 +102,10 @@ class HomeScreen extends StatelessWidget {
                             Expanded(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                child: UserContentWidget(user: dummyUser),
+                                child: UserContentWidget(
+                                  user: user,
+                                  isPartner: false,
+                                ),
                               ),
                             ),
 
@@ -88,98 +117,126 @@ class HomeScreen extends StatelessWidget {
                               color: context.colors.yellow,
                             ),
 
-                            // 👤 Partner Section (Currently Not Available)
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                child: Column(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        AppRadiuses.hundredRadius,
-                                      ),
-                                      child: Container(
-                                        height: 60.w,
-                                        width: 60.w,
-                                        color:
-                                            Colors.white.withValues(alpha: 0.2),
-                                        child: Image.asset(
-                                          Assets.icons.userWhitePng.path,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 6.h),
-                                    Text(
-                                      'Partner',
-                                      style: context.typography.title.copyWith(
-                                        fontSize: 15.sp,
-                                        color: context.colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Divider(
-                                      color: context.colors.white
-                                          .withValues(alpha: 0.1),
-                                    ),
-                                    const UserNotAvailableWidget(),
-                                  ],
+                            // 👤 Partner Section
+                            if (partner != null)
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w,
+                                  ),
+                                  child: partner != null
+                                      ? UserContentWidget(
+                                          user: partner!,
+                                          isPartner: true,
+                                        )
+                                      : const PartnerUnavailable(),
+                                ),
+                              )
+                            else
+                              const PartnerUnavailable(),
+                          ],
+                        ),
+                      ),
+                      //anniversary section
+                      if (partner != null && partner?.anniversaryDate != null)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 12.h,
+                            left: 14.w,
+                            right: 14.w,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 10.h,
+                            horizontal: 16.w,
+                          ),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: context.colors.yellow,
+                            borderRadius: BorderRadius.circular(
+                              AppRadiuses.largeRadius,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Next Anniversary In',
+                                style: context.typography.label.copyWith(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: context.colors.mainGreenDark,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: 12.h,
-                          left: 14.w,
-                          right: 14.w,
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 10.h,
-                          horizontal: 16.w,
-                        ),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: context.colors.yellow,
-                          borderRadius: BorderRadius.circular(
-                            AppRadiuses.largeRadius,
+                              SizedBox(height: 9.h),
+                              CountdownTimerWidget(
+                                // targetDate: DateTime(2025, 12, 31, 23, 59, 59),
+                                targetDate:
+                                    partner?.anniversaryDate ?? DateTime.now(),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Next Anniversary In',
-                              style: context.typography.label.copyWith(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.mainGreenDark,
-                              ),
-                            ),
-                            SizedBox(height: 9.h),
-                            CountdownTimerWidget(
-                              targetDate: DateTime(2025, 12, 31, 23, 59, 59),
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
-                SizedBox(height: 14.h),
-                Text(
-                  'Relationship Suggestions',
-                  style: context.typography.title.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.sp,
-                    color: context.colors.textDarkGreen,
-                  ),
-                ),
+                // SizedBox(height: 14.h),
+                // Text(
+                //   'Relationship Suggestions',
+                //   style: context.typography.title.copyWith(
+                //     fontWeight: FontWeight.w700,
+                //     fontSize: 20.sp,
+                //     color: context.colors.textDarkGreen,
+                //   ),
+                // ),
                 SizedBox(height: 14.h),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class PartnerUnavailable extends StatelessWidget {
+  const PartnerUnavailable({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(
+                AppRadiuses.hundredRadius,
+              ),
+              child: Container(
+                height: 60.w,
+                width: 60.w,
+                color: Colors.white.withValues(alpha: 0.2),
+                child: Image.asset(
+                  Assets.icons.userWhitePng.path,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Text(
+              'Partner',
+              style: context.typography.title.copyWith(
+                fontSize: 15.sp,
+                color: context.colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Divider(
+              color: context.colors.white.withValues(alpha: 0.1),
+            ),
+            const UserNotAvailableWidget(),
+          ],
         ),
       ),
     );

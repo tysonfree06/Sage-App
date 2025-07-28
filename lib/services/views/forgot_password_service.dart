@@ -81,4 +81,35 @@ class ForgotPasswordService {
       }
     }
   }
+
+  Future<void> verifyResetOtp({
+    required BuildContext context,
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      final Map<String, dynamic> data = {
+        'email': email,
+        'otp': otp,
+      };
+      await _authRepository.verifyResetOtp(data);
+
+      if (context.mounted) {
+        context.flushBarSuccessMessage(message: 'OTP Verified...');
+        goToResetPassword(context: context, email: email, otp: otp);
+      }
+    } catch (e) {
+      if (e is AppException) {
+        debugPrint('[ForgotPasswordService] ❌ ${e.debugMessage}');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: e.userMessage);
+        }
+      } else {
+        debugPrint('[ForgotPasswordService] ❌ Unexpected: $e');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: 'Something went wrong');
+        }
+      }
+    }
+  }
 }

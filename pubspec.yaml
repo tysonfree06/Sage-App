@@ -28,9 +28,12 @@ dependencies:
   dotted_border: ^3.1.0
   logger: ^2.6.0
   collection: ^1.19.1
-  flutter_image_compress: ^1.1.0
+  # flutter_image_compress: ^1.1.0 //commented out due to issues with emulator run
   path_provider: ^2.1.1
   image_picker: ^1.1.2
+  url_launcher: ^6.3.2
+  envied: ^1.1.1
+  envied_generator: ^1.1.1
 
 dev_dependencies:
   build_runner: ^2.4.14
@@ -118,7 +121,8 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#F0F4F4" # Background color (same as your theme or brand color)
-  image: assets/images/logo/launcher_icon.png # Splash image (should be centered and not full screen)
+  # image: assets/images/logo/launcher_icon.png # Splash image (should be centered and not full screen)
+  image: assets/images/logo/launcher_icon_padded.png # Splash image (should be centered and not full screen)
   android: true
   ios: true
   fullscreen: true

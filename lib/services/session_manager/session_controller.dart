@@ -12,6 +12,9 @@ class SessionController {
 
   String? _token;
   UserModel? user;
+  UserModel? partner;
+  bool isPartnerFetched =
+      false; //#muttas remove it when partner is auto loading on splash..
 
   String? get token => _token;
 
@@ -38,6 +41,8 @@ class SessionController {
   Future<void> clearSession() async {
     _token = null;
     user = null;
+    partner = null;
+    isPartnerFetched = false;
     await _localStorage.clearValue('auth_token');
     log('Session cleared: Token and user data removed');
   }

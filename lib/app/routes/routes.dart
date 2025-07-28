@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/model/redeem/redeem_model.dart';
+// import 'package:sage/model/redeem/radeem_model.dart';
+import 'package:sage/view/ideas/explore_ideas.dart';
+import 'package:sage/view/ideas/saved_ideas.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
-  static String initialRoute() => RoutesName.navigation;
+  static String initialRoute() => RoutesName.splash;
 
   static final Map<String, Widget Function(BuildContext)> _routes = {
     RoutesName.splash: (_) => const SplashScreen(),
@@ -21,8 +24,11 @@ class Routes {
     RoutesName.updateInterests: (_) => const UpdateInterestsScreen(),
     RoutesName.updateGiftPreference: (_) => const UpdateGiftPreferenceScreen(),
     RoutesName.invitation: (_) => const InvitationScreen(),
-    RoutesName.redeemPoint: (_) => const RedeemPointsScreen(),
+    RoutesName.redeemPoint: (_) =>
+        const RedeemPointsScreen(), //FIXME: Remove this comment after generated files fix #muttas
     RoutesName.contactUs: (_) => const ContactUsScreen(),
+    RoutesName.exploreIdeas: (_) => const ExploreIdeasScreen(),
+    RoutesName.savedIdeas: (_) => const SavedIdeasScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -41,6 +47,7 @@ class Routes {
           settings: settings,
         );
       case RoutesName.offerDetail:
+        //FIXME: Remove this comment after generated files fix #muttas
         final offer = settings.arguments! as RedeemOfferDetails;
         return MaterialPageRoute(
           builder: (_) => OfferDetailScreen(offer: offer),
@@ -50,9 +57,8 @@ class Routes {
       case RoutesName.resetPassword:
         final args = settings.arguments! as Map<String, String>;
         final email = args['email']!;
-        final otp = args['otp']!;
         return MaterialPageRoute(
-          builder: (_) => ResetPassword(email: email, otp: otp),
+          builder: (_) => ResetPassword(email: email),
           settings: settings,
         );
 

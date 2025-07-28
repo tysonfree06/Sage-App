@@ -20,16 +20,14 @@ class ResetPasswordService {
   Future<void> resetPassword({
     required BuildContext context,
     required String email,
-    required String otp,
     required String newPassword,
   }) async {
     try {
       final Map<String, dynamic> data = {
         'email': email,
-        'otp': otp,
         'newPassword': newPassword,
       };
-      await _authRepository.verifyOtp(data);
+      await _authRepository.resetPassword(data);
 
       if (context.mounted) {
         context.flushBarSuccessMessage(message: 'Password Updated...');

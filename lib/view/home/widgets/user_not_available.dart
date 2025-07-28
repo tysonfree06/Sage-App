@@ -1,15 +1,23 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/my_bottom_sheet.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/view/home/widgets/add_partner_sheet.dart';
 
 class UserNotAvailableWidget extends StatelessWidget {
   const UserNotAvailableWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    SessionController _sessionController = SessionController();
+    final referalCode = _sessionController.user!.mineinvitationCode ?? '';
+    // const String referalCode = '546789';
     return DottedBorder(
       options: RoundedRectDottedBorderOptions(
         dashPattern: [4, 4],
@@ -20,7 +28,12 @@ class UserNotAvailableWidget extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(height: 40.h),
-          Assets.icons.addFilled.svg(),
+          GestureDetector(
+              onTap: () => MyBottomSheet.show<void>(
+                    context,
+                    child: const AddPartnerSheet(),
+                  ),
+              child: Assets.icons.addFilled.svg()),
           SizedBox(height: 8.h),
           Text(
             'Add Partner',
@@ -58,7 +71,7 @@ class UserNotAvailableWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '546789',
+                  referalCode,
                   style: context.typography.body.copyWith(
                     color: context.colors.white.withValues(alpha: .6),
                     fontSize: 11.sp,
@@ -66,7 +79,17 @@ class UserNotAvailableWidget extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 8.w),
-                Assets.icons.copy.svg(height: 12.h, width: 12.w),
+                GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: referalCode));
+                    if (context.mounted) {
+                      context.flushBarSuccessMessage(
+                        message: 'Copied to clipboard',
+                      );
+                    }
+                  },
+                  child: Assets.icons.copy.svg(height: 12.h, width: 12.w),
+                ),
               ],
             ),
           ),

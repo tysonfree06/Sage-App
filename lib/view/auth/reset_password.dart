@@ -12,11 +12,9 @@ import 'package:sage/view/auth/widget/auth_scaffold.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({
-    required this.otp,
     required this.email,
     super.key,
   });
-  final String otp;
   final String email;
 
   @override
@@ -59,6 +57,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   Widget build(BuildContext context) {
     return AuthScaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         leading: BackButton(color: context.colors.white),
       ),
       body: SingleChildScrollView(
@@ -102,6 +101,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   valueListenable: _obscureNewPassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      controller: passwordController,
                       hint: context.l10n.reset_new_password_hint,
                       obscureText: obscure,
                       suffixIcon: GestureDetector(
@@ -144,6 +144,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   valueListenable: _obscureConfirmPassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      controller: confirmPasswordController,
                       hint: context.l10n.reset_confirm_password_hint,
                       obscureText: obscure,
                       suffixIcon: GestureDetector(
@@ -176,14 +177,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                       onPressed: isFilled && !isLoading
                           ? () async {
                               if (!formKey.currentState!.validate()) return;
-
                               setState(() => isLoading = true);
                               await ResetPasswordService()
                                   .resetPassword(
                                 context: context,
                                 newPassword: passwordController.text.trim(),
-                                email: '',
-                                otp: '',
+                                email: widget.email,
                               )
                                   .then(
                                 (_) {

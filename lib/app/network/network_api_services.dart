@@ -7,11 +7,15 @@ import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/app/network/base_api_services.dart';
 import 'package:sage/app/utils/app_url.dart';
 import 'package:sage/app/utils/log_manager.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/storage/local_storage.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
 
 /// Class for handling network API requests.
 class NetworkApiService implements BaseApiServices {
-  final LocalStorage _localStorage = LocalStorage();
+  final SessionController _sessionController = SessionController();
 
   // Do not use token in headers for the following API calls
   final List<String> unauthenticatedEndpoints = [
@@ -54,18 +58,19 @@ class NetworkApiService implements BaseApiServices {
   }
 
   /// Utility function for adding headers, including token if needed
-  Future<Map<String, String>> _getHeaders(String url) async {
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-    };
+  Map<String, String> _getHeaders(String url, {bool isMultipart = false}) {
+    final Map<String, String> headers = {};
+    if (!isMultipart) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     if (_needsAuth(url)) {
-      final String? token = await _localStorage.readValue('auth_token');
+      final String? token = _sessionController.token;
       if (token != null) {
         headers['Authorization'] = 'Bearer $token';
       }
     }
-
+    debugPrint('Request Headers: $headers');
     return headers;
   }
 
@@ -110,7 +115,7 @@ class NetworkApiService implements BaseApiServices {
 
     final response = await http
         .get(Uri.parse(url), headers: await _getHeaders(url))
-        .timeout(const Duration(seconds: 20));
+        .timeout(const Duration(seconds: 60));
 
     LogManager.logResponse(response.statusCode.toString(), response.body);
     // This is handling all the errors so no need for try catch
@@ -132,11 +137,40 @@ class NetworkApiService implements BaseApiServices {
           headers: await _getHeaders(url),
           body: jsonEncode(data),
         )
-        .timeout(const Duration(seconds: 10));
+        .timeout(const Duration(seconds: 60));
 
     LogManager.logResponse(response.statusCode.toString(), response.body);
     return returnResponse(response);
   }
+
+  //This function in temporarily replaced with the actual function above to bypass SSL verification issue : #muttas
+  /// Handles POST request with IOClient to ignore SSL issues
+  // @override
+  // Future<Map<String, dynamic>> post({
+  //   required String url,
+  //   required Map<String, dynamic> data,
+  //   Map<String, dynamic>? params,
+  // }) async {
+  //   LogManager.logRequest('POST', url, data);
+
+  //   // 👇 Custom HttpClient that ignores bad SSL certs
+  //   final HttpClient httpClient = HttpClient()
+  //     ..badCertificateCallback =
+  //         (X509Certificate cert, String host, int port) => true;
+
+  //   final IOClient ioClient = IOClient(httpClient);
+
+  //   final response = await ioClient
+  //       .post(
+  //         Uri.parse(url),
+  //         headers: await _getHeaders(url),
+  //         body: jsonEncode(data),
+  //       )
+  //       .timeout(const Duration(seconds: 60));
+
+  //   LogManager.logResponse(response.statusCode.toString(), response.body);
+  //   return returnResponse(response);
+  // }
 
   /// Handles PUT request
   @override
@@ -153,7 +187,7 @@ class NetworkApiService implements BaseApiServices {
           headers: await _getHeaders(url),
           body: jsonEncode(data),
         )
-        .timeout(const Duration(seconds: 10));
+        .timeout(const Duration(seconds: 60));
 
     LogManager.logResponse(response.statusCode.toString(), response.body);
     return _parseResponse(response);
@@ -174,7 +208,7 @@ class NetworkApiService implements BaseApiServices {
           headers: await _getHeaders(url),
           body: jsonEncode(data),
         )
-        .timeout(const Duration(seconds: 10));
+        .timeout(const Duration(seconds: 60));
 
     LogManager.logResponse(response.statusCode.toString(), response.body);
     return returnResponse(response);
@@ -184,69 +218,105 @@ class NetworkApiService implements BaseApiServices {
   @override
   Future<Map<String, dynamic>> delete({
     required String url,
+    required Map<String, dynamic> data,
     Map<String, dynamic>? params,
   }) async {
-    LogManager.logRequest('DELETE', url, params ?? {});
+    LogManager.logRequest('DELETE', url, data);
 
     final response = await http
-        .delete(Uri.parse(url), headers: await _getHeaders(url))
-        .timeout(const Duration(seconds: 10));
+        .delete(
+          Uri.parse(url),
+          headers: await _getHeaders(url),
+          body: jsonEncode(data),
+        )
+        .timeout(const Duration(seconds: 60));
 
     LogManager.logResponse(response.statusCode.toString(), response.body);
     return returnResponse(response);
   }
 
+  // /// Handles Multipart request
+  // @override
+  // Future<Map<String, dynamic>> multipartUpload({
+  //   required String url,
+  //   required String filePath,
+  //   required String fileFieldName,
+  // }) async {
+  //   // 1. Ensure file exists
+  //   final file = File(filePath);
+  //   if (!await file.exists()) {
+  //     throw FetchDataException('File not found at path: $filePath');
+  //   }
+
+  //   // 2. Build URI with any query params
+  //   final uri = Uri.parse(url);
+
+  //   // 3. Create and populate request
+  //   final request = http.MultipartRequest('POST', uri)
+  //     ..files.add(await http.MultipartFile.fromPath(fileFieldName, filePath))
+  //     ..headers.addAll(await _getHeaders(url)) // auth, etc
+  //     ..headers.remove('Content-Type'); // let MultipartRequest set it
+
+  //   // 5. Log full details (including size, name)
+  //   final stat = await file.stat();
+  //   LogManager.logRequest('MULTIPART', uri.toString(), {
+  //     // 'fileName': 'Image', //basename(filePath),
+  //     'fileSize': stat.size,
+  //     'fieldName': fileFieldName,
+  //   });
+
+  //   try {
+  //     // 6. Send + read with a single timeout
+  //     final streamed = await request.send();
+  //     final responseStr = await streamed.stream
+  //         .transform(utf8.decoder)
+  //         .join()
+  //         .timeout(const Duration(seconds: 120));
+
+  //     LogManager.logResponse(
+  //       streamed.statusCode.toString(),
+  //       responseStr,
+  //     );
+
+  //     // 7. Parse & handle errors
+  //     return returnResponse(
+  //       http.Response(responseStr, streamed.statusCode),
+  //     );
+  //   } catch (e, st) {
+  //     _handleError(e, message: 'Multipart upload failed', stackTrace: st);
+  //     // no rethrow needed
+  //     rethrow; // (unreachable, but keeps the analyzer happy)
+  //   }
+  // }
+
   /// Handles Multipart request
   @override
   Future<Map<String, dynamic>> multipartUpload({
     required String url,
-    required String filePath,
-    required String fileFieldName,
+    required File file,
   }) async {
-    // 1. Ensure file exists
-    final file = File(filePath);
-    if (!await file.exists()) {
-      throw FetchDataException('File not found at path: $filePath');
-    }
+    LogManager.logRequest('POST (Multipart)', url, {'filePath': file.path});
 
-    // 2. Build URI with any query params
-    final uri = Uri.parse(url);
+    final request = http.MultipartRequest('POST', Uri.parse(url))
+      ..headers.addAll(_getHeaders(url, isMultipart: true));
 
-    // 3. Create and populate request
-    final request = http.MultipartRequest('POST', uri)
-      ..files.add(await http.MultipartFile.fromPath(fileFieldName, filePath))
-      ..headers.addAll(await _getHeaders(url)) // auth, etc
-      ..headers.remove('Content-Type'); // let MultipartRequest set it
+    final mimeType = lookupMimeType(file.path) ?? 'application/octet-stream';
+    final mimeParts = mimeType.split('/');
 
-    // 5. Log full details (including size, name)
-    final stat = await file.stat();
-    LogManager.logRequest('MULTIPART', uri.toString(), {
-      // 'fileName': 'Image', //basename(filePath),
-      'fileSize': stat.size,
-      'fieldName': fileFieldName,
-    });
+    final multipartFile = await http.MultipartFile.fromPath(
+      'image',
+      file.path,
+      contentType: MediaType(mimeParts[0], mimeParts[1]),
+      filename: basename(file.path),
+    );
 
-    try {
-      // 6. Send + read with a single timeout
-      final streamed = await request.send();
-      final responseStr = await streamed.stream
-          .transform(utf8.decoder)
-          .join()
-          .timeout(const Duration(seconds: 45));
+    request.files.add(multipartFile);
 
-      LogManager.logResponse(
-        streamed.statusCode.toString(),
-        responseStr,
-      );
+    final streamedResponse =
+        await request.send().timeout(const Duration(seconds: 100));
+    final response = await http.Response.fromStream(streamedResponse);
+    LogManager.logResponse(response.statusCode.toString(), response.body);
 
-      // 7. Parse & handle errors
-      return returnResponse(
-        http.Response(responseStr, streamed.statusCode),
-      );
-    } catch (e, st) {
-      _handleError(e, message: 'Multipart upload failed', stackTrace: st);
-      // no rethrow needed
-      rethrow; // (unreachable, but keeps the analyzer happy)
-    }
+    return returnResponse(response);
   }
 }

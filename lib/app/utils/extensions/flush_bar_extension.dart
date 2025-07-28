@@ -43,7 +43,7 @@ extension FlushBarSuccessMessage on BuildContext {
         reverseAnimationCurve: Curves.easeInOut,
         positionOffset: 20,
         icon: const Icon(
-          Icons.error,
+          Icons.check_circle,
           size: 28,
           color: Colors.white,
         ),

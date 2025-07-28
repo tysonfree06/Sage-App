@@ -14,12 +14,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    SplashServices().goToWelcome(context);
+    // SplashServices().goToWelcome(context);
+    SplashServices().checkAuthentication(context);
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Stack(
         children: [

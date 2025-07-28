@@ -37,6 +37,13 @@
 		<string>We need access to your photos to update your profile picture.</string>
 		<key>NSCameraUsageDescription</key>
 		<string>We need access to your camera to take a new profile picture.</string>
+		<!-- ✅ Allow HTTP connections (cleartext) -->
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
+		</dict>
+		<!-- END: Allow HTTP connections (cleartext) -->
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>
@@ -51,7 +58,7 @@
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<true/>
+		<false/>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
