@@ -21,6 +21,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
   List<dynamic> topPicks = [];
   List<dynamic> moreIdeas = [];
   final searchController = TextEditingController();
+  bool noResults = false;
 
   Future<void> loadFeed() async {
     if (feed.isEmpty) {
@@ -66,21 +67,35 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
   void searchFilter(String query) {
     resetFeed();
     final List<dynamic> topPicksFiltered = topPicks
-        .where((item) => (item['title'] as String)
-            .toLowerCase()
-            .contains(query.toLowerCase()),)
+        .where(
+          (item) => (item['title'] as String)
+              .toLowerCase()
+              .contains(query.toLowerCase()),
+        )
         .toList();
 
     final List<dynamic> moreIdeasFiltered = moreIdeas
-        .where((item) => (item['title'] as String)
-            .toLowerCase()
-            .contains(query.toLowerCase()),)
+        .where(
+          (item) => (item['title'] as String)
+              .toLowerCase()
+              .contains(query.toLowerCase()),
+        )
         .toList();
 
     setState(() {
       topPicks = topPicksFiltered;
       moreIdeas = moreIdeasFiltered;
     });
+
+    if (topPicksFiltered.isEmpty && moreIdeasFiltered.isEmpty) {
+      setState(() {
+        noResults = true;
+      });
+    } else {
+      setState(() {
+        noResults = false;
+      });
+    }
   }
 
   //filter by category
@@ -161,40 +176,59 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
               //END: search box
               SizedBox(height: 20.h),
               _buildCategories(categories),
-              if (topPicks.isNotEmpty) ...[
-                SizedBox(height: 16.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 16.w),
-                  child: Text(
-                    'Top Picks',
-                    style:
-                        TextStyle(fontWeight: FontWeight.w700, fontSize: 20.sp),
+
+              if (noResults == false) ...[
+                if (topPicks.isNotEmpty) ...[
+                  SizedBox(height: 16.h),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16.w),
+                    child: Text(
+                      'Top Picks',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 20.sp),
+                    ),
                   ),
-                ),
-                SizedBox(height: 5.h),
-                _buildTopPicks(topPicks),
-              ],
-              if (moreIdeas.isNotEmpty) ...[
-                SizedBox(height: 16.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 16.w),
-                  child: Text(
-                    'More Ideas',
-                    style:
-                        TextStyle(fontWeight: FontWeight.w700, fontSize: 20.sp),
+                  SizedBox(height: 5.h),
+                  _buildTopPicks(topPicks),
+                ],
+                if (moreIdeas.isNotEmpty) ...[
+                  SizedBox(height: 16.h),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16.w),
+                    child: Text(
+                      'More Ideas',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20.sp,
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(height: 5.h),
-                //More Ideas
-                ...moreIdeas.map(
-                  (item) {
-                    return IdeaCard(
-                      onBookmarkPressed: () async {
-                        await loadFeed();
-                      },
-                      data: item as Map<String, dynamic>,
-                    );
-                  },
+                  SizedBox(height: 5.h),
+                  //More Ideas
+                  ...moreIdeas.map(
+                    (item) {
+                      return IdeaCard(
+                        onBookmarkPressed: () async {
+                          await loadFeed();
+                        },
+                        data: item as Map<String, dynamic>,
+                      );
+                    },
+                  ),
+                ],
+              ] else ...[
+                Center(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 140.h,
+                      ),
+                      Text(
+                        'No results...',
+                        style: TextStyle(fontSize: 14.h),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ],
@@ -278,7 +312,6 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
   }
 
   SizedBox _buildTopPicks(List<dynamic> topPicks) {
-    final isPremium = sessionController.user!.isPremium;
     return SizedBox(
       height: 257.h,
       child: ListView.separated(
@@ -357,9 +390,10 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                           child: Text(
                             topPicks[index]['location'] as String,
                             style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 11.sp,
-                                fontWeight: FontWeight.w700,),
+                              color: Colors.grey,
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -383,6 +417,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                       children: [
                         InkWell(
                           onTap: () async {
+                            final isPremium = sessionController.user!.isPremium;
                             if (!isPremium!) {
                               IdeasServices.showSubscriptionDialog(context);
                             } else {
@@ -422,13 +457,15 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                               isBookmarked: isBookmarked,
                             );
                           },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 3.w),
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: 18.w,
+                            height: 20.h,
                             child: Assets.icons.threeDots.svg(),
                           ),
                         ),
                         SizedBox(
-                          width: 38.w,
+                          width: 32.w,
                         ),
                         MyTextButton(
                           onPressed: () => IdeasServices.gotoIdeaDetails(

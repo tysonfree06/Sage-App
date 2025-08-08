@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_text_field.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/image_picker.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
@@ -77,6 +78,16 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
 
   //Add Idea
   Future<void> addOrUpdateIdea() async {
+    String imageUrl = '';
+    if (widget.ideaDetails?['image'] != null &&
+        widget.ideaDetails?['image'] != '') {
+      imageUrl = widget.ideaDetails?['image'] as String;
+    } else if (_uploadedUrl != null && _uploadedUrl != '') {
+      imageUrl = _uploadedUrl!;
+    }
+    //widget.ideaDetails?['image']
+    // String imageUrl = _uploadedUrl;
+
     setState(() {
       _busy = true;
       isLoading = true;
@@ -84,7 +95,7 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
     final userId = _sessionController.user!.id;
     final Map<String, dynamic> ideaData = {
       'title': _titleController.text,
-      'image': _uploadedUrl ?? '',
+      'image': imageUrl,
       'type': selectedType,
       'description': _descriptionController.text,
       'cost': _costController.text,
@@ -92,6 +103,24 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
       'link': _linkController.text,
       'userId': userId,
     };
+
+    //all fields are mandatory
+
+    if (_titleController.text.isEmpty ||
+        _descriptionController.text.isEmpty ||
+        _costController.text.isEmpty ||
+        _locationController.text.isEmpty ||
+        _linkController.text.isEmpty ||
+        imageUrl == '') {
+      context.flushBarErrorMessage(message: 'Please fill all fields.');
+      setState(() {
+        _busy = false;
+        isLoading = false;
+      });
+      return;
+    }
+
+    //END: fields validation
 
     if (widget.isEditIdea) {
       await IdeasServices().editIdea(
@@ -189,7 +218,8 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
                       width: double.infinity,
                       fit: BoxFit.cover,
                     )
-                  else if (widget.ideaDetails?['image'] != null)
+                  else if (widget.ideaDetails?['image'] != null &&
+                      widget.ideaDetails?['image'] != '')
                     Image.network(
                       widget.ideaDetails?['image'] as String,
                       width: double.infinity,
@@ -217,7 +247,11 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
                             height: 5.h,
                           ),
                           Text(
-                            !widget.isEditIdea ? 'Add Image' : 'Change Image',
+                            !widget.isEditIdea ||
+                                    widget.ideaDetails?['image'] == '' ||
+                                    widget.ideaDetails?['image'] == null
+                                ? 'Add Image'
+                                : 'Change Image',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15.sp,
@@ -236,8 +270,12 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
               height: 16.h,
             ),
             _buildAddIdeaSection(context, 'Idea Type', isDropdown: true),
-            _buildAddIdeaSection(context, 'Title',
-                textController: _titleController, hint: 'Enter Title',),
+            _buildAddIdeaSection(
+              context,
+              'Title',
+              textController: _titleController,
+              hint: 'Enter Title',
+            ),
             _buildAddIdeaSection(
               context,
               'Cost',
@@ -246,6 +284,7 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
               suffixIcon: const Icon(
                 Icons.attach_money,
               ),
+              inputType: TextInputType.number,
             ),
             _buildAddIdeaSection(
               context,
@@ -292,6 +331,7 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
     String hint = '',
     Widget suffixIcon = const SizedBox.shrink(),
     int maxLines = 1,
+    TextInputType inputType = TextInputType.text,
   }) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -311,6 +351,7 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
           _buildAddIdeaDropdown(context),
         ] else
           MyTextField(
+            keyboardType: inputType,
             textCapitalization: TextCapitalization.none,
             controller: textController as TextEditingController,
             hint: hint,

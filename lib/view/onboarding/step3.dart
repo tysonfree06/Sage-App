@@ -10,7 +10,8 @@ import 'package:sage/l10n/l10n.dart';
 
 class Step3Screen extends StatefulWidget {
   const Step3Screen({
-    required this.onNext, super.key,
+    required this.onNext,
+    super.key,
     this.initialSelectedPrefs = const {},
   });
 
@@ -47,7 +48,7 @@ class _Step3ScreenState extends State<Step3Screen> {
     _selectedPrefs = Set.from(widget.initialSelectedPrefs);
   }
 
-  bool get _canProceed => _selectedPrefs.length == 5;
+  bool get _canProceed => _selectedPrefs.isNotEmpty;
 
   void _onChipToggled(String item, bool selected) {
     setState(() {

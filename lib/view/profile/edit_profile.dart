@@ -194,11 +194,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _anniversaryDate!,
     )) {
       context.flushBarErrorMessage(
-        message: 'Date of Birth should be befre Anniversary Date!',
+        message: 'Date of Birth should be before Anniversary Date!',
       );
       if (mounted) {
         setState(() {
-          isLoading = true;
+          isLoading = false;
         });
       }
       return;
@@ -257,23 +257,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildAvatarPicker(),
               SizedBox(height: 24.h),
               _buildTextField(
-                  label: context.l10n.lets_name_label,
-                  controller: _nameController,
-                  hint: context.l10n.lets_name_hint,),
+                label: context.l10n.lets_name_label,
+                controller: _nameController,
+                hint: context.l10n.lets_name_hint,
+              ),
               SizedBox(height: 16.h),
               _buildDropdown(
-                  label:
-                      context.l10n.onboarding_step1_what_is_your_love_language,
-                  value: _loveLanguage,
-                  items: _loveLanguages,
-                  onChanged: (v) => setState(() => _loveLanguage = v!),),
+                label: context.l10n.onboarding_step1_what_is_your_love_language,
+                value: _loveLanguage,
+                items: _loveLanguages,
+                onChanged: (v) => setState(() => _loveLanguage = v!),
+              ),
               SizedBox(height: 16.h),
               _buildDropdown(
-                  label: context
-                      .l10n.onboarding_step1_what_is_your_apology_language,
-                  value: _apologyLanguage,
-                  items: _apologyLanguages,
-                  onChanged: (v) => setState(() => _apologyLanguage = v!),),
+                label:
+                    context.l10n.onboarding_step1_what_is_your_apology_language,
+                value: _apologyLanguage,
+                items: _apologyLanguages,
+                onChanged: (v) => setState(() => _apologyLanguage = v!),
+              ),
               SizedBox(height: 16.h),
               _buildDropdown(
                 label: context
@@ -439,9 +441,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: context.typography.title
-                .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp),),
+        Text(
+          label,
+          style: context.typography.title
+              .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp),
+        ),
         SizedBox(height: 10.h),
         MyFormTextField(
           controller: controller,
@@ -457,16 +461,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildDropdown({
-    required String value, required List<String> items, required ValueChanged<String?> onChanged, String? label,
+    required String value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+    String? label,
     String? hint,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null)
-          Text(label,
-              style: context.typography.title
-                  .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp),),
+          Text(
+            label,
+            style: context.typography.title
+                .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp),
+          ),
         if (label != null) SizedBox(height: 10.h),
         MyDropdown(items: items, hint: hint ?? value, onChanged: onChanged),
       ],

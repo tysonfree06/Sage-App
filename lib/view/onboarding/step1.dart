@@ -168,10 +168,30 @@ class _Step1ScreenState extends State<Step1Screen> {
         selectedCountry.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(context.l10n.onboarding_error_complete_all_fields),),
+          content: Text(context.l10n.onboarding_error_complete_all_fields),
+        ),
       );
       return;
     }
+
+    //date of birth and anniversary date validation
+    if (!SignupService().isAtLeast18YearsOld(dob!)) {
+      context.flushBarErrorMessage(
+        message: 'You should be at least 18 years old!',
+      );
+      return;
+    }
+
+    if (!SignupService().isAnniversaryDateLessThanDOB(
+      dob!,
+      anniversaryDate!,
+    )) {
+      context.flushBarErrorMessage(
+        message: 'Date of Birth should be before Anniversary Date!',
+      );
+      return;
+    }
+    //END: date of birth and anniversary date validation
 
     widget.onNext(
       selectedLoveLanguage,
@@ -239,8 +259,10 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 24.h),
 
               // Love Language
-              Text(context.l10n.onboarding_step1_what_is_your_love_language,
-                  style: labelStyle,),
+              Text(
+                context.l10n.onboarding_step1_what_is_your_love_language,
+                style: labelStyle,
+              ),
               SizedBox(height: 10.h),
               MyDropdown(
                 items: loveLanguages,
@@ -250,8 +272,10 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 16.h),
 
               // Apology Language
-              Text(context.l10n.onboarding_step1_what_is_your_apology_language,
-                  style: labelStyle,),
+              Text(
+                context.l10n.onboarding_step1_what_is_your_apology_language,
+                style: labelStyle,
+              ),
               SizedBox(height: 10.h),
               MyDropdown(
                 items: apologyLanguages,
@@ -262,9 +286,9 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Communication Style
               Text(
-                  context
-                      .l10n.onboarding_step1_what_is_your_communication_style,
-                  style: labelStyle,),
+                context.l10n.onboarding_step1_what_is_your_communication_style,
+                style: labelStyle,
+              ),
               SizedBox(height: 10.h),
               MyDropdown(
                 items: communicationStyles,
@@ -275,8 +299,10 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 16.h),
 
               // Budget Level
-              Text(context.l10n.onboarding_step1_budget_level,
-                  style: labelStyle,),
+              Text(
+                context.l10n.onboarding_step1_budget_level,
+                style: labelStyle,
+              ),
               SizedBox(height: 10.h),
               MyDropdown(
                 items: budgetLevels,
@@ -286,8 +312,10 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 16.h),
 
               // Relationship Status
-              Text(context.l10n.onboarding_step1_relationship_status,
-                  style: labelStyle,),
+              Text(
+                context.l10n.onboarding_step1_relationship_status,
+                style: labelStyle,
+              ),
               SizedBox(height: 10.h),
               CustomRadioGroup<String>(
                 options: relationshipStatuses,
@@ -299,8 +327,10 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 16.h),
 
               // Anniversary Date
-              Text(context.l10n.onboarding_step1_anniversary_date,
-                  style: labelStyle,),
+              Text(
+                context.l10n.onboarding_step1_anniversary_date,
+                style: labelStyle,
+              ),
               SizedBox(height: 10.h),
               MyDatePickerButton(
                 hintText: anniversaryDate == null
@@ -316,8 +346,10 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 16.h),
 
               // Date of Birth
-              Text(context.l10n.onboarding_step1_date_of_birth,
-                  style: labelStyle,),
+              Text(
+                context.l10n.onboarding_step1_date_of_birth,
+                style: labelStyle,
+              ),
               SizedBox(height: 10.h),
               MyDatePickerButton(
                 hintText: dob == null

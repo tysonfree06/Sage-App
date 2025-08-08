@@ -18,7 +18,6 @@ class IdeaSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sessionController = SessionController();
-    final isPremium = sessionController.user!.isPremium;
     return Padding(
       padding: EdgeInsets.all(24.w),
       child: Column(
@@ -26,6 +25,7 @@ class IdeaSheet extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
+              final isPremium = sessionController.user!.isPremium;
               if (!isPremium!) {
                 IdeasServices.showSubscriptionDialog(context);
               } else {

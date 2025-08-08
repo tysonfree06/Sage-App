@@ -43,16 +43,36 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
         child: ListView(
           children: [
             // Top image
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(16),
+            //   child: Image.network(
+            //     'https://picsum.photos/200/300',
+            //     height: 190,
+            //     width: double.infinity,
+            //     fit: BoxFit.cover,
+            //   ),
+            // ),
+
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.network(
-                'https://picsum.photos/200/300',
-                height: 190,
-                width: double.infinity,
-                fit: BoxFit.cover,
+              child: Stack(
+                children: [
+                  if (widget.ideaDetails?['image'] != null &&
+                      widget.ideaDetails?['image'] != '')
+                    Image.network(
+                      widget.ideaDetails?['image'] as String,
+                      width: double.infinity,
+                      height: 190.h,
+                    ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.black38,
+                    width: double.infinity,
+                    height: 190.h,
+                  ),
+                ],
               ),
             ),
-
             const SizedBox(height: 12),
 
             // Tags
@@ -216,9 +236,10 @@ class MyAddedIdeaInfo extends StatelessWidget {
                 Text(
                   NotificationsServices.getTimeAgo(dateCreated),
                   style: TextStyle(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey,),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                  ),
                 ),
               ],
             ),

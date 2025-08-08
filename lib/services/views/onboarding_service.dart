@@ -43,19 +43,22 @@ class OnboardingService {
     required Map<String, dynamic> payload,
   }) async {
     try {
-      await _userRepository.updateProfile(payload);
-
-      if (context.mounted) {
-        context.flushBarSuccessMessage(message: 'Data Uploaded');
-        Timer(
-          const Duration(seconds: 1),
-          () => Navigator.pushNamedAndRemoveUntil(
-            context,
-            RoutesName.subscription,
-            arguments: true, //Show Skip Button
-            (route) => false,
-          ),
-        );
+      final response = await _userRepository.updateProfile(payload);
+      if (response['message'] != null) {
+        if (context.mounted) {
+          context.flushBarSuccessMessage(
+            message: response['message'] as String,
+          );
+          Timer(
+            const Duration(seconds: 1),
+            () => Navigator.pushNamedAndRemoveUntil(
+              context,
+              RoutesName.subscription,
+              arguments: true, //Show Skip Button
+              (route) => false,
+            ),
+          );
+        }
       }
 
       debugPrint('[OnboardingService] ✅ OnBoarding Data Upload success');

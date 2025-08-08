@@ -40,7 +40,6 @@ class _IdeaCardState extends State<IdeaCard> {
 
     final bool isBookmarked = savedBy.contains(userId.toString());
 
-    final isPremium = sessionController.user!.isPremium;
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 16.w,
@@ -84,36 +83,42 @@ class _IdeaCardState extends State<IdeaCard> {
                     SizedBox(
                       height: 2.h,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IdeaTag(
-                          label: widget.data['type'].toString(),
-                        ),
-                        SizedBox(
-                          width: 110.w,
-                        ),
-                        if (widget.showOptionsButton)
-                          Padding(
-                            padding: EdgeInsets.only(right: 5.w),
-                            child: GestureDetector(
-                              onTap: () {
-                                IdeasServices.showIdeaSheet(
-                                  context,
-                                  widget.data['_id'] as String,
-                                  () {
-                                    widget.onBookmarkPressed?.call();
-                                  },
-                                  () {},
-                                  isBookmarked: isBookmarked,
-                                );
-                              },
-                              child: Assets.icons.threeDots.svg(height: 14.h),
-                            ),
-                          )
-                        else
-                          const SizedBox.shrink(),
-                      ],
+                    SizedBox(
+                      width: 185.w,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IdeaTag(
+                            label: widget.data['type'].toString(),
+                          ),
+                          if (widget.showOptionsButton)
+                            Padding(
+                              padding: EdgeInsets.only(right: 5.w),
+                              child: GestureDetector(
+                                onTap: () {
+                                  IdeasServices.showIdeaSheet(
+                                    context,
+                                    widget.data['_id'] as String,
+                                    () {
+                                      widget.onBookmarkPressed?.call();
+                                    },
+                                    () {},
+                                    isBookmarked: isBookmarked,
+                                  );
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: 18.w,
+                                  height: 16.h,
+                                  child:
+                                      Assets.icons.threeDots.svg(height: 14.h),
+                                ),
+                              ),
+                            )
+                          else
+                            const SizedBox.shrink(),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 8.h),
                     SizedBox(
@@ -172,6 +177,8 @@ class _IdeaCardState extends State<IdeaCard> {
                           //InkWell as a replacement to Gesture Detector
                           InkWell(
                             onTap: () async {
+                              final isPremium =
+                                  sessionController.user!.isPremium;
                               if (!isPremium!) {
                                 IdeasServices.showSubscriptionDialog(context);
                               } else {

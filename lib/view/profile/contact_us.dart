@@ -47,8 +47,12 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           key: formKey,
           child: ListView(
             children: [
-              _buildContactUsSection(context, 'Email Address',
-                  textController: _emailController, hint: 'alex123@gmail.com',),
+              _buildContactUsSection(
+                context,
+                'Email Address',
+                textController: _emailController,
+                hint: 'alex123@gmail.com',
+              ),
               _buildContactUsSection(
                 context,
                 'Subject Line',
@@ -138,6 +142,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           )
         else
           MyTextField(
+            textCapitalization: TextCapitalization.none,
             controller: textController as TextEditingController,
             hint: hint,
             suffixIcon: suffixIcon,

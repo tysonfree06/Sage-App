@@ -99,7 +99,7 @@ class IdeasServices {
       title: Text(
         title,
         style: TextStyle(
-          fontSize: 20.sp,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -131,9 +131,9 @@ class IdeasServices {
                 isEditIdea: true,
                 ideaDetails: ideaDetails,
               );
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
+              // if (context.mounted) {
+              //   Navigator.of(context).pop();
+              // }
             },
             style: IconButton.styleFrom(
               backgroundColor: Colors.white,
@@ -276,7 +276,7 @@ class IdeasServices {
       if (response != null) {
         if (context.mounted) {
           context.flushBarSuccessMessage(
-            message: 'Bookmark added successfully',
+            message: 'Idea saved successfully',
           );
         }
         debugPrint('Bookmark added successfully');
@@ -292,7 +292,7 @@ class IdeasServices {
       } else {
         if (context.mounted) {
           context.flushBarErrorMessage(
-            message: 'Failed to add bookmark',
+            message: 'Failed to save idea',
           );
         }
         debugPrint('[IdeasServices] ❌ Unexpected: $e');
