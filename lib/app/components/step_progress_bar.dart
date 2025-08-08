@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 
 class StepProgressBar extends StatelessWidget {
+
+  const StepProgressBar({
+    required this.totalSteps, required this.currentStep, super.key,
+    this.activeColor = const Color(0xFF2F6F73),
+    this.inactiveColor = const Color(0xFFD0DDDE),
+    this.checkColor = Colors.white,
+  });
   final int totalSteps;
   final int currentStep;
   final Color activeColor;
   final Color inactiveColor;
   final Color checkColor;
 
-  const StepProgressBar({
-    super.key,
-    required this.totalSteps,
-    required this.currentStep,
-    this.activeColor = const Color(0xFF2F6F73),
-    this.inactiveColor = const Color(0xFFD0DDDE),
-    this.checkColor = Colors.white,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: List.generate(totalSteps * 2 - 1, (index) {
         if (index.isEven) {
-          int stepIndex = index ~/ 2;
-          bool isCompleted = stepIndex < currentStep;
-          bool isActive = stepIndex == currentStep;
+          final int stepIndex = index ~/ 2;
+          final bool isCompleted = stepIndex < currentStep;
+          final bool isActive = stepIndex == currentStep;
 
           return Container(
             width: 30,

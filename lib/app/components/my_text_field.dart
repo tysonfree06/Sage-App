@@ -16,6 +16,7 @@ class MyTextField extends StatelessWidget {
     this.textInputAction = TextInputAction.done,
     this.textAlign = TextAlign.start,
     this.maxLength,
+    this.maxLines,
   });
 
   final TextEditingController? controller;
@@ -30,6 +31,7 @@ class MyTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final TextAlign textAlign;
   final int? maxLength;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class MyTextField extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       maxLength: maxLength,
+      maxLines: maxLines,
       decoration: InputDecoration(
         hintText: !label ? hint : null,
         labelText: label ? hint : null,
@@ -50,7 +53,7 @@ class MyTextField extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon != null
             ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: suffixIcon,
               )
             : null,

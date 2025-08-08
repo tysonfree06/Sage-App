@@ -4,6 +4,7 @@ import 'dart:io';
 abstract class BaseApiServices {
   Future<Map<String, dynamic>> get({
     required String url,
+    Map<String, dynamic> queryParams,
   });
   Future<Map<String, dynamic>> post({
     required String url,

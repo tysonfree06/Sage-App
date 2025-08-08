@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
+import 'package:sage/app/utils/extensions/validations_exception.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/settings_service.dart';
@@ -26,10 +28,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmNewPasswordController = TextEditingController();
 
-  bool get isFilled =>
-      oldPasswordController.text.isNotEmpty &&
-      newPasswordController.text.isNotEmpty &&
-      confirmNewPasswordController.text.isNotEmpty;
+  final ValueNotifier<bool> isFormFilled = ValueNotifier(false);
+
+  bool isLoading = false;
+
+  void _updateButtonState() {
+    final isFilled = oldPasswordController.text.trim().isNotEmpty &&
+        newPasswordController.text.trim().isNotEmpty &&
+        confirmNewPasswordController.text.trim().isNotEmpty;
+    isFormFilled.value = isFilled;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    oldPasswordController.addListener(_updateButtonState);
+    newPasswordController.addListener(_updateButtonState);
+    confirmNewPasswordController.addListener(_updateButtonState);
+  }
 
   @override
   void dispose() {
@@ -81,6 +97,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   valueListenable: _obscureOldPassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return context.l10n.error_password_required;
+                        } else if (!value.lessSecurePasswordValidator()) {
+                          return context.l10n.error_password_strength;
+                        }
+                        return null;
+                      },
                       controller: oldPasswordController,
                       hint: context.l10n.change_old_password_hint,
                       obscureText: obscure,
@@ -111,6 +135,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   valueListenable: _obscureNewPassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return context.l10n.error_password_required;
+                        } else if (!value.lessSecurePasswordValidator()) {
+                          return context.l10n.error_password_strength;
+                        }
+                        return null;
+                      },
                       controller: newPasswordController,
                       hint: context.l10n.reset_new_password_hint,
                       obscureText: obscure,
@@ -142,6 +174,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   valueListenable: _obscureConfirmPassword,
                   builder: (_, obscure, __) {
                     return MyFormTextField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return context.l10n.error_password_required;
+                        } else if (!value.lessSecurePasswordValidator()) {
+                          return context.l10n.error_password_strength;
+                        }
+                        return null;
+                      },
                       controller: confirmNewPasswordController,
                       hint: context.l10n.reset_confirm_password_hint,
                       obscureText: obscure,
@@ -166,21 +206,46 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             right: 16.w,
             bottom: MediaQuery.of(context).viewInsets.bottom + 30.h,
           ),
-          child: MyButton(
-            label: context.l10n.change_update,
-            onPressed: isFilled
-                ? () async {
-                    if (formKey.currentState!.validate()) {
-                      await SettingService().changePassword(
-                        context: context,
-                        oldPassword: oldPasswordController.text.trim(),
-                        newPassword: newPasswordController.text.trim(),
-                        confirmPassword:
-                            confirmNewPasswordController.text.trim(),
-                      );
-                    }
-                  }
-                : null,
+          child: ValueListenableBuilder<bool>(
+            valueListenable: isFormFilled,
+            builder: (_, isFilled, __) {
+              return SizedBox(
+                height: 50.h,
+                child: MyButton(
+                  isLoading: isLoading,
+                  label: context.l10n.reset_continue,
+                  onPressed: isFilled && !isLoading
+                      ? () async {
+                          if (newPasswordController.text !=
+                              confirmNewPasswordController.text) {
+                            context.flushBarErrorMessage(
+                              message:
+                                  context.l10n.error_confirm_password_mismatch,
+                            );
+
+                            return;
+                          }
+
+                          setState(() {
+                            isLoading = true;
+                          });
+                          if (formKey.currentState!.validate()) {
+                            await SettingService().changePassword(
+                              context: context,
+                              oldPassword: oldPasswordController.text.trim(),
+                              newPassword: newPasswordController.text.trim(),
+                              confirmPassword:
+                                  confirmNewPasswordController.text.trim(),
+                            );
+                          }
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                      : null,
+                ),
+              );
+            },
           ),
         ),
       ),

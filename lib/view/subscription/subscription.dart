@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
+import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/subscription.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
+import 'package:sage/services/views/subscription_services.dart';
 import 'package:sage/view/subscription/widget/my_scaffold.dart';
 import 'package:sage/view/subscription/widget/subscription_tile.dart';
 
-class SubscriptionScreen extends StatelessWidget {
+class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({
     super.key,
     this.showSkip = false,
@@ -21,17 +25,97 @@ class SubscriptionScreen extends StatelessWidget {
   final bool showSkip;
 
   @override
+  State<SubscriptionScreen> createState() => _SubscriptionScreenState();
+}
+
+class _SubscriptionScreenState extends State<SubscriptionScreen> {
+  final _subscriptionService = SubscriptionService();
+  bool isLoading = false;
+  //initial payment id
+  String priceId = Env.stripeYearly;
+  @override
   Widget build(BuildContext context) {
+    //Step 3: Create subscription
+    Future<void> createSubscription(Map<dynamic, dynamic> intent) async {
+      debugPrint('CREATE SUBSCRIPTION FUNCTION CALLED');
+      await _subscriptionService.createSubscription(
+        context,
+        priceId,
+        intent['customerId'] as String,
+        intent['setupIntentId'] as String,
+        isSignupFlow: widget.showSkip,
+      );
+    }
+
+    //Step 2: Pay
+    Future<void> pay(BuildContext context, Map<dynamic, dynamic> intent) async {
+      setState(() {
+        isLoading = true;
+      });
+      final clientSecret = intent['clientSecret'] as String?;
+
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          // paymentIntentClientSecret: clientSecret as String, //this line is commented and replaced by "setupItnent Client Secret" for testing... #muttas
+          setupIntentClientSecret: clientSecret,
+          merchantDisplayName: 'Sage',
+          style: ThemeMode.light,
+        ),
+      );
+
+      try {
+        await Stripe.instance.presentPaymentSheet();
+        //Create Subscripion here
+        await createSubscription(intent);
+        //END: Create Subscription here
+        // if (context.mounted) {
+        //   context.flushBarSuccessMessage(message: 'Payment Successful!!');
+        // }
+      } on Exception catch (e) {
+        debugPrint('❌ PAYMENT FAILED WITH ERROR: $e');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: 'Payment Failed...');
+        }
+      }
+      if (context.mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+    //END: Pay
+
+    //Step 1: getPaymentIntent
+    Future<void> getPaymentIntent() async {
+      try {
+        final Map<dynamic, dynamic> intent =
+            await _subscriptionService.createPaymentIntent(
+          context,
+          priceId,
+        );
+        if (context.mounted) await pay(context, intent);
+        debugPrint('✅ INTENT CREATED SUCCESSFULLY');
+        debugPrint('INTENT: $intent');
+      } on Exception catch (e) {
+        debugPrint('❌ Error Creating Intent: $e');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: 'Something went wrong');
+        }
+      }
+    }
+
     return MyScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: !showSkip
-            ? BackButton(
-                color: context.colors.mainGreenLight,
+        leading: !widget.showSkip
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                color: !isLoading ? context.colors.mainGreenLight : Colors.grey,
+                onPressed: !isLoading ? () => Navigator.pop(context) : null,
               )
-            : null,
+            : const SizedBox.shrink(),
         actions: [
-          if (showSkip)
+          if (widget.showSkip)
             MyTextButton(
               isDark: false,
               fontSize: 16.sp,
@@ -78,9 +162,36 @@ class SubscriptionScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
+              //prices
               SubscriptionOption(
                 subscriptionOptions: SubscriptionModel.subscriptions,
+                onIndexChanged: (index) {
+                  switch (index) {
+                    case 0:
+                      setState(() {
+                        priceId = Env.stripeYearly;
+                      });
+                      debugPrint('PRICE ID IS NOW: $priceId');
+                    case 1:
+                      setState(() {
+                        priceId = Env.stripeMonthly;
+                      });
+                      debugPrint('PRICE ID IS NOW: $priceId');
+
+                    case 2:
+                      setState(() {
+                        priceId = Env.stripeWeekly;
+                      });
+                      debugPrint('PRICE ID IS NOW: $priceId');
+
+                    default:
+                      setState(() {
+                        priceId = Env.stripeYearly;
+                      });
+                  }
+                },
               ),
+              //END: prices
               SizedBox(height: 12.h),
               Text(
                 context.l10n.sub_what_is_include,
@@ -148,8 +259,16 @@ class SubscriptionScreen extends StatelessWidget {
               ),
               SizedBox(height: 32.h),
               MyButton(
+                isLoading: isLoading,
                 label: context.l10n.subscribe,
-                onPressed: () {},
+                onPressed: () async {
+                  setState(() => isLoading = true);
+                  await getPaymentIntent();
+                  if (mounted) {
+                    setState(() => isLoading = false);
+                  }
+                },
+                // onPressed: () => pay(context),
               ),
               SizedBox(height: 16.h),
             ],

@@ -10,6 +10,7 @@ import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/repository/image_upload_repo.dart';
+import 'package:sage/repository/settings_repo.dart';
 import 'package:sage/repository/user_repo.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/logout_service.dart';
@@ -24,7 +25,18 @@ class SettingService {
   final _listEq = const ListEquality<String>();
   final String tag = 'SettingService';
 
-  static Future<void> goToEditProfileScreen(BuildContext context) async {
+  // static Future<void> goToEditProfileScreen(
+  //   BuildContext context,
+  // ) async {
+  //   await Navigator.pushNamed(
+  //     context,
+  //     RoutesName.editProfile,
+  //   );
+  // }
+
+  static Future<void> goToEditProfileScreen(
+    BuildContext context,
+  ) async {
     await Navigator.pushNamed(
       context,
       RoutesName.editProfile,
@@ -52,10 +64,15 @@ class SettingService {
     );
   }
 
-  static Future<void> goToNoSubscriptionScreen(BuildContext context) async {
+  static Future<void> goToSubscriptionScreen(
+    BuildContext context,
+    bool isPremium,
+  ) async {
+    //if user is premium (subscription is active), go to active subscription screen,
+    //otherwise show subscription packages
     await Navigator.pushNamed(
       context,
-      RoutesName.subscription,
+      isPremium ? RoutesName.activeSubscription : RoutesName.subscription,
       arguments: false, //show skip button
     );
   }
@@ -125,7 +142,7 @@ class SettingService {
   //   }
   // }
 
-  Future<String?> uploadProfileImage(
+  Future<String?> uploadImage(
     BuildContext context, {
     required File file,
   }) async {
@@ -167,17 +184,17 @@ class SettingService {
       'userId': _sessionController.user?.id,
       if (name != null && user?.name != name) 'name': name,
       if (loveLanguage != null && user?.loveLanguage != loveLanguage)
-        'love_language': loveLanguage,
+        'loveLanguage': loveLanguage,
       if (apologyLanguage != null && user?.apologyLanguage != apologyLanguage)
-        'apology_language': apologyLanguage,
+        'apologyLanguage': apologyLanguage,
       if (communicationStyle != null &&
           user?.communicationStyle != communicationStyle)
-        'communication_style': communicationStyle,
+        'communicationStyle': communicationStyle,
       if (budgetLevel != null && user?.budgetLevel != budgetLevel)
-        'budget_level': budgetLevel,
+        'budgetLevel': budgetLevel,
       if (relationshipStatus != null &&
           user?.relationshipStatus != relationshipStatus)
-        'relationship_status': relationshipStatus,
+        'relationshipStatus': relationshipStatus,
       if (anniversaryDate != null && user?.anniversaryDate != anniversaryDate)
         'anniversaryDate': anniversaryDate.toIso8601String(),
       if (dateOfBirth != null && user?.dateOfBirth != dateOfBirth)
@@ -193,7 +210,7 @@ class SettingService {
       if (giftPreferences != null &&
           !_listEq.equals(user?.giftPreferences ?? [], giftPreferences))
         'giftPreferences': giftPreferences,
-      if (partnerCode != null && user?.partnerId != partnerCode)
+      if (partnerCode != null && user?.partnerId.toString() != partnerCode)
         'partnerCode': partnerCode, //previously 'partnerId' #muttas
     };
 
@@ -298,6 +315,14 @@ class SettingService {
         'userId': _sessionController.user?.id,
       };
       await _authRepository.removePartner(data);
+      //clear partner from session
+      if (context.mounted) {
+        _sessionController.partner = null;
+        await SplashServices().fetchProfile(context);
+        _sessionController.isPartnerFetched = false;
+      }
+
+      //End: Remove Partner
       if (context.mounted) {
         Navigator.of(context).pop();
         context.flushBarSuccessMessage(message: 'Partner Removed...');
@@ -326,10 +351,58 @@ class SettingService {
   }
 
   Future<void> sageLaunchUrl(String url) async {
+    // ignore: no_leading_underscores_for_local_identifiers
     final Uri _url = Uri.parse(url);
+    try {
+      await launchUrl(_url);
+    } catch (e) {
+      debugPrint('Error in sageLaunchUrl $e');
+    }
+    // if (!await launchUrl(_url)) {
+    //   throw Exception('Could not launch $_url');
+    // }
+  }
 
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
+  //send contact us request
+  Future<void> contactUs(
+    BuildContext context, {
+    required String email,
+    required String subjectLine,
+    required String description,
+  }) async {
+    final data = {
+      'email': email,
+      'subject': subjectLine,
+      'message': description,
+    };
+    try {
+      await SettingsRepository().sendUserQuery(data);
+
+      if (context.mounted) {
+        context.flushBarSuccessMessage(message: 'Response Submitted');
+      }
+    } catch (e, stackTrace) {
+      // Developer logging
+      if (e is AppException) {
+        debugPrint(
+          '[SettingsService] ❌ Failed to send response: ${e.debugMessage}',
+        );
+      } else {
+        debugPrint('[SettingService] ❌ Unexpected error: $e');
+
+        // Print first 15 lines of the stack trace
+        final lines = stackTrace.toString().split('\n');
+        final limitedStack = lines.take(15).join('\n');
+        debugPrint('[SettingsService] 🔍 StackTrace:\n$limitedStack');
+      }
+
+      // Show user-friendly error
+      if (context.mounted) {
+        final errorMessage = (e is AppException)
+            ? e.userMessage
+            : 'Something went wrong. Please try again.';
+        context.flushBarErrorMessage(message: errorMessage);
+      }
     }
   }
 }

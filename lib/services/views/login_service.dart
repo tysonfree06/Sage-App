@@ -7,11 +7,9 @@ import 'package:sage/model/user/user_model.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
 import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
-import 'package:sage/services/views/splash_services.dart';
 
 class LoginService {
   final AuthRepository _authRepository = AuthRepository();
-  final SplashServices _splashServices = SplashServices();
 
   static void goToForgotPassword(BuildContext context) {
     Navigator.pushNamed(
@@ -46,7 +44,7 @@ class LoginService {
       'email': email,
       'password': password,
     };
-    if (context.mounted) await _splashServices.fetchPartner(context);
+    // if (context.mounted) await _splashServices.fetchPartner(context);
     try {
       final response = await _authRepository.login(data);
       final String token = response['token'] as String;
@@ -58,9 +56,15 @@ class LoginService {
       debugPrint('Token saved: ${SessionController().token}');
 
       //save user
-      SessionController().user = UserModel.fromJson(
-        userData,
+      // SessionController().user = UserModel.fromJson(
+      //   userData,
+      // );
+      await SessionController().updateUser(
+        UserModel.fromJson(
+          userData,
+        ),
       );
+
       debugPrint('User saved: ${SessionController().user}');
 
       if (context.mounted) {

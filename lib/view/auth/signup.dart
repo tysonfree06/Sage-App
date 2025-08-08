@@ -8,6 +8,7 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/validations_exception.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/services/views/signup_service.dart';
 import 'package:sage/view/auth/widget/auth_scaffold.dart';
 
@@ -51,10 +52,10 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _fillFormForTesting() {
-    nameController.text = "MLB Test User";
-    emailController.text = "mtalha2410+SAGE24@gmail.com";
-    passwordController.text = "12345678";
-    confirmPasswordController.text = "12345678";
+    nameController.text = 'MLB Test User';
+    emailController.text = 'mtalha2410+SAGE24@gmail.com';
+    passwordController.text = '12345678';
+    confirmPasswordController.text = '12345678';
   }
 
   @override
@@ -329,7 +330,13 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               MyTextButton(
                                 label: context.l10n.lets_terms_conditions,
-                                onPressed: isLoading ? null : () {},
+                                onPressed: isLoading
+                                    ? null
+                                    : () {
+                                        SettingService().sageLaunchUrl(
+                                          'https://sage-frontend-eta.vercel.app/termsandconditions',
+                                        );
+                                      },
                               ),
                               Text(
                                 context.l10n.lets_and,
@@ -340,7 +347,13 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               MyTextButton(
                                 label: context.l10n.lets_privacy_policy,
-                                onPressed: isLoading ? null : () {},
+                                onPressed: isLoading
+                                    ? null
+                                    : () {
+                                        SettingService().sageLaunchUrl(
+                                          'https://sage-frontend-eta.vercel.app/privacy_policies',
+                                        );
+                                      },
                               ),
                             ],
                           ),

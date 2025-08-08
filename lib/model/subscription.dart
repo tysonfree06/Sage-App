@@ -1,13 +1,15 @@
 class Subscription {
   Subscription({
     required this.label,
+    required this.priceString,
     required this.price,
     this.discount,
     this.discountComparedTo,
   });
   final String label;
-  final String price;
+  final String priceString;
   final int? discount;
+  final double price;
   final String? discountComparedTo;
 }
 
@@ -23,19 +25,22 @@ class SubscriptionModel {
   static final List<Subscription> subscriptions = [
     Subscription(
       label: 'Yearly',
-      price: r'$67.99',
+      priceString: r'$67.99',
       discount: 60,
       discountComparedTo: 'Less Compared To weekly',
+      price: 67.99,
     ),
     Subscription(
       label: 'Monthly',
-      price: r'$6.99',
+      priceString: r'$6.99',
       discount: 50,
       discountComparedTo: 'Less Compared To weekly',
+      price: 6.99,
     ),
     Subscription(
       label: 'Weekly',
-      price: r'$2.99',
+      priceString: r'$2.99',
+      price: 2.99,
     ),
   ];
 

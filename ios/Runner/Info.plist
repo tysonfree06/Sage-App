@@ -37,6 +37,11 @@
 		<string>We need access to your photos to update your profile picture.</string>
 		<key>NSCameraUsageDescription</key>
 		<string>We need access to your camera to take a new profile picture.</string>
+		<!-- ✅ Apple Pay support -->
+		<key>NSAppleMusicUsageDescription</key>
+		<string>To enable Apple Pay</string>
+		<key>NSMerchantIdentifier</key>
+		<string>merchant.com.yourapp.id</string>
 		<!-- ✅ Allow HTTP connections (cleartext) -->
 		<key>NSAppTransportSecurity</key>
 		<dict>

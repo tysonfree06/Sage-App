@@ -75,6 +75,9 @@ class _AddPartnerSheetState extends State<AddPartnerSheet> {
                         setState(() => isLoading = false);
                       }
                     });
+                    // if (context.mounted) {
+                    //   await SplashServices().fetchPartner(context);
+                    // }
                   },
           ),
         ],

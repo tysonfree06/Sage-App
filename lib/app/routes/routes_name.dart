@@ -19,10 +19,15 @@ class RoutesName {
   static const String updateInterests = 'update_interests_screen';
   static const String updateGiftPreference = 'update_gift_preference_screen';
   static const String subscription = 'subscription_screen';
+  static const String activeSubscription = 'active_subscription_screen';
   static const String offerDetail = 'offer_detail_screen';
   static const String invitation = 'invitation_screen';
   static const String redeemPoint = 'redeem_point_screen';
   static const String contactUs = 'contact_us_screen';
   static const String exploreIdeas = 'explore_ideas_screen';
   static const String savedIdeas = 'saved_ideas_screen';
+  static const String myAddedIdeas = 'my_added_ideas_screen';
+  static const String ideaDetails = 'idea_details_screen';
+  static const String addIdea = 'add_idea_screen';
+  static const String notifications = 'notifications_screen';
 }

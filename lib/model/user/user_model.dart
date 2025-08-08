@@ -5,10 +5,10 @@ part 'user_model.g.dart';
 @JsonSerializable()
 class UserModel {
   UserModel({
-    this.location,
     required this.id,
     required this.name,
     required this.email,
+    this.location,
     this.verified,
     this.interests,
     this.giftPreferences,
@@ -29,6 +29,7 @@ class UserModel {
     this.mineParterCode,
     this.referrals,
     this.points,
+    this.isPremium,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -52,11 +53,12 @@ class UserModel {
   final String? budgetLevel;
   final String? communicationStyle;
   final DateTime? dateOfBirth;
-  final String? partnerCode;
+  final int? partnerCode;
   final String? image;
   final String? loveLanguage;
   final String? relationshipStatus;
-  final String? partnerId;
+  final int? partnerId;
+  final bool? isPremium;
 
   // 🔽 New fields
   @JsonKey(name: 'subscription')
@@ -81,11 +83,12 @@ class UserModel {
     String? budgetLevel,
     String? communicationStyle,
     DateTime? dateOfBirth,
-    String? partnerCode,
+    int? partnerCode,
     String? image,
     String? loveLanguage,
     String? relationshipStatus,
-    String? partnerId,
+    int? partnerId,
+    bool? isPremium,
     Subscription? subscriptionActive,
     String? mineinvitationCode,
     int? mineParterCode,
@@ -111,6 +114,7 @@ class UserModel {
       image: image ?? this.image,
       loveLanguage: loveLanguage ?? this.loveLanguage,
       relationshipStatus: relationshipStatus ?? this.relationshipStatus,
+      isPremium: isPremium ?? this.isPremium,
       partnerId: partnerId ?? this.partnerId,
       subscriptionActive: subscriptionActive ?? this.subscriptionActive,
       mineinvitationCode: mineinvitationCode ?? this.mineinvitationCode,

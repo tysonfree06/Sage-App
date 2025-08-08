@@ -25,12 +25,32 @@ class _CountdownTimerWidgetState extends State<CountdownTimerWidget> {
     );
   }
 
+  // void _updateCountdown() {
+  //   final now = DateTime.now();
+  //   final diff = widget.targetDate.difference(now);
+
+  //   setState(() {
+  //     _remaining = diff.isNegative ? Duration.zero : diff;
+  //   });
+  // }
+
   void _updateCountdown() {
     final now = DateTime.now();
-    final diff = widget.targetDate.difference(now);
+    final targetMonth = widget.targetDate.month;
+    final targetDay = widget.targetDate.day;
+
+    // Create anniversary date for this year
+    DateTime nextAnniversary = DateTime(now.year, targetMonth, targetDay);
+
+    // If the anniversary already passed this year, move to next year
+    if (nextAnniversary.isBefore(now)) {
+      nextAnniversary = DateTime(now.year + 1, targetMonth, targetDay);
+    }
+
+    final diff = nextAnniversary.difference(now);
 
     setState(() {
-      _remaining = diff.isNegative ? Duration.zero : diff;
+      _remaining = diff;
     });
   }
 
@@ -104,7 +124,7 @@ class _CountdownTimerWidgetState extends State<CountdownTimerWidget> {
             ),
             if (index < keys.length - 1)
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                padding: EdgeInsets.only(left: 4.w, right: 4.w, bottom: 24.h),
                 child: Text(
                   ':',
                   style: context.typography.label.copyWith(

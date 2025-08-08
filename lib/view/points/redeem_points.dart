@@ -6,6 +6,7 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/redeem_model.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/redeem_points_service.dart';
 import 'package:sage/view/points/widgets/offer_tile.dart';
 
@@ -19,7 +20,7 @@ class RedeemPointsScreen extends StatefulWidget {
 class _RedeemPointsScreenState extends State<RedeemPointsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
+  final SessionController _sessionController = SessionController();
   final List<RedeemOfferDetails> giftCards = [
     RedeemOfferDetails(
       backendId: '1',
@@ -39,11 +40,11 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       offerId: '#3456789013',
       title: 'Weekend Wellness Pack',
       points: 300,
-      startDate: DateTime(2025, 5, 1),
+      startDate: DateTime(2025, 5),
       endDate: DateTime(2025, 5, 5),
       // no redemptionDate
       description:
-          "A special wellness pack to help you recharge over the weekend with meditation, yoga, and healthy eating guides.",
+          'A special wellness pack to help you recharge over the weekend with meditation, yoga, and healthy eating guides.',
       imageUrl:
           'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80',
     ),
@@ -56,7 +57,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       endDate: DateTime(2025, 6, 20),
       redemptionDate: DateTime(2025, 6, 16),
       description:
-          "Tools and guides to strengthen your relationship with activities and communication exercises.",
+          'Tools and guides to strengthen your relationship with activities and communication exercises.',
       imageUrl:
           'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=800&q=80',
     ),
@@ -69,7 +70,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       endDate: DateTime(2025, 7, 10),
       // no redemptionDate
       description:
-          "Boost your daily routine with quick, healthy habits designed to improve your lifestyle and relationships.",
+          'Boost your daily routine with quick, healthy habits designed to improve your lifestyle and relationships.',
       imageUrl:
           'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80',
     ),
@@ -82,7 +83,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       endDate: DateTime(2025, 8, 15),
       redemptionDate: DateTime(2025, 8, 13),
       description:
-          "Ideas and tips for unforgettable date nights that bring you closer.",
+          'Ideas and tips for unforgettable date nights that bring you closer.',
       imageUrl:
           'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80',
     ),
@@ -91,11 +92,11 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       offerId: '#7890123457',
       title: 'Mindfulness Challenge',
       points: 220,
-      startDate: DateTime(2025, 9, 1),
+      startDate: DateTime(2025, 9),
       endDate: DateTime(2025, 9, 7),
       redemptionDate: DateTime(2025, 9, 2),
       description:
-          "A week-long mindfulness challenge to help you stay present and improve your emotional health.",
+          'A week-long mindfulness challenge to help you stay present and improve your emotional health.',
       imageUrl:
           'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80',
     ),
@@ -108,7 +109,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       endDate: DateTime(2025, 10, 15),
       // no redemptionDate
       description:
-          "Master effective communication skills for stronger and healthier relationships.",
+          'Master effective communication skills for stronger and healthier relationships.',
       imageUrl:
           'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=800&q=80',
     ),
@@ -117,11 +118,11 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       offerId: '#0123456780',
       title: 'Gratitude Journal',
       points: 130,
-      startDate: DateTime(2025, 12, 1),
+      startDate: DateTime(2025, 12),
       endDate: DateTime(2025, 12, 3),
       redemptionDate: DateTime(2025, 12, 2),
       description:
-          "A digital gratitude journal to help you focus on the positive aspects of your relationships.",
+          'A digital gratitude journal to help you focus on the positive aspects of your relationships.',
       imageUrl:
           'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80',
     ),
@@ -134,7 +135,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       endDate: DateTime(2025, 12, 20),
       redemptionDate: DateTime(2025, 12, 16),
       description:
-          "Techniques and tools to help manage stress and improve emotional well-being.",
+          'Techniques and tools to help manage stress and improve emotional well-being.',
       imageUrl:
           'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80',
     ),
@@ -156,7 +157,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
     return giftCards
         .where((giftCard) =>
             giftCard.redemptionDate == null &&
-            giftCard.endDate.isAfter(DateTime.now()))
+            giftCard.endDate.isAfter(DateTime.now()),)
         .toList();
   }
 
@@ -235,7 +236,7 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '1200',
+                          _sessionController.user?.points.toString() ?? '0',
                           style: context.typography.title.copyWith(
                             fontSize: 24.sp,
                             fontWeight: FontWeight.w600,

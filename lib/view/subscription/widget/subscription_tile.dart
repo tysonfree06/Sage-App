@@ -9,9 +9,11 @@ import 'package:sage/model/subscription.dart';
 class SubscriptionOption extends StatefulWidget {
   const SubscriptionOption({
     required this.subscriptionOptions,
+    required this.onIndexChanged,
     super.key,
   });
 
+  final void Function(int) onIndexChanged;
   final List<Subscription> subscriptionOptions;
 
   @override
@@ -31,12 +33,15 @@ class SubscriptionOptionState extends State<SubscriptionOption> {
           children: [
             SubscriptionTile(
               label: option.label,
-              price: option.price,
+              price: option.priceString,
               discount: option.discount,
               discountComparedTo: option.discountComparedTo,
               index: index,
               selectedIndex: sub.selectedIndex,
-              onSelect: (index) => setState(() => sub.selectedIndex = index),
+              onSelect: (index) {
+                setState(() => sub.selectedIndex = index);
+                widget.onIndexChanged(index);
+              },
             ),
             if (index != widget.subscriptionOptions.length - 1)
               SizedBox(height: 10.h),
@@ -99,7 +104,9 @@ class SubscriptionTile extends StatelessWidget {
                   child: Radio<int>(
                     value: index,
                     groupValue: selectedIndex,
-                    onChanged: (value) => onSelect(value!),
+                    onChanged: (value) {
+                      onSelect(value!);
+                    },
                   ),
                 ),
                 Padding(

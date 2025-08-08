@@ -15,12 +15,15 @@ import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/image_picker.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/settings_service.dart';
+import 'package:sage/services/views/signup_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen({super.key});
 
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  _EditProfileScreenState createState() {
+    return _EditProfileScreenState();
+  }
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
@@ -28,6 +31,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _session = SessionController();
   final _pickerService = ImagePickerService();
   final _service = SettingService();
+
+  bool isLoading = false;
 
   // Controllers & state
   late TextEditingController _nameController;
@@ -147,7 +152,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() => _busy = true);
 
     // Service now handles all error display internally
-    final url = await _service.uploadProfileImage(context, file: file);
+    final url = await _service.uploadImage(context, file: file);
 
     if (mounted) {
       setState(() {
@@ -165,8 +170,42 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       : '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   Future<void> _submit() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
     if (!_formKey.currentState!.validate()) return;
+    if (!SignupService().isAtLeast18YearsOld(_dob!)) {
+      context.flushBarErrorMessage(
+        message: 'You should be at least 18 years old!',
+      );
+      if (mounted) {
+        setState(() {
+          isLoading = true;
+        });
+      }
+      return;
+    }
+
+    if (!SignupService().isAnniversaryDateLessThanDOB(
+      _dob!,
+      _anniversaryDate!,
+    )) {
+      context.flushBarErrorMessage(
+        message: 'Date of Birth should be befre Anniversary Date!',
+      );
+      if (mounted) {
+        setState(() {
+          isLoading = true;
+        });
+      }
+      return;
+    }
+
     setState(() => _busy = true);
+
     await _service.updateProfile(
       context: context,
       name: _nameController.text,
@@ -183,7 +222,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       image: _uploadedUrl,
       popScreen: true,
     );
-    setState(() => _busy = false);
+    setState(() {
+      _busy = false;
+      isLoading = false;
+    });
   }
 
   @override
@@ -197,11 +239,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(color: context.colors.mainGreenLight),
-        title: Text(context.l10n.edit_profile,
-            style: context.typography.title.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 20.sp,
-                color: context.colors.textDarkGreen)),
+        title: Text(
+          context.l10n.edit_profile,
+          style: context.typography.title.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.sp,
+            color: context.colors.textDarkGreen,
+          ),
+        ),
       ),
       body: SafeArea(
         child: Form(
@@ -214,21 +259,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildTextField(
                   label: context.l10n.lets_name_label,
                   controller: _nameController,
-                  hint: context.l10n.lets_name_hint),
+                  hint: context.l10n.lets_name_hint,),
               SizedBox(height: 16.h),
               _buildDropdown(
                   label:
                       context.l10n.onboarding_step1_what_is_your_love_language,
                   value: _loveLanguage,
                   items: _loveLanguages,
-                  onChanged: (v) => setState(() => _loveLanguage = v!)),
+                  onChanged: (v) => setState(() => _loveLanguage = v!),),
               SizedBox(height: 16.h),
               _buildDropdown(
                   label: context
                       .l10n.onboarding_step1_what_is_your_apology_language,
                   value: _apologyLanguage,
                   items: _apologyLanguages,
-                  onChanged: (v) => setState(() => _apologyLanguage = v!)),
+                  onChanged: (v) => setState(() => _apologyLanguage = v!),),
               SizedBox(height: 16.h),
               _buildDropdown(
                 label: context
@@ -241,13 +286,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SizedBox(height: 16.h),
               _buildDropdown(
-                  label: context.l10n.onboarding_step1_budget_level,
-                  value: _budgetLevel,
-                  items: _budgetLevels,
-                  onChanged: (v) => setState(() => _budgetLevel = v!)),
+                label: context.l10n.onboarding_step1_budget_level,
+                value: _budgetLevel,
+                items: _budgetLevels,
+                onChanged: (v) => setState(() => _budgetLevel = v!),
+              ),
               SizedBox(height: 16.h),
-              Text(context.l10n.onboarding_step1_relationship_status,
-                  style: labelStyle),
+              Text(
+                context.l10n.onboarding_step1_relationship_status,
+                style: labelStyle,
+              ),
               SizedBox(height: 10.h),
               CustomRadioGroup<String>(
                 options: _relationshipStatuses,
@@ -256,8 +304,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 labelBuilder: (v) => v,
               ),
               SizedBox(height: 16.h),
-              Text(context.l10n.onboarding_step1_anniversary_date,
-                  style: labelStyle),
+              Text(
+                context.l10n.onboarding_step1_anniversary_date,
+                style: labelStyle,
+              ),
               MyDatePickerButton(
                 hintText: _anniversaryDate == null
                     ? context.l10n.onboarding_step1_select_a_date
@@ -265,12 +315,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 selectedDate: _anniversaryDate,
                 onChanged: (d) => setState(() => _anniversaryDate = d),
                 suffixIcon: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Assets.icons.calander.svg()),
+                  padding: const EdgeInsets.all(14),
+                  child: Assets.icons.calander.svg(),
+                ),
               ),
               SizedBox(height: 16.h),
-              Text(context.l10n.onboarding_step1_date_of_birth,
-                  style: labelStyle),
+              Text(
+                context.l10n.onboarding_step1_date_of_birth,
+                style: labelStyle,
+              ),
               MyDatePickerButton(
                 hintText: _dob == null
                     ? context.l10n.onboarding_step1_select_a_date
@@ -278,39 +331,47 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 selectedDate: _dob,
                 onChanged: (d) => setState(() => _dob = d),
                 suffixIcon: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Assets.icons.calander.svg()),
+                  padding: const EdgeInsets.all(14),
+                  child: Assets.icons.calander.svg(),
+                ),
               ),
               SizedBox(height: 16.h),
               Text(context.l10n.onboarding_step1_location, style: labelStyle),
               SizedBox(height: 10.h),
               _buildDropdown(
-                  value: _city,
-                  items: _cities,
-                  onChanged: (v) => setState(() => _city = v!),
-                  hint: _city),
+                value: _city,
+                items: _cities,
+                onChanged: (v) => setState(() => _city = v!),
+                hint: _city,
+              ),
               SizedBox(height: 10.h),
               Row(
                 children: [
                   Expanded(
-                      child: _buildDropdown(
-                          value: _state,
-                          items: _states,
-                          onChanged: (v) => setState(() => _state = v!),
-                          hint: _state)),
+                    child: _buildDropdown(
+                      value: _state,
+                      items: _states,
+                      onChanged: (v) => setState(() => _state = v!),
+                      hint: _state,
+                    ),
+                  ),
                   SizedBox(width: 16.w),
                   Expanded(
-                      child: _buildDropdown(
-                          value: _country,
-                          items: _countries,
-                          onChanged: (v) => setState(() => _country = v!),
-                          hint: _country)),
+                    child: _buildDropdown(
+                      value: _country,
+                      items: _countries,
+                      onChanged: (v) => setState(() => _country = v!),
+                      hint: _country,
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 24.h),
               MyButton(
-                  label: context.l10n.edit_update,
-                  onPressed: _busy ? null : _submit),
+                isLoading: isLoading,
+                label: context.l10n.edit_update,
+                onPressed: _busy ? null : _submit,
+              ),
               SizedBox(height: 30.h),
             ],
           ),
@@ -328,8 +389,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             height: 100.h,
             margin: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
+              color: Colors.grey[200],
               shape: BoxShape.circle,
-              color: context.colors.mainGreenLight.withOpacity(.2),
+              // color: Colors.grey[200],
+            ),
+            child: Assets.icons.user.svg(),
+          ),
+          Container(
+            width: 100.w,
+            height: 100.h,
+            margin: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              // color: Colors.grey[200],
               image: _localImage != null || _uploadedUrl != null
                   ? DecorationImage(
                       image: _localImage != null
@@ -337,7 +409,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           : NetworkImage(_uploadedUrl!) as ImageProvider,
                       fit: BoxFit.cover,
                     )
-                  : null,
+                  : DecorationImage(
+                      image: AssetImage(
+                        Assets.icons.user.path,
+                      ),
+                    ),
             ),
             child:
                 _busy ? const Center(child: CircularProgressIndicator()) : null,
@@ -365,7 +441,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       children: [
         Text(label,
             style: context.typography.title
-                .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp)),
+                .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp),),
         SizedBox(height: 10.h),
         MyFormTextField(
           controller: controller,
@@ -381,10 +457,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildDropdown({
-    String? label,
-    required String value,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
+    required String value, required List<String> items, required ValueChanged<String?> onChanged, String? label,
     String? hint,
   }) {
     return Column(
@@ -393,7 +466,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         if (label != null)
           Text(label,
               style: context.typography.title
-                  .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp)),
+                  .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp),),
         if (label != null) SizedBox(height: 10.h),
         MyDropdown(items: items, hint: hint ?? value, onChanged: onChanged),
       ],

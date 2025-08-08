@@ -10,13 +10,20 @@ import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/view/home/widgets/add_partner_sheet.dart';
 
-class UserNotAvailableWidget extends StatelessWidget {
-  const UserNotAvailableWidget({super.key});
+class UserNotAvailableWidget extends StatefulWidget {
+  const UserNotAvailableWidget({required this.onParnerAdded, super.key});
+
+  final void Function() onParnerAdded;
 
   @override
+  State<UserNotAvailableWidget> createState() => _UserNotAvailableWidgetState();
+}
+
+class _UserNotAvailableWidgetState extends State<UserNotAvailableWidget> {
+  @override
   Widget build(BuildContext context) {
-    SessionController _sessionController = SessionController();
-    final referalCode = _sessionController.user!.mineinvitationCode ?? '';
+    final SessionController sessionController = SessionController();
+    final minePartnerCode = sessionController.user!.mineParterCode ?? '';
     // const String referalCode = '546789';
     return DottedBorder(
       options: RoundedRectDottedBorderOptions(
@@ -32,8 +39,15 @@ class UserNotAvailableWidget extends StatelessWidget {
               onTap: () => MyBottomSheet.show<void>(
                     context,
                     child: const AddPartnerSheet(),
-                  ),
-              child: Assets.icons.addFilled.svg()),
+                  ).then((_) {
+                    // This runs after EditProfileScreen is popped
+                    // Refresh the screen or fetch new data
+                    setState(() {
+                      widget.onParnerAdded();
+                      debugPrint('SET STATE CALLED....');
+                    });
+                  }),
+              child: Assets.icons.addFilled.svg(),),
           SizedBox(height: 8.h),
           Text(
             'Add Partner',
@@ -71,7 +85,7 @@ class UserNotAvailableWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  referalCode,
+                  minePartnerCode.toString(),
                   style: context.typography.body.copyWith(
                     color: context.colors.white.withValues(alpha: .6),
                     fontSize: 11.sp,
@@ -81,7 +95,11 @@ class UserNotAvailableWidget extends StatelessWidget {
                 SizedBox(width: 8.w),
                 GestureDetector(
                   onTap: () {
-                    Clipboard.setData(ClipboardData(text: referalCode));
+                    Clipboard.setData(
+                      ClipboardData(
+                        text: minePartnerCode.toString(),
+                      ),
+                    );
                     if (context.mounted) {
                       context.flushBarSuccessMessage(
                         message: 'Copied to clipboard',

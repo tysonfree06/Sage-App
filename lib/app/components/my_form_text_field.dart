@@ -3,6 +3,7 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 
 class MyFormTextField extends StatelessWidget {
   const MyFormTextField({
+    this.onChanged,
     super.key,
     this.controller,
     this.hint,
@@ -40,6 +41,7 @@ class MyFormTextField extends StatelessWidget {
   final String? initialValue;
   final bool readOnly;
   final FocusNode? focusNode;
+  final void Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class MyFormTextField extends StatelessWidget {
       focusNode?.canRequestFocus = false;
     }
     return TextFormField(
+      onChanged: onChanged,
       controller: controller ?? TextEditingController(text: initialValue),
       // readOnly: readOnly,
       enabled: !readOnly,

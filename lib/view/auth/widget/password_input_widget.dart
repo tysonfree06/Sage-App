@@ -49,12 +49,6 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
         }
         return null;
       },
-      // onChanged: (value) {
-      //   // Dispatching PasswordChanged event when password input changes
-      //   //TODO: Fix this
-      //   // context.read<LoginBloc>().add(PasswordChanged(password: value));
-      // },
-      textInputAction: TextInputAction.done,
     );
   }
 }

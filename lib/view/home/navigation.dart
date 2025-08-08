@@ -23,7 +23,6 @@ class NavigationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<NavigationProvider>();
-
     return DarkStatusBar(
       child: Scaffold(
         appBar: AppBar(

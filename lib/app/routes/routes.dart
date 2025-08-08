@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/model/redeem/redeem_model.dart';
+import 'package:sage/view/ideas/add_idea.dart';
 // import 'package:sage/model/redeem/radeem_model.dart';
 import 'package:sage/view/ideas/explore_ideas.dart';
+import 'package:sage/view/ideas/idea_details.dart';
+import 'package:sage/view/ideas/my_added_ideas.dart';
 import 'package:sage/view/ideas/saved_ideas.dart';
+import 'package:sage/view/notifications/notifications.dart';
+import 'package:sage/view/subscription/active_subscription.dart';
 import 'package:sage/view/views.dart';
 
 class Routes {
@@ -24,11 +29,13 @@ class Routes {
     RoutesName.updateInterests: (_) => const UpdateInterestsScreen(),
     RoutesName.updateGiftPreference: (_) => const UpdateGiftPreferenceScreen(),
     RoutesName.invitation: (_) => const InvitationScreen(),
-    RoutesName.redeemPoint: (_) =>
-        const RedeemPointsScreen(), //FIXME: Remove this comment after generated files fix #muttas
+    RoutesName.redeemPoint: (_) => const RedeemPointsScreen(),
     RoutesName.contactUs: (_) => const ContactUsScreen(),
     RoutesName.exploreIdeas: (_) => const ExploreIdeasScreen(),
     RoutesName.savedIdeas: (_) => const SavedIdeasScreen(),
+    RoutesName.myAddedIdeas: (_) => const MyAddedIdeasScreen(),
+    RoutesName.activeSubscription: (_) => const ActiveSubscriptionScreen(),
+    RoutesName.notifications: (_) => const NotificationsScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -47,7 +54,6 @@ class Routes {
           settings: settings,
         );
       case RoutesName.offerDetail:
-        //FIXME: Remove this comment after generated files fix #muttas
         final offer = settings.arguments! as RedeemOfferDetails;
         return MaterialPageRoute(
           builder: (_) => OfferDetailScreen(offer: offer),
@@ -59,6 +65,31 @@ class Routes {
         final email = args['email']!;
         return MaterialPageRoute(
           builder: (_) => ResetPassword(email: email),
+          settings: settings,
+        );
+
+      case RoutesName.addIdea:
+        final Map<String, dynamic> emptyMap = {};
+        final args = settings.arguments! as Map<String, dynamic>;
+        final isEditIdea = args['isEditIdea'];
+        final ideaDetails = args['ideaDetails'] ?? emptyMap;
+        return MaterialPageRoute(
+          builder: (_) => AddIdeaScreen(
+            isEditIdea: isEditIdea as bool,
+            ideaDetails: ideaDetails as Map<String, dynamic>,
+          ),
+          settings: settings,
+        );
+
+      case RoutesName.ideaDetails:
+        final args = settings.arguments! as Map<String, dynamic>;
+        final isAddedIdeaScreen = args['isAddedIdeaScreen'];
+        final ideaDetails = args['ideaDeetails'] as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => IdeaDetailsScreen(
+            isAddedIdea: isAddedIdeaScreen as bool,
+            ideaDetails: ideaDetails,
+          ),
           settings: settings,
         );
 

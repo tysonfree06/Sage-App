@@ -5,6 +5,7 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/model/user/user_model.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/logout_service.dart';
 import 'package:sage/services/views/settings_service.dart';
@@ -21,7 +22,8 @@ class _SettingScreenState extends State<SettingScreen> {
   final SessionController _sessionController = SessionController();
   @override
   Widget build(BuildContext context) {
-    final user = _sessionController.user!;
+    final UserModel user = _sessionController.user!;
+    final bool isPremium = user.isPremium ?? false;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -81,7 +83,13 @@ class _SettingScreenState extends State<SettingScreen> {
               SettingTile(
                 icon: Assets.icons.edit.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_edit_profile,
-                onTap: () => SettingService.goToEditProfileScreen(context),
+                onTap: () => SettingService.goToEditProfileScreen(
+                  context,
+                ).then((_) {
+                  // This runs after EditProfileScreen is popped
+                  // Refresh the screen or fetch new data
+                  setState(() {});
+                }),
               ),
               SizedBox(height: 10.h),
               SettingTile(
@@ -105,7 +113,8 @@ class _SettingScreenState extends State<SettingScreen> {
               SettingTile(
                 icon: Assets.icons.subscription.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_subscription,
-                onTap: () => SettingService.goToNoSubscriptionScreen(context),
+                onTap: () =>
+                    SettingService.goToSubscriptionScreen(context, isPremium),
               ),
               SizedBox(height: 10.h),
               SettingTile(
@@ -113,7 +122,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 text: context.l10n.settings_remove_partner,
                 onTap: () {
                   if (user.partnerCode != null &&
-                      user.partnerCode!.isNotEmpty) {
+                      user.partnerCode != '' &&
+                      user.partnerCode != 0) {
                     SettingService.showRemovePartnerDialog(context);
                   } else {
                     context.flushBarErrorMessage(

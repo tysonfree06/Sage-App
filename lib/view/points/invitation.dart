@@ -10,10 +10,14 @@ import 'package:sage/services/session_manager/session_controller.dart';
 
 class InvitationScreen extends StatelessWidget {
   const InvitationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final sessionController = SessionController();
-    final referalCode = sessionController.user?.mineinvitationCode ?? '';
+    final user = sessionController.user!;
+    final referalCode = user.mineinvitationCode ?? '';
+    final String points = user.points.toString();
+    final String refferals = user.referrals!.length.toString();
 
     // const String referalCode = 'nzkKFg';
     return Scaffold(
@@ -61,12 +65,16 @@ class InvitationScreen extends StatelessWidget {
                           style: context.typography.title.copyWith(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w500,
-                              color: context.colors.white),
+                              color: context.colors.white,),
                         ),
                         SizedBox(width: 8.w),
                         GestureDetector(
                           onTap: () {
-                            Clipboard.setData(ClipboardData(text: referalCode));
+                            Clipboard.setData(
+                              ClipboardData(
+                                text: referalCode,
+                              ),
+                            );
                             if (context.mounted) {
                               context.flushBarSuccessMessage(
                                 message: 'Copied to clipboard',
@@ -102,7 +110,7 @@ class InvitationScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 10.h),
                           ColoredRichText(
-                            first: context.l10n.refer_twelve_hundred,
+                            first: points,
                             firstFontSize: 18.sp,
                             firstFontWeight: FontWeight.w600,
                             firstColor: context.colors.textLightGreen,
@@ -143,7 +151,7 @@ class InvitationScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 10.h),
                           Text(
-                            '03',
+                            refferals,
                             style: context.typography.title.copyWith(
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w500,

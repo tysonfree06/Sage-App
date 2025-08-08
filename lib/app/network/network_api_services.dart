@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
 import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/app/network/base_api_services.dart';
 import 'package:sage/app/utils/app_url.dart';
 import 'package:sage/app/utils/log_manager.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
-import 'package:sage/services/storage/local_storage.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart';
-import 'package:path/path.dart';
 
 /// Class for handling network API requests.
 class NetworkApiService implements BaseApiServices {
@@ -74,11 +74,30 @@ class NetworkApiService implements BaseApiServices {
     return headers;
   }
 
+  // Map<String, dynamic> _parseResponse(http.Response response) {
+  //   try {
+  //     final Map<String, dynamic> responseJson =
+  //         jsonDecode(response.body) as Map<String, dynamic>;
+  //     return responseJson;
+  //   } catch (e) {
+  //     _handleError(e, message: 'Error parsing response: ${response.body}');
+  //     rethrow;
+  //   }
+  // }
+
   Map<String, dynamic> _parseResponse(http.Response response) {
     try {
-      final Map<String, dynamic> responseJson =
-          jsonDecode(response.body) as Map<String, dynamic>;
-      return responseJson;
+      final dynamic decodedJson = jsonDecode(response.body);
+
+      // If it's already a Map<String, dynamic>, return as is
+      if (decodedJson is Map<String, dynamic>) {
+        return decodedJson;
+      }
+
+      // If it's not a Map, wrap it in a "data" key
+      return {
+        'data': decodedJson,
+      };
     } catch (e) {
       _handleError(e, message: 'Error parsing response: ${response.body}');
       rethrow;
@@ -110,11 +129,15 @@ class NetworkApiService implements BaseApiServices {
   @override
   Future<Map<String, dynamic>> get({
     required String url,
+    Map<String, dynamic>? queryParams,
   }) async {
     LogManager.logRequest('GET', url, null);
 
     final response = await http
-        .get(Uri.parse(url), headers: await _getHeaders(url))
+        .get(
+          Uri.parse(url).replace(queryParameters: queryParams),
+          headers: _getHeaders(url),
+        )
         .timeout(const Duration(seconds: 60));
 
     LogManager.logResponse(response.statusCode.toString(), response.body);
@@ -134,7 +157,7 @@ class NetworkApiService implements BaseApiServices {
     final response = await http
         .post(
           Uri.parse(url),
-          headers: await _getHeaders(url),
+          headers: _getHeaders(url),
           body: jsonEncode(data),
         )
         .timeout(const Duration(seconds: 60));
@@ -184,7 +207,7 @@ class NetworkApiService implements BaseApiServices {
     final response = await http
         .put(
           Uri.parse(url),
-          headers: await _getHeaders(url),
+          headers: _getHeaders(url),
           body: jsonEncode(data),
         )
         .timeout(const Duration(seconds: 60));
@@ -205,7 +228,7 @@ class NetworkApiService implements BaseApiServices {
     final response = await http
         .patch(
           Uri.parse(url),
-          headers: await _getHeaders(url),
+          headers: _getHeaders(url),
           body: jsonEncode(data),
         )
         .timeout(const Duration(seconds: 60));
@@ -226,7 +249,7 @@ class NetworkApiService implements BaseApiServices {
     final response = await http
         .delete(
           Uri.parse(url),
-          headers: await _getHeaders(url),
+          headers: _getHeaders(url),
           body: jsonEncode(data),
         )
         .timeout(const Duration(seconds: 60));

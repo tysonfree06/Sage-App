@@ -6,7 +6,7 @@ import 'package:sage/services/session_manager/session_controller.dart';
 
 class AuthRepository {
   final BaseApiServices _apiServices = NetworkApiService();
-  SessionController _sessionController = SessionController();
+  final SessionController _sessionController = SessionController();
 
   Future<Map<String, dynamic>> login(Map<String, dynamic> data) async {
     return _apiServices.post(
@@ -75,7 +75,7 @@ class AuthRepository {
   }
 
   // Fetches the partner details from the server
-  Future<Map<String, dynamic>> getPartner(String partnerCode) async {
+  Future<Map<String, dynamic>> getPartner(dynamic partnerCode) async {
     return _apiServices.get(
       url: '${AppUrl.getPartner}?partnerCode=$partnerCode',
     );

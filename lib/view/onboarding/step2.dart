@@ -11,10 +11,9 @@ import 'package:sage/l10n/l10n.dart';
 
 class Step2Screen extends StatefulWidget {
   const Step2Screen({
-    Key? key,
-    required this.onNext,
+    required this.onNext, super.key,
     this.initialSelectedInterests = const {},
-  }) : super(key: key);
+  });
 
   final Set<String> initialSelectedInterests;
   final void Function(Set<String> selectedInterests) onNext;
@@ -63,7 +62,8 @@ class _Step2ScreenState extends State<Step2Screen> {
   }
 
   // only allow Next when exactly 5 interests are chosen
-  bool get _canProceed => _selectedInterests.length == 5;
+  // bool get _canProceed => _selectedInterests.length == 5; //Changed #muttas
+  bool get _canProceed => _selectedInterests.isNotEmpty;
 
   void _onChipToggled(String item, bool selected) {
     setState(() {

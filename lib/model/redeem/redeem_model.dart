@@ -85,7 +85,7 @@ class RedeemOfferDetails {
 
   static DateTime _dateTimeFromJson(String date) {
     if (date.isEmpty) {
-      throw FormatException('Invalid date string');
+      throw const FormatException('Invalid date string');
     }
     return DateTime.parse(date);
   }

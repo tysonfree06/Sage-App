@@ -84,8 +84,13 @@ class SignupService {
       //save token in session controller
       await _sessionController.saveToken(token);
       //save user
-      SessionController().user = UserModel.fromJson(
-        userData,
+      // SessionController().user = UserModel.fromJson(
+      //   userData,
+      // );
+      await SessionController().updateUser(
+        UserModel.fromJson(
+          userData,
+        ),
       );
       // _sessionController.user.name = verifyResponse['name'] as String;
 
@@ -145,6 +150,33 @@ class SignupService {
           context.flushBarErrorMessage(message: 'Something went wrong');
         }
       }
+    }
+  }
+
+  //date validation
+  bool isAtLeast18YearsOld(DateTime dateOfBirth) {
+    final now = DateTime.now();
+    final eighteenYearsAgo = DateTime(now.year - 18, now.month, now.day);
+
+    if (dateOfBirth.isBefore(eighteenYearsAgo)) {
+      debugPrint('Date $dateOfBirth is at least 18 years in the past.');
+      return true;
+    } else {
+      debugPrint('Date $dateOfBirth is less than 18 years ago.');
+      return false;
+    }
+  }
+
+  bool isAnniversaryDateLessThanDOB(
+    DateTime dateOfBirth,
+    DateTime anniversaryDate,
+  ) {
+    if (dateOfBirth.isBefore(anniversaryDate)) {
+      debugPrint('Date of Birth is Before Anniversary');
+      return true;
+    } else {
+      debugPrint('Date of Birth is After Anniversary');
+      return false;
     }
   }
 }

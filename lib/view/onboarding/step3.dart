@@ -10,10 +10,9 @@ import 'package:sage/l10n/l10n.dart';
 
 class Step3Screen extends StatefulWidget {
   const Step3Screen({
-    Key? key,
-    required this.onNext,
+    required this.onNext, super.key,
     this.initialSelectedPrefs = const {},
-  }) : super(key: key);
+  });
 
   final void Function(Set<String>) onNext;
   final Set<String> initialSelectedPrefs;
@@ -26,20 +25,20 @@ class _Step3ScreenState extends State<Step3Screen> {
   late Set<String> _selectedPrefs;
 
   final List<String> _preferences = [
-    "Experiences",
-    "Tech & Gadgets",
-    "Jewelry",
-    "Fashion & Accessories",
-    "Books",
-    "Handmade & DIY",
-    "Events",
-    "Personalized Gifts",
-    "Subscription Services",
-    "Wellness & Self-Care",
-    "Home & Decor",
-    "Food & Gourmet",
-    "Travel & Adventure",
-    "Event Tickets",
+    'Experiences',
+    'Tech & Gadgets',
+    'Jewelry',
+    'Fashion & Accessories',
+    'Books',
+    'Handmade & DIY',
+    'Events',
+    'Personalized Gifts',
+    'Subscription Services',
+    'Wellness & Self-Care',
+    'Home & Decor',
+    'Food & Gourmet',
+    'Travel & Adventure',
+    'Event Tickets',
   ];
 
   @override

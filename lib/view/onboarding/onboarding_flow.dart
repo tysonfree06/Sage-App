@@ -76,7 +76,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
       'city': city,
       'state': stateName,
       'country': country,
-      'partnerId': partnerId,
+      'partnerCode': partnerId,
       'interests': interests.toList(),
       'giftPreferences': giftPreferences.toList(),
     };

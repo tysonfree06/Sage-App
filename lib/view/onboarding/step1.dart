@@ -7,8 +7,10 @@ import 'package:sage/app/components/my_datepicker_button.dart';
 import 'package:sage/app/components/my_dropdown.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/views/signup_service.dart';
 
 class Step1Screen extends StatefulWidget {
   const Step1Screen({
@@ -166,7 +168,7 @@ class _Step1ScreenState extends State<Step1Screen> {
         selectedCountry.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(context.l10n.onboarding_error_complete_all_fields)),
+            content: Text(context.l10n.onboarding_error_complete_all_fields),),
       );
       return;
     }
@@ -238,7 +240,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Love Language
               Text(context.l10n.onboarding_step1_what_is_your_love_language,
-                  style: labelStyle),
+                  style: labelStyle,),
               SizedBox(height: 10.h),
               MyDropdown(
                 items: loveLanguages,
@@ -249,7 +251,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Apology Language
               Text(context.l10n.onboarding_step1_what_is_your_apology_language,
-                  style: labelStyle),
+                  style: labelStyle,),
               SizedBox(height: 10.h),
               MyDropdown(
                 items: apologyLanguages,
@@ -262,7 +264,7 @@ class _Step1ScreenState extends State<Step1Screen> {
               Text(
                   context
                       .l10n.onboarding_step1_what_is_your_communication_style,
-                  style: labelStyle),
+                  style: labelStyle,),
               SizedBox(height: 10.h),
               MyDropdown(
                 items: communicationStyles,
@@ -274,7 +276,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Budget Level
               Text(context.l10n.onboarding_step1_budget_level,
-                  style: labelStyle),
+                  style: labelStyle,),
               SizedBox(height: 10.h),
               MyDropdown(
                 items: budgetLevels,
@@ -285,7 +287,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Relationship Status
               Text(context.l10n.onboarding_step1_relationship_status,
-                  style: labelStyle),
+                  style: labelStyle,),
               SizedBox(height: 10.h),
               CustomRadioGroup<String>(
                 options: relationshipStatuses,
@@ -298,7 +300,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Anniversary Date
               Text(context.l10n.onboarding_step1_anniversary_date,
-                  style: labelStyle),
+                  style: labelStyle,),
               SizedBox(height: 10.h),
               MyDatePickerButton(
                 hintText: anniversaryDate == null
@@ -315,7 +317,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Date of Birth
               Text(context.l10n.onboarding_step1_date_of_birth,
-                  style: labelStyle),
+                  style: labelStyle,),
               SizedBox(height: 10.h),
               MyDatePickerButton(
                 hintText: dob == null
@@ -363,7 +365,18 @@ class _Step1ScreenState extends State<Step1Screen> {
               // NEXT button
               MyButton(
                 label: context.l10n.onboarding_step1_next,
-                onPressed: _isFormComplete ? _validateAndProceed : null,
+                onPressed: _isFormComplete
+                    ? () {
+                        if (!SignupService()
+                            .isAtLeast18YearsOld(dob ?? DateTime.now())) {
+                          context.flushBarErrorMessage(
+                            message: 'You should be at least 18 years old!',
+                          );
+                          return;
+                        }
+                        _validateAndProceed();
+                      }
+                    : null,
               ),
               SizedBox(height: 30.h),
             ],

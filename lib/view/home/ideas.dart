@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+// import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/ideas_service.dart';
 import 'package:sage/view/ideas/explore_ideas.dart';
 import 'package:sage/view/ideas/saved_ideas.dart';
-import 'package:sage/view/subscription/widget/my_scaffold.dart';
 
 class IdeaScreen extends StatefulWidget {
   const IdeaScreen({super.key});
@@ -14,6 +15,7 @@ class IdeaScreen extends StatefulWidget {
 }
 
 class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
+  // final _sessionController = SessionController();
   late TabController _tabController;
   @override
   void initState() {
@@ -29,6 +31,7 @@ class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // final isPremium = _sessionController.user!.isPremium;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16.w),
       child: Scaffold(
@@ -38,9 +41,16 @@ class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
             style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700),
           ),
           actions: [
-            const MyTextButton(
+            MyTextButton(
               label: 'My Added Ideas',
               isDark: false,
+              onPressed: () {
+                // if (!isPremium!) {
+                // IdeasServices.showSubscriptionDialog(context);
+                // } else {
+                IdeasServices.gotoMyAddedIdeas(context);
+                // }
+              },
             ),
             SizedBox(
               width: 16.w,
@@ -50,23 +60,20 @@ class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
         ),
         body: Column(
           children: [
-            ColoredBox(
-              color: const Color(0xFFF5F8F7), // Light gray background
-              child: TabBar(
-                controller: _tabController,
-                indicatorColor: context.colors.mainGreenLight,
-                indicatorWeight: 2.5,
-                labelColor: context.colors.mainGreenLight,
-                unselectedLabelColor: Colors.grey[700],
-                labelStyle:
-                    TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
-                unselectedLabelStyle:
-                    TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
-                tabs: const [
-                  Tab(text: "Explore Ideas"),
-                  Tab(text: "Saved Ideas"),
-                ],
-              ),
+            TabBar(
+              controller: _tabController,
+              indicatorColor: context.colors.mainGreenLight,
+              indicatorWeight: 2.5,
+              labelColor: context.colors.mainGreenLight,
+              unselectedLabelColor: Colors.grey[700],
+              labelStyle:
+                  TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+              unselectedLabelStyle:
+                  TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
+              tabs: const [
+                Tab(text: 'Explore Ideas'),
+                Tab(text: 'Saved Ideas'),
+              ],
             ),
             Expanded(
               child: TabBarView(

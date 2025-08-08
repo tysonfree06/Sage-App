@@ -1,8 +1,9 @@
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:sage/model/user/user_model.dart';
 import 'package:sage/services/storage/local_storage.dart';
 
-class SessionController {
+class SessionController extends ChangeNotifier {
   factory SessionController() => _instance;
 
   SessionController._internal();
@@ -11,12 +12,22 @@ class SessionController {
   final LocalStorage _localStorage = LocalStorage();
 
   String? _token;
-  UserModel? user;
+  UserModel? _user;
   UserModel? partner;
   bool isPartnerFetched =
       false; //#muttas remove it when partner is auto loading on splash..
 
   String? get token => _token;
+
+  //make user getter
+  UserModel? get user => _user;
+
+  //update user
+  Future<void> updateUser(UserModel user) async {
+    _user = user;
+    notifyListeners();
+    debugPrint('USER UPDATED, LISTENERS NOTIFIED');
+  }
 
   bool get isLoggedIn => _token != null;
 
@@ -40,9 +51,10 @@ class SessionController {
   /// Clear token on logout
   Future<void> clearSession() async {
     _token = null;
-    user = null;
+    _user = null;
     partner = null;
     isPartnerFetched = false;
+    notifyListeners();
     await _localStorage.clearValue('auth_token');
     log('Session cleared: Token and user data removed');
   }

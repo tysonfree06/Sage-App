@@ -56,9 +56,9 @@ class MyDatePickerButton extends StatelessWidget {
         ),
         child: selectedDate != null
             ? Text(
-          _formatDate(selectedDate!),
-          style: textStyle,
-        )
+                _formatDate(selectedDate!),
+                style: textStyle,
+              )
             : null,
       ),
     );
@@ -87,7 +87,7 @@ class MyDatePickerButton extends StatelessWidget {
                 child: CupertinoDatePicker(
                   initialDateTime: tempPicked,
                   mode: CupertinoDatePickerMode.date,
-                  maximumDate: DateTime(2100),
+                  maximumDate: DateTime.now(),
                   minimumDate: DateTime(1900),
                   onDateTimeChanged: (value) {
                     tempPicked = value;
@@ -101,7 +101,9 @@ class MyDatePickerButton extends StatelessWidget {
                   onChanged(tempPicked);
                 },
               ),
-              SizedBox(height: 16.h,),
+              SizedBox(
+                height: 16.h,
+              ),
             ],
           ),
         ),

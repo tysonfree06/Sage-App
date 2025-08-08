@@ -57,6 +57,8 @@ class _UpdateInterestsScreenState extends State<UpdateInterestsScreen> {
   bool _busy = false;
   bool isLoading = false;
 
+  bool get _canProceed => selectedInterests.isNotEmpty;
+
   @override
   @override
   void initState() {
@@ -145,7 +147,7 @@ class _UpdateInterestsScreenState extends State<UpdateInterestsScreen> {
                 MyButton(
                   label: context.l10n.interests_update,
                   isLoading: isLoading,
-                  onPressed: !_busy && !isLoading
+                  onPressed: !_busy && !isLoading && _canProceed
                       ? () async {
                           setState(() {
                             _busy = true;

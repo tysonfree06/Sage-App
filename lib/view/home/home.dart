@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/status_bar_style.dart';
+import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/model/user/user_model.dart';
 import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/splash_services.dart';
 import 'package:sage/view/home/widgets/countdown_timer.dart';
 import 'package:sage/view/home/widgets/user_content.dart';
 import 'package:sage/view/home/widgets/user_not_available.dart';
@@ -21,22 +23,31 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final SessionController _sessionController = SessionController();
+  final SplashServices _splashServices = SplashServices();
   final AuthRepository _userAuth = AuthRepository();
 
   UserModel? partner;
 
   Future<void> getPartner() async {
-    if (!SessionController().isPartnerFetched) {
-      final String partnerCode = _sessionController.user?.partnerCode ?? '';
+    // if (!SessionController().isPartnerFetched &&
+    //     _sessionController.user?.partnerCode != null) {
+    if (SessionController().partner == null &&
+        _sessionController.user?.partnerCode != null) {
+      final dynamic partnerCode = _sessionController.user?.partnerCode ?? '';
+      if (partnerCode == '') {
+        debugPrint('No partner code found, skipping partner fetch');
+        return;
+      }
       try {
         final response = await _userAuth.getPartner(partnerCode);
         setState(() {
           partner = UserModel.fromJson(
             response['partner'] as Map<String, dynamic>,
           );
-          SessionController().partner = UserModel.fromJson(
+          _sessionController.partner = UserModel.fromJson(
             response['partner'] as Map<String, dynamic>,
           );
+
           SessionController().isPartnerFetched = true;
         });
 
@@ -49,11 +60,25 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Map<String, dynamic> relationshipSuggestion = {};
+  Future<void> getRelationshipSuggestion() async {
+    relationshipSuggestion = await _splashServices.loadRelationshipSuggestion();
+    if (mounted) {
+      setState(() {}); //don't remove it
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getPartner();
+    getRelationshipSuggestion();
   }
+
+  // List<String> relationshipSuggestions = [
+  //   'Send a Thoghtful Message',
+  //   'Send a Thoghtful Message',
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +96,38 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: [
             Assets.icons.points.image(height: 30.w, width: 30.w),
-            const Text(' 500pts'),
+            // const Text(' 500pts'),
+            Padding(
+              padding: EdgeInsets.only(left: 4.w),
+              child: Row(
+                children: [
+                  Text(
+                    _sessionController.user?.points.toString() ?? '0',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15.sp,
+                      color: context.colors.greenBg,
+                    ),
+                  ),
+                  Text(
+                    'Pts',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14.sp,
+                      color: context.colors.greenBg,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  RoutesName.notifications,
+                );
+              },
               icon: Assets.icons.notification.svg(),
             ),
           ],
@@ -129,11 +183,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                           user: partner!,
                                           isPartner: true,
                                         )
-                                      : const PartnerUnavailable(),
+                                      : PartnerUnavailable(
+                                          onParnerAdded: () {
+                                            debugPrint('HELLO');
+                                            setState(() {
+                                              debugPrint(
+                                                'SET STATE CALLED IN HOME',
+                                              );
+                                              getPartner();
+                                            });
+                                          },
+                                        ),
                                 ),
                               )
                             else
-                              const PartnerUnavailable(),
+                              PartnerUnavailable(
+                                onParnerAdded: () {
+                                  setState(() {
+                                    debugPrint('SET STATE CALLED IN HOME...');
+                                    getPartner();
+                                  });
+                                },
+                              ),
                           ],
                         ),
                       ),
@@ -168,7 +239,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               SizedBox(height: 9.h),
                               CountdownTimerWidget(
-                                // targetDate: DateTime(2025, 12, 31, 23, 59, 59),
                                 targetDate:
                                     partner?.anniversaryDate ?? DateTime.now(),
                               ),
@@ -178,16 +248,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                // SizedBox(height: 14.h),
-                // Text(
-                //   'Relationship Suggestions',
-                //   style: context.typography.title.copyWith(
-                //     fontWeight: FontWeight.w700,
-                //     fontSize: 20.sp,
-                //     color: context.colors.textDarkGreen,
-                //   ),
-                // ),
+                //Relationship suggestions
                 SizedBox(height: 14.h),
+                Text(
+                  'Relationship Suggestions',
+                  style: context.typography.title.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.sp,
+                    color: context.colors.textDarkGreen,
+                  ),
+                ),
+                SizedBox(height: 14.h),
+                RelationshipSuggestionTile(
+                  suggestion: relationshipSuggestion,
+                ),
               ],
             ),
           ),
@@ -197,11 +271,87 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class PartnerUnavailable extends StatelessWidget {
-  const PartnerUnavailable({
+class RelationshipSuggestionTile extends StatelessWidget {
+  const RelationshipSuggestionTile({
+    required this.suggestion,
     super.key,
   });
+  final Map<String, dynamic> suggestion;
+  @override
+  Widget build(BuildContext context) {
+    String title = "Today's Tip";
+    if (suggestion['subject'] != null) {
+      title = suggestion['subject'] as String;
+    }
+    String tip = '';
 
+    if (suggestion['tip'] != null) {
+      tip = suggestion['tip'] as String;
+    }
+    String imageUrl = 'https://picsum.photos/200/300';
+    if (suggestion['imageUrl'] != null) {
+      imageUrl = suggestion['imageUrl'] as String;
+    }
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      width: double.infinity,
+      padding: EdgeInsets.all(10.w),
+      margin: EdgeInsets.only(bottom: 16.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              height: 132.h,
+              width: double.infinity,
+              color: Colors.grey,
+              child: Image.network(
+                imageUrl,
+                height: 132..h,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          //END: image
+          SizedBox(
+            height: 8.h,
+          ),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(
+            height: 4.h,
+          ),
+          Text(
+            tip,
+            style: TextStyle(
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PartnerUnavailable extends StatelessWidget {
+  const PartnerUnavailable({
+    required this.onParnerAdded,
+    super.key,
+  });
+  final void Function() onParnerAdded;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -235,7 +385,9 @@ class PartnerUnavailable extends StatelessWidget {
             Divider(
               color: context.colors.white.withValues(alpha: 0.1),
             ),
-            const UserNotAvailableWidget(),
+            UserNotAvailableWidget(
+              onParnerAdded: onParnerAdded,
+            ),
           ],
         ),
       ),

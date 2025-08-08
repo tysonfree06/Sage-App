@@ -26,7 +26,7 @@ class _Step4ScreenState extends State<Step4Screen> {
 
   // whether we have any non-empty PIN
   bool get _canConnect =>
-      _pinController.text.trim().isNotEmpty && _pinController.text.length == 4;
+      _pinController.text.trim().isNotEmpty && _pinController.text.length == 5;
 
   @override
   void initState() {

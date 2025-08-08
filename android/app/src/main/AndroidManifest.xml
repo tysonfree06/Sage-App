@@ -4,9 +4,11 @@
     <application
         android:label="${appName}"
         android:name="${applicationName}"
+        android:theme="@style/NormalTheme"
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="true"
-        android:networkSecurityConfig="@xml/network_security_config">
+        android:networkSecurityConfig="@xml/network_security_config"
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"
