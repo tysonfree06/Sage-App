@@ -1,10 +1,8 @@
 class AppUrl {
   // static String baseUrl = 'https://aletheia.ai.ml-bench.com';
 
-  static String baseUrl =
-      'https://sage-backend-760q.onrender.com'; //this new url didn't work
-
-  // static String baseUrl = "https://xrrpjm5s-8081.inc1.devtunnels.ms";
+  static String baseUrl = 'https://sage-backend-760q.onrender.com'; //new
+  // static String baseUrl = 'https://4znvw6hv-8081.inc1.devtunnels.ms';
 
   static String login = '$baseUrl/api/auth/login';
   static String getMeUser = '$baseUrl/api/auth/me';
@@ -20,7 +18,6 @@ class AppUrl {
   static String uploadImage = '$baseUrl/api/upload/image';
   static String deleteAccount = '$baseUrl/api/user/delete-account';
   static String removePartner = '$baseUrl/api/user/remove-partner';
-  static String getPoints = '$baseUrl/api/raffle/points';
   static String getReferrals = '$baseUrl/api/raffle/referrals';
   static String contactUs = '$baseUrl/api/user/contact';
   //ideas
@@ -44,4 +41,14 @@ class AppUrl {
 
   //notifications
   static String notifications = '$baseUrl/api/notifications';
+
+  //Poinst / Raffle / Redeem / GiftBit
+  static String availableOffers = '$baseUrl/api/raffle/offers';
+  static String pastRedemptions = '$baseUrl/api/raffle/history';
+  static String redeemOffer = '$baseUrl/api/raffle/redeem';
+
+  //Location
+  static String countries = '$baseUrl/api/location/countries';
+  static String states = '$baseUrl/api/location/states';
+  static String cities = '$baseUrl/api/location/cities';
 }

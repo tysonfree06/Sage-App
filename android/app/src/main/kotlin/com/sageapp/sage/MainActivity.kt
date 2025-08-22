@@ -1,4 +1,4 @@
-package com.example.sage
+package com.sageapp.sage
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

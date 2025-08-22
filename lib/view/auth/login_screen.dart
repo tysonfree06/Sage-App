@@ -142,7 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return context.l10n.error_password_required;
-                        } else if (!value.lessSecurePasswordValidator()) {
+                          // } else if (!value.lessSecurePasswordValidator()) {
+                        } else if (!value.passwordValidator()) {
                           return context.l10n.error_password_strength;
                         }
                         return null;

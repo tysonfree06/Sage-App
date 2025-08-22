@@ -7,21 +7,37 @@ import 'package:sage/env.dart';
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  /// Global Flutter error handler
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  // Add cross-flavor configuration here
+  // 🔒 Lock orientation to portrait
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
+  /// Set system UI overlays (status/navigation bars)
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.light,
     ),
   );
-  //initialize stripe #stripe#muttas
+
+  // Always show top + bottom overlays (status bar + nav bar)
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,
+    overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+  );
+
+  // 🎯 Initialize Stripe
   Stripe.publishableKey = Env.stripePublicKey;
+  Stripe.merchantIdentifier = 'com.sage.apple.pay';
+  // Stripe.urlScheme = 'flutterstripe';
   await Stripe.instance.applySettings();
+
   runApp(await builder());
 }

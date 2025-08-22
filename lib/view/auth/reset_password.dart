@@ -117,7 +117,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return context.l10n.error_password_required;
-                        } else if (!value.lessSecurePasswordValidator()) {
+                        } else if (!value.passwordValidator()) {
+                          // } else if (!value.lessSecurePasswordValidator()) {
                           return context.l10n.error_password_strength;
                         }
                         return null;

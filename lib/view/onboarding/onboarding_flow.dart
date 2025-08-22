@@ -3,7 +3,6 @@ import 'package:sage/app/components/step_progress_bar.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
-import 'package:sage/services/views/onboarding_service.dart';
 import 'package:sage/view/views.dart';
 
 class OnboardingFlowScreen extends StatefulWidget {
@@ -37,15 +36,18 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   // Step 4
   String? partnerId;
 
-  void nextStep() {
+  Future<void> nextStep() async {
     if (_currentStep < 3) {
       setState(() => _currentStep++);
-      _pageController.nextPage(
+      await _pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     } else {
-      _submitAllData();
+      // await _submitAllData();
+      ///Flow changed: Data will be submitted from the Step 4: Add Partner
+      ///Screen. If error adding partner, will show flushbar there, otherwise,
+      // proced to analyize data (which will only make a delay)..
     }
   }
 
@@ -61,7 +63,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
     }
   }
 
-  void _submitAllData() {
+  @override
+  Widget build(BuildContext context) {
     final payload = {
       'userId': sessionController.user?.id ?? '',
       'name': sessionController.user?.name ?? '',
@@ -76,19 +79,11 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
       'city': city,
       'state': stateName,
       'country': country,
-      'partnerCode': partnerId,
+      // 'partnerCode': partnerId,
       'interests': interests.toList(),
       'giftPreferences': giftPreferences.toList(),
     };
-    //FIXME: This is not a part of onboarding so exit the flow and push this screen to stack (it will also remove previous items in stack)
-    OnboardingService.goToDataAnalysis(
-      context,
-      payload: payload,
-    );
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return PopScope(
       canPop: _currentStep == 0,
       onPopInvokedWithResult: (didPop, _) {
@@ -173,10 +168,13 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
             // ─── STEP 4 ───
             Step4Screen(
               initialPartnerId: partnerId,
-              onNext: (String? selectedPartnerId) {
-                partnerId = selectedPartnerId;
-                nextStep();
-              },
+              payload: payload,
+              // onNext: (String? selectedPartnerId) {
+              //   setState(() {
+              //     partnerId = selectedPartnerId;
+              //   });
+              //   nextStep();
+              // },
             ),
           ],
         ),

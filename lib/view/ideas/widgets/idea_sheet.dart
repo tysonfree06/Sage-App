@@ -9,11 +9,11 @@ class IdeaSheet extends StatelessWidget {
     required this.isBookmarked,
     required this.ideaId,
     super.key,
-    this.onBookmarkPressedInSheet,
+    this.onBookmarkOrDislikePressedInSheet,
   });
   final bool isBookmarked;
   final String ideaId;
-  final VoidCallback? onBookmarkPressedInSheet;
+  final VoidCallback? onBookmarkOrDislikePressedInSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +30,28 @@ class IdeaSheet extends StatelessWidget {
                 IdeasServices.showSubscriptionDialog(context);
               } else {
                 if (isBookmarked) {
-                  IdeasServices().removeBookmark(
+                  IdeasServices()
+                      .removeBookmark(
                     context,
                     ideaId,
-                  );
+                  )
+                      .then((_) {
+                    onBookmarkOrDislikePressedInSheet?.call();
+                  });
                 } else {
-                  IdeasServices().addBookmark(
+                  IdeasServices()
+                      .addBookmark(
                     context,
                     ideaId,
-                  );
+                  )
+                      .then((_) {
+                    onBookmarkOrDislikePressedInSheet?.call();
+                  });
                 }
-                onBookmarkPressedInSheet?.call();
-                Navigator.of(context).pop();
+                // onBookmarkOrDislikePressedInSheet?.call();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
               }
             },
             child: Row(
@@ -65,12 +75,17 @@ class IdeaSheet extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              IdeasServices().dislikeIdea(
+              IdeasServices()
+                  .dislikeIdea(
                 context,
                 ideaId,
-              );
-              onBookmarkPressedInSheet?.call();
-              Navigator.of(context).pop();
+              )
+                  .then((_) {
+                onBookmarkOrDislikePressedInSheet?.call();
+              });
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
             child: Row(
               children: [

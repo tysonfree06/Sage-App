@@ -7,6 +7,7 @@ import 'package:sage/model/user/user_model.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
 import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/splash_services.dart';
 
 class LoginService {
   final AuthRepository _authRepository = AuthRepository();
@@ -25,6 +26,11 @@ class LoginService {
       RoutesName.navigation,
       (route) => false,
     );
+    // Navigator.pushNamedAndRemoveUntil(
+    //   context,
+    //   RoutesName.onBoarding,
+    //   (route) => false,
+    // );
   }
 
   static void goToSignup(BuildContext context) {
@@ -44,7 +50,7 @@ class LoginService {
       'email': email,
       'password': password,
     };
-    // if (context.mounted) await _splashServices.fetchPartner(context);
+    if (context.mounted) await SplashServices().fetchPartner(context);
     try {
       final response = await _authRepository.login(data);
       final String token = response['token'] as String;

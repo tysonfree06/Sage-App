@@ -17,6 +17,7 @@ class SignupService {
   }) {
     MyBottomSheet.show<void>(
       context,
+      isDismissible: false,
       child: AccountVerificationSheet(
         email: email,
       ),
@@ -125,7 +126,7 @@ class SignupService {
         'name': name,
         'email': email,
         'password': password,
-        if (inviteCode?.isNotEmpty ?? false) 'inviteCode': inviteCode,
+        if (inviteCode?.isNotEmpty ?? false) 'invitationCode': inviteCode,
       };
 
       // final response =
@@ -154,10 +155,10 @@ class SignupService {
   }
 
   //date validation
-  bool isAtLeast18YearsOld(DateTime dateOfBirth) {
+  bool isAtLeast18YearsOld(DateTime? dateOfBirth) {
     final now = DateTime.now();
     final eighteenYearsAgo = DateTime(now.year - 18, now.month, now.day);
-
+    if (dateOfBirth == null) return false;
     if (dateOfBirth.isBefore(eighteenYearsAgo)) {
       debugPrint('Date $dateOfBirth is at least 18 years in the past.');
       return true;
@@ -169,8 +170,9 @@ class SignupService {
 
   bool isAnniversaryDateLessThanDOB(
     DateTime dateOfBirth,
-    DateTime anniversaryDate,
+    DateTime? anniversaryDate,
   ) {
+    if (anniversaryDate == null) return false;
     if (dateOfBirth.isBefore(anniversaryDate)) {
       debugPrint('Date of Birth is Before Anniversary');
       return true;

@@ -150,7 +150,7 @@ class SubscriptionTile extends StatelessWidget {
                               child: Text(
                                 '${discount!}%',
                                 style: context.typography.label.copyWith(
-                                  fontSize: 15.sp,
+                                  fontSize: 13.sp,
                                   fontWeight: FontWeight.w500,
                                   color: context.colors.white,
                                 ),

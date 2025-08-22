@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sage/app/components/my_dialog.dart';
 import 'package:sage/app/components/status_bar_style.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
@@ -7,59 +8,89 @@ import 'package:sage/provider/home/navigation_provider.dart';
 import 'package:sage/view/home/home.dart';
 import 'package:sage/view/home/ideas.dart';
 import 'package:sage/view/home/settings.dart';
-import 'package:sage/view/points/redeem_points.dart';
+import 'package:sage/view/redeem_points/redeem_points.dart';
 
 List<Widget> pages = [
   const HomeScreen(),
   const IdeaScreen(),
-  const RedeemPointsScreen(), //FIXME: Remove this comment after generated files fix #muttas
-  // const SizedBox(), //remove this line when RedeemPointsScreen is ready
+  const RedeemPointsScreen(),
   const SettingScreen(),
 ];
 
-class NavigationScreen extends StatelessWidget {
-  const NavigationScreen({super.key});
+class NavigationScreen extends StatefulWidget {
+  const NavigationScreen({this.showPopup = false, super.key});
+  final bool showPopup;
+  @override
+  State<NavigationScreen> createState() => _NavigationScreenState();
+}
+
+class _NavigationScreenState extends State<NavigationScreen> {
+  // Future<void> showInfoDialog() async {
+  //   if (widget.showPopup) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //       if (mounted) {
+  //         await showDialog<void>(
+  //           context: context,
+  //           builder: (_) => MyDialog(
+  //             titleFirst: 'Get ', //'Get ' //don't remove extra space
+  //             titleSecond: 'Free Points!',
+  //             subtitle: 'Don’t miss out on free points to be used on prizes!',
+  //             confirmLabel: 'Got it',
+  //             disableCancel: true,
+  //             onConfirm: () {
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //         );
+  //       }
+  //     });
+  //   }
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // showInfoDialog();
+  }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<NavigationProvider>();
-    return DarkStatusBar(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: context.colors.white,
-          toolbarHeight: 0,
-        ),
-        body: pages[provider.currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: provider.currentIndex,
-          type: BottomNavigationBarType.fixed,
-          onTap: provider.setIndex,
-          backgroundColor: context.colors.chipBg,
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
-          items: [
-            BottomNavigationBarItem(
-              icon: Assets.icons.homeUnselected.svg(),
-              activeIcon: Assets.icons.homeSelected.svg(),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Assets.icons.ideaUnselected.svg(),
-              activeIcon: Assets.icons.ideaSelected.svg(),
-              label: 'Ideas',
-            ),
-            BottomNavigationBarItem(
-              icon: Assets.icons.starUnselected.svg(),
-              activeIcon: Assets.icons.starSelected.svg(),
-              label: 'Points',
-            ),
-            BottomNavigationBarItem(
-              icon: Assets.icons.profileUnselected.svg(),
-              activeIcon: Assets.icons.profileSelected.svg(),
-              label: 'Settings',
-            ),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: context.colors.white,
+        toolbarHeight: 0,
+      ),
+      body: pages[provider.currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: provider.currentIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: provider.setIndex,
+        backgroundColor: context.colors.chipBg,
+        showUnselectedLabels: false,
+        showSelectedLabels: false,
+        items: [
+          BottomNavigationBarItem(
+            icon: Assets.icons.homeUnselected.svg(),
+            activeIcon: Assets.icons.homeSelected.svg(),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Assets.icons.ideaUnselected.svg(),
+            activeIcon: Assets.icons.ideaSelected.svg(),
+            label: 'Ideas',
+          ),
+          BottomNavigationBarItem(
+            icon: Assets.icons.starUnselected.svg(),
+            activeIcon: Assets.icons.starSelected.svg(),
+            label: 'Points',
+          ),
+          BottomNavigationBarItem(
+            icon: Assets.icons.profileUnselected.svg(),
+            activeIcon: Assets.icons.profileSelected.svg(),
+            label: 'Settings',
+          ),
+        ],
       ),
     );
   }

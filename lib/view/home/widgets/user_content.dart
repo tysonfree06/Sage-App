@@ -26,6 +26,11 @@ class _UserContentWidgetState extends State<UserContentWidget> {
     if (widget.user.loveLanguage == null && widget.isPartner == false) {
       await SplashServices().fetchProfile(context);
       if (SessionController().user != null) {
+        if (SessionController().user!.partnerCode != null) {
+          if (mounted) {
+            await SplashServices().fetchPartner(context);
+          }
+        }
         if (mounted) {
           setState(() {
             widget.user = SessionController().user!;

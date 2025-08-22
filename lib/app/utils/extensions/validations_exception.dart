@@ -66,3 +66,23 @@ extension AddressValidatorExtension on String {
     return addressValid;
   }
 }
+
+extension CostValidatorExtension on String {
+  bool costValidator() {
+    final costValid = RegExp(
+      r'^[0-9]+$', //Only numbers
+    ).hasMatch(this);
+    return costValid;
+  }
+}
+
+extension LinkValidatorExtension on String {
+  bool linkValidator() {
+    final urlPattern = r'^(https?:\/\/)?' // protocol (optional)
+        r'(([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})' // domain
+        r'(\/[^\s]*)?$'; // path (optional)
+
+    final linkValid = RegExp(urlPattern).hasMatch(this);
+    return linkValid;
+  }
+}

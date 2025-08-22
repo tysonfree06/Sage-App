@@ -121,9 +121,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 icon: Assets.icons.delete.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_remove_partner,
                 onTap: () {
-                  if (user.partnerCode != null &&
-                      user.partnerCode != '' &&
-                      user.partnerCode != 0) {
+                  if (user.partnerCode != null && user.partnerCode != 0) {
                     SettingService.showRemovePartnerDialog(context);
                   } else {
                     context.flushBarErrorMessage(

@@ -4,6 +4,7 @@ import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_text_field.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/app/utils/extensions/validations_exception.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
@@ -22,17 +23,43 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  bool get isFilled => _emailController.text.isEmpty;
+  bool get isFilled =>
+      _emailController.text.isNotEmpty &&
+      _subjectController.text.isNotEmpty &&
+      _descriptionController.text.isNotEmpty;
   bool isLoading = false;
 
   final _settingService = SettingService();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_onFieldChanged);
+    _subjectController.addListener(_onFieldChanged);
+    _descriptionController.addListener(_onFieldChanged);
+  }
+
+  void _onFieldChanged() {
+    setState(() {}); // 🔥 Rebuild UI whenever text changes
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: BackButton(color: context.colors.mainGreenLight),
+        // leading: BackButton(color: context.colors.mainGreenLight),
+        leading: IconButton(
+          onPressed: isLoading
+              ? null
+              : () {
+                  Navigator.pop(context);
+                },
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: isLoading ? Colors.grey : context.colors.mainGreenLight,
+          ),
+        ),
         title: Text(
           'Contact Us',
           style: TextStyle(
@@ -82,6 +109,15 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                 isLoading: isLoading,
                 onPressed: isFilled && !isLoading
                     ? () async {
+                        if (_emailController.text.isEmpty ||
+                            _subjectController.text.isEmpty ||
+                            _descriptionController.text.isEmpty) {
+                          context.flushBarErrorMessage(
+                            message: 'All Fields are mandatory!',
+                          );
+                          return;
+                        }
+
                         if (!formKey.currentState!.validate()) return;
                         setState(() => isLoading = true);
                         await _settingService.contactUs(
@@ -91,6 +127,13 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                           description: _descriptionController.text,
                         );
                         setState(() => isLoading = false);
+                        //     .then((_) {
+
+                        //   setState(() => isLoading = false);
+                        //   if (context.mounted) {
+                        //     Navigator.pop(context);
+                        //   }
+                        // });
                       }
                     : null,
               ),
@@ -128,6 +171,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
         ),
         if (title == 'Email Address')
           MyFormTextField(
+            textCapitalization: TextCapitalization.none,
             controller: textController as TextEditingController,
             hint: hint,
             suffixIcon: suffixIcon,

@@ -19,9 +19,9 @@ export 'onboarding/step3.dart';
 export 'onboarding/step4.dart';
 
 /// Point Redeem
-export 'points/invitation.dart';
-export 'points/offer_detail.dart';
-export 'points/redeem_points.dart';
+export 'redeem_points/invitation.dart';
+export 'redeem_points/offer_detail.dart';
+export 'redeem_points/redeem_points.dart';
 
 /// Profile
 export 'profile/change_password.dart';

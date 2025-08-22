@@ -17,6 +17,8 @@ class SessionController extends ChangeNotifier {
   bool isPartnerFetched =
       false; //#muttas remove it when partner is auto loading on splash..
 
+  List<dynamic>? notifications;
+
   String? get token => _token;
 
   //make user getter
@@ -54,6 +56,7 @@ class SessionController extends ChangeNotifier {
     _user = null;
     partner = null;
     isPartnerFetched = false;
+    notifications = null;
     notifyListeners();
     await _localStorage.clearValue('auth_token');
     log('Session cleared: Token and user data removed');

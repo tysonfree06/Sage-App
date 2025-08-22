@@ -11,10 +11,11 @@ class MyBottomSheet extends StatelessWidget {
   static Future<T?> show<T>(
     BuildContext context, {
     required Widget child,
+    bool isDismissible = true,
   }) {
     return showModalBottomSheet<T>(
       context: context,
-      isDismissible: false,
+      isDismissible: isDismissible,
       enableDrag: false,
       useSafeArea: true,
       showDragHandle: true,

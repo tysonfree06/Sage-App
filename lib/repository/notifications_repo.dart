@@ -13,4 +13,12 @@ class NotificationsRepository {
       url: '${AppUrl.notifications}/$userId',
     );
   }
+
+  Future markAllNotificationsRead() async {
+    final userId = _sessionController.user!.id;
+    return _apiServices.patch(
+      url: '${AppUrl.notifications}/user/$userId/read-all',
+      data: {},
+    );
+  }
 }

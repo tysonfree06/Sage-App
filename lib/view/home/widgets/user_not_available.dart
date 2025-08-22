@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/my_bottom_sheet.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
-import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/view/home/widgets/add_partner_sheet.dart';
@@ -20,6 +19,7 @@ class UserNotAvailableWidget extends StatefulWidget {
 }
 
 class _UserNotAvailableWidgetState extends State<UserNotAvailableWidget> {
+  bool isCopyPressed = false;
   @override
   Widget build(BuildContext context) {
     final SessionController sessionController = SessionController();
@@ -36,18 +36,21 @@ class _UserNotAvailableWidgetState extends State<UserNotAvailableWidget> {
         children: [
           SizedBox(height: 40.h),
           GestureDetector(
-              onTap: () => MyBottomSheet.show<void>(
-                    context,
-                    child: const AddPartnerSheet(),
-                  ).then((_) {
-                    // This runs after EditProfileScreen is popped
-                    // Refresh the screen or fetch new data
-                    setState(() {
-                      widget.onParnerAdded();
-                      debugPrint('SET STATE CALLED....');
-                    });
-                  }),
-              child: Assets.icons.addFilled.svg(),),
+            onTap: () => MyBottomSheet.show<void>(
+              context,
+              child: const AddPartnerSheet(),
+            ).then((_) {
+              // This runs after EditProfileScreen is popped
+              // Refresh the screen or fetch new data
+              if (mounted) {
+                setState(() {
+                  widget.onParnerAdded();
+                  debugPrint('SET STATE CALLED....');
+                });
+              }
+            }),
+            child: Assets.icons.addFilled.svg(),
+          ),
           SizedBox(height: 8.h),
           Text(
             'Add Partner',
@@ -75,40 +78,58 @@ class _UserNotAvailableWidgetState extends State<UserNotAvailableWidget> {
             ),
           ),
           SizedBox(height: 10.h),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 3.h),
-            decoration: BoxDecoration(
-              color: context.colors.white.withValues(alpha: .1),
-              borderRadius: BorderRadius.circular(AppRadiuses.hundredRadius),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  minePartnerCode.toString(),
-                  style: context.typography.body.copyWith(
-                    color: context.colors.white.withValues(alpha: .6),
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w500,
+          GestureDetector(
+            onTap: () async {
+              await Clipboard.setData(
+                ClipboardData(
+                  text: minePartnerCode.toString(),
+                ),
+              );
+              if (mounted) {
+                setState(() {
+                  isCopyPressed = true;
+                });
+              }
+
+              await Future<void>.delayed(
+                const Duration(
+                  milliseconds: 2000,
+                ),
+              );
+              if (mounted) {
+                setState(() {
+                  isCopyPressed = false;
+                });
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 3.h),
+              decoration: BoxDecoration(
+                color: context.colors.white.withValues(alpha: .1),
+                borderRadius: BorderRadius.circular(AppRadiuses.hundredRadius),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    minePartnerCode.toString(),
+                    style: context.typography.body.copyWith(
+                      color: context.colors.white.withValues(alpha: .6),
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                SizedBox(width: 8.w),
-                GestureDetector(
-                  onTap: () {
-                    Clipboard.setData(
-                      ClipboardData(
-                        text: minePartnerCode.toString(),
-                      ),
-                    );
-                    if (context.mounted) {
-                      context.flushBarSuccessMessage(
-                        message: 'Copied to clipboard',
-                      );
-                    }
-                  },
-                  child: Assets.icons.copy.svg(height: 12.h, width: 12.w),
-                ),
-              ],
+                  SizedBox(width: 8.w),
+                  if (!isCopyPressed)
+                    Assets.icons.copy.svg(height: 12.h, width: 12.w)
+                  else
+                    Icon(
+                      Icons.check,
+                      color: context.colors.yellow,
+                      size: 18.w,
+                    ),
+                ],
+              ),
             ),
           ),
         ],

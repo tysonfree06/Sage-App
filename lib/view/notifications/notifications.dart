@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/notifications_services.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -13,74 +15,30 @@ class NotificationsScreen extends StatefulWidget {
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
   bool isLoaded = false;
+  final sessionController = SessionController();
   final NotificationsServices _notificationServices = NotificationsServices();
-  List<dynamic> notificationsList = [];
+  late List<dynamic> notificationsList;
 
-  Future<void> fetchNotifications() async {
-    final response = await _notificationServices.getNotifications();
-    notificationsList = response['data'] as List<dynamic>;
+  void getNotificationsFromSession() {
+    notificationsList = sessionController.notifications ?? [];
     if (mounted) {
       setState(() {
         isLoaded = true;
       });
     }
-    debugPrint('Notifications refreshed: $notificationsList');
+  }
+
+  Future<void> markRead() async {
+    await _notificationServices.markNotificationsRead();
   }
 
   @override
   void initState() {
     super.initState();
-    fetchNotifications();
+    getNotificationsFromSession();
+    markRead();
+    // fetchNotifications();
   }
-  // final List<Map<String, dynamic>> notificationsList = [
-  //   {
-  //     '_id': '687f78c5ba2510dfeb34d437',
-  //     'userId': '687f77a6ba2510dfeb34d434',
-  //     'title': 'Welcome to Sage',
-  //     'message':
-  //         'Sage: The future of healthy relationshipts start exploring ideas',
-  //     // "icon": "🔔",
-  //     'icon': Icons.notifications_active,
-  //     'isRead': true,
-  //     'createdAt': '2025-09-02T15:30:00.000Z',
-  //     '__v': 0,
-  //   },
-  //   {
-  //     '_id': '687f78c5ba2510dfeb34d437',
-  //     'userId': '687f77a6ba2510dfeb34d434',
-  //     'title': 'New Gift Ideas',
-  //     'message': 'Hey, we have some new gift ideas for you go and check',
-  //     // "icon": "🔔",
-  //     'icon': Icons.notifications_active_outlined,
-  //     'isRead': true,
-  //     'createdAt': '2025-08-03T14:25:00.000Z',
-  //     '__v': 0,
-  //   },
-  //   {
-  //     '_id': '687f78c5ba2510dfeb34d437',
-  //     'userId': '687f77a6ba2510dfeb34d434',
-  //     'title': 'Add Your Partner',
-  //     'message':
-  //         'Hey, it looks like you have not added your partner add your',
-  //     // "icon": "🔔",
-  //     'icon': Icons.notifications_active_outlined,
-  //     'isRead': true,
-  //     'createdAt': '2025-03-02T15:30:00.000Z',
-  //     '__v': 0,
-  //   },
-  //   {
-  //     '_id': '687f78c5ba2510dfeb34d437',
-  //     'userId': '687f77a6ba2510dfeb34d434',
-  //     'title': 'New Gift Ideas',
-  //     'message': 'Hey, we have some new gift ideas for you go and check',
-  //     // "icon": "🔔",
-  //     'icon': Icons.notifications_active_outlined,
-  //     'isRead': true,
-  //     'createdAt': '2024-08-02T15:30:00.000Z',
-  //     '__v': 0,
-  //   },
-  //   // Add more notifications here
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +67,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         )
                         .toList(),
                   )
-            : Center(
-                child: CircularProgressIndicator(
-                  color: context.colors.mainGreenLight,
-                ),
+            : const Center(
+                child: LoadingWidget(),
               ),
       ),
     );
@@ -149,6 +105,49 @@ class NotificationTile extends StatelessWidget {
   final dynamic notification;
   @override
   Widget build(BuildContext context) {
+    Widget notificationIcon = Assets.images.logo.greenLogo.svg();
+    //icon condition
+    switch (notification['type']) {
+      case 'partner_added':
+        notificationIcon = Assets.icons.user.svg(
+          color: context.colors.greenBg,
+        );
+      case 'partner_removed':
+        notificationIcon = Assets.icons.user.svg(
+          color: context.colors.greenBg,
+        );
+      case 'daily_tip':
+        notificationIcon = Assets.icons.ideaSelected.svg(
+          color: context.colors.greenBg,
+        );
+      case 'anniversary':
+        notificationIcon = Assets.icons.calander.svg(
+          color: context.colors.greenBg,
+        );
+      case 'points_earned':
+        notificationIcon = Image.asset(Assets.icons.pointsPng.path);
+      case 'mutual_saved_idea':
+        notificationIcon = Assets.icons.ideaSelected.svg(
+          color: context.colors.greenBg,
+        );
+      case 'welcome':
+        notificationIcon = Assets.images.logo.greenLogo.svg();
+      case 'add_partner':
+        notificationIcon = Assets.icons.user.svg(
+          color: context.colors.greenBg,
+        );
+      case 'gift_ideas':
+        notificationIcon = Assets.icons.ideaSelected.svg(
+          color: context.colors.greenBg,
+        );
+      case 'redeem_offer':
+        notificationIcon = Assets.icons.starGreen.svg(
+          color: context.colors.greenBg,
+        );
+      default:
+        notificationIcon = Assets.images.logo.greenLogo.svg();
+    }
+
     return Container(
       padding: EdgeInsets.all(16.w),
       child: Row(
@@ -156,10 +155,11 @@ class NotificationTile extends StatelessWidget {
           CircleAvatar(
             radius: 24.r,
             backgroundColor: Colors.white,
-            child: Icon(
-              Icons.notifications_active,
-              color: context.colors.greenBg,
-            ),
+            // child: Icon(
+            //   notificationIcon,
+            //   color: context.colors.greenBg,
+            // ),
+            child: notificationIcon,
           ),
           SizedBox(
             width: 10.w,
@@ -171,23 +171,31 @@ class NotificationTile extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      // ignore: avoid_dynamic_calls
-                      notification['title'] as String,
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w700,
+                    Flexible(
+                      flex: 14,
+                      child: Text(
+                        maxLines: 2,
+                        // ignore: avoid_dynamic_calls
+                        notification['title'] as String,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                    Text(
-                      NotificationsServices.getTimeAgo(
-                        // ignore: avoid_dynamic_calls
-                        notification['createdAt'] as String,
-                      ),
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey,
+                    Flexible(
+                      flex: 9,
+                      child: Text(
+                        NotificationsServices.getTimeAgo(
+                          // ignore: avoid_dynamic_calls
+                          notification['createdAt'] as String,
+                        ),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ],

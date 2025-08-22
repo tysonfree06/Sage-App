@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_button.dart';
+import 'package:sage/app/components/my_dialog.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
@@ -132,7 +134,25 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                             ? 'Change Membership'
                             : 'Subscribe',
                         onPressed: () {
-                          SubscriptionService.goToChangeSubscription(context);
+                          if (isSubscriptionActive) {
+                            showDialog<void>(
+                              context: context,
+                              builder: (_) => MyDialog(
+                                titleFirst: 'Change ',
+                                titleSecond: 'Subscription?',
+                                subtitle:
+                                    'Changing subscription will discard your current susbcription.',
+                                confirmLabel: 'Continue',
+                                onConfirm: () {
+                                  SubscriptionService.goToChangeSubscription(
+                                    context,
+                                  );
+                                },
+                              ),
+                            );
+                          } else {
+                            SubscriptionService.goToChangeSubscription(context);
+                          }
                         },
                       ),
                       SizedBox(height: 16.h),
@@ -154,10 +174,8 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                     ],
                   ),
                 )
-          : Center(
-              child: CircularProgressIndicator(
-                color: context.colors.mainGreenLight,
-              ),
+          : const Center(
+              child: LoadingWidget(),
             ),
     );
   }
@@ -228,8 +246,10 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
     );
   }
 
-  Widget _planDetailsCard(BuildContext context,
-      {required bool isSubscriptionActive,}) {
+  Widget _planDetailsCard(
+    BuildContext context, {
+    required bool isSubscriptionActive,
+  }) {
     final String activeSubscriptionText =
         // ignore: lines_longer_than_80_chars
         'Your plan will automatically renew on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end'] as String)}. you can change your\nsubscription plan after this or renew this plan';
@@ -245,6 +265,29 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (!isSubscriptionActive) ...[
+            Row(
+              children: [
+                Text(
+                  'Subscription Status:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13.sp,
+                  ),
+                ),
+                SizedBox(width: 7.w),
+                Assets.icons.error.svg(),
+                SizedBox(width: 7.w),
+                Text(
+                  'Cancelled',
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+          ],
           Text(
             isSubscriptionActive
                 ? activeSubscriptionText

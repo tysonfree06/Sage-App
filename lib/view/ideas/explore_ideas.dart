@@ -1,5 +1,14 @@
+/*
+  NOTE:AutomaticKeepAliveClientMixin is used to keep the state of the widget
+  alive when navigating away from it.
+  This is useful for maintaining the state of the ExploreIdeasScreen when 
+  navigating to other screens and returning back to it, preventing the need
+  to reload the data.
+*/
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
@@ -15,7 +24,10 @@ class ExploreIdeasScreen extends StatefulWidget {
   State<ExploreIdeasScreen> createState() => _ExploreIdeasScreenState();
 }
 
-class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
+class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   bool isLoaded = false;
   Map<String, dynamic> feed = {}; //for api
   List<dynamic> topPicks = [];
@@ -25,9 +37,11 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
 
   Future<void> loadFeed() async {
     if (feed.isEmpty) {
-      setState(() {
-        isLoaded = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoaded = false;
+        });
+      }
     }
 
     final response = await IdeasServices().getFeed();
@@ -42,10 +56,12 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
   }
 
   void resetFeed() {
-    setState(() {
-      topPicks = feed['topPicks'] as List<dynamic>;
-      moreIdeas = feed['moreIdeas'] as List<dynamic>;
-    });
+    if (mounted) {
+      setState(() {
+        topPicks = feed['topPicks'] as List<dynamic>;
+        moreIdeas = feed['moreIdeas'] as List<dynamic>;
+      });
+    }
   }
 
   // void searchFilter(
@@ -81,20 +97,25 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
               .contains(query.toLowerCase()),
         )
         .toList();
-
-    setState(() {
-      topPicks = topPicksFiltered;
-      moreIdeas = moreIdeasFiltered;
-    });
+    if (mounted) {
+      setState(() {
+        topPicks = topPicksFiltered;
+        moreIdeas = moreIdeasFiltered;
+      });
+    }
 
     if (topPicksFiltered.isEmpty && moreIdeasFiltered.isEmpty) {
-      setState(() {
-        noResults = true;
-      });
+      if (mounted) {
+        setState(() {
+          noResults = true;
+        });
+      }
     } else {
-      setState(() {
-        noResults = false;
-      });
+      if (mounted) {
+        setState(() {
+          noResults = false;
+        });
+      }
     }
   }
 
@@ -108,10 +129,12 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
     final List<dynamic> moreIdeasFiltered =
         moreIdeas.where((item) => item['type'] == category).toList();
 
-    setState(() {
-      topPicks = topPicksFiltered;
-      moreIdeas = moreIdeasFiltered;
-    });
+    if (mounted) {
+      setState(() {
+        topPicks = topPicksFiltered;
+        moreIdeas = moreIdeasFiltered;
+      });
+    }
   }
   //END: filter by category
 
@@ -125,6 +148,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // 👈 required for keep alive
     final isPremium = sessionController.user!.isPremium;
 
     final List<Map<String, dynamic>> categories = [
@@ -176,7 +200,22 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
               //END: search box
               SizedBox(height: 20.h),
               _buildCategories(categories),
-
+              if (moreIdeas.isEmpty && topPicks.isEmpty) ...[
+                Center(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 80.h,
+                      ),
+                      Assets.icons.noItems.svg(),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'No Ideas Today!',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               if (noResults == false) ...[
                 if (topPicks.isNotEmpty) ...[
                   SizedBox(height: 16.h),
@@ -185,7 +224,9 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                     child: Text(
                       'Top Picks',
                       style: TextStyle(
-                          fontWeight: FontWeight.w700, fontSize: 20.sp),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20.sp,
+                      ),
                     ),
                   ),
                   SizedBox(height: 5.h),
@@ -208,8 +249,13 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                   ...moreIdeas.map(
                     (item) {
                       return IdeaCard(
-                        onBookmarkPressed: () async {
-                          await loadFeed();
+                        // onBookmarkOrDislikePressed: () async {
+                        //   await loadFeed();
+                        // },
+                        onBookmarkOrDislikePressed: loadFeed,
+                        onReturnFromDetails: () {
+                          loadFeed();
+                          debugPrint('ON RETURN FROM DETAILS CALLED');
                         },
                         data: item as Map<String, dynamic>,
                       );
@@ -233,10 +279,8 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
               ],
             ],
           )
-        : Center(
-            child: CircularProgressIndicator(
-              color: context.colors.textLightGreen,
-            ),
+        : const Center(
+            child: LoadingWidget(),
           );
   }
 
@@ -258,18 +302,20 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
           //END: Long way
           return GestureDetector(
             onTap: () {
-              setState(() {
-                if (selectedIndex == index) {
-                  // Already selected -> reset
-                  selectedIndex = null;
-                  resetFeed();
-                } else {
-                  // New selection
-                  selectedIndex = index;
-                  //filter by category
-                  filterByCategory(categories[index]['name'] as String);
-                }
-              });
+              if (mounted) {
+                setState(() {
+                  if (selectedIndex == index) {
+                    // Already selected -> reset
+                    selectedIndex = null;
+                    resetFeed();
+                  } else {
+                    // New selection
+                    selectedIndex = index;
+                    //filter by category
+                    filterByCategory(categories[index]['name'] as String);
+                  }
+                });
+              }
             },
             child: CircleAvatar(
               backgroundColor: context.colors.white,
@@ -313,7 +359,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
 
   SizedBox _buildTopPicks(List<dynamic> topPicks) {
     return SizedBox(
-      height: 257.h,
+      height: 260.h,
       child: ListView.separated(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         scrollDirection: Axis.horizontal,
@@ -324,6 +370,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
               topPicks[index]['savedBy'] as List<dynamic>? ?? [];
           final bool isBookmarked = savedBy.contains(userId.toString());
           final String imageUrl = topPicks[index]['image'].toString();
+
           return SizedBox(
             width: 182.w,
             child: Card(
@@ -345,18 +392,25 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: imageUrl.isNotEmpty && imageUrl != 'null'
-                              ? Image.network(
-                                  imageUrl,
-                                  height: 127.h,
-                                  width: 152.w,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(
-                                  color: Colors.grey,
-                                  width: 152.w,
-                                  height: 127.h,
-                                ),
+                          // child: imageUrl.isNotEmpty && imageUrl != 'null'
+                          //     ?
+                          child: Image.network(
+                            imageUrl,
+                            height: 127.h,
+                            width: 152.w,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                              color: context.colors.white,
+                              width: 152.w,
+                              height: 127.h,
+                            ),
+                          ),
+                          // : Container(
+                          //     color: Colors.grey,
+                          //     width: 152.w,
+                          //     height: 127.h,
+                          //   ),
                         ),
                         Positioned(
                           bottom: 10,
@@ -422,12 +476,18 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                               IdeasServices.showSubscriptionDialog(context);
                             } else {
                               if (isBookmarked) {
+                                // setState(() {
+                                //   isBookmarked = false;
+                                // });
                                 await IdeasServices().removeBookmark(
                                   context,
                                   topPicks[index]['_id'] as String,
                                 );
                                 await loadFeed();
                               } else {
+                                // setState(() {
+                                //   isBookmarked = true;
+                                // });
                                 await IdeasServices().addBookmark(
                                   context,
                                   topPicks[index]['_id'] as String,
@@ -445,7 +505,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                           ),
                         ),
                         SizedBox(
-                          width: 9.w,
+                          width: 3.w,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -458,8 +518,9 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                             );
                           },
                           child: Container(
+                            color: Colors.transparent,
                             alignment: Alignment.center,
-                            width: 18.w,
+                            width: 24.w,
                             height: 20.h,
                             child: Assets.icons.threeDots.svg(),
                           ),
@@ -468,12 +529,16 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen> {
                           width: 32.w,
                         ),
                         MyTextButton(
-                          onPressed: () => IdeasServices.gotoIdeaDetails(
-                            context,
-                            isAddedIdea: false,
-                            ideaDetails:
-                                topPicks[index] as Map<String, dynamic>,
-                          ),
+                          onPressed: () async {
+                            await IdeasServices.gotoIdeaDetails(
+                              context,
+                              isAddedIdea: false,
+                              ideaDetails:
+                                  topPicks[index] as Map<String, dynamic>,
+                            ).then((_) {
+                              loadFeed();
+                            });
+                          },
                           fontSize: 12.sp,
                           label: 'View Details',
                         ),

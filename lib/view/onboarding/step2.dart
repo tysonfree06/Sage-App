@@ -11,7 +11,8 @@ import 'package:sage/l10n/l10n.dart';
 
 class Step2Screen extends StatefulWidget {
   const Step2Screen({
-    required this.onNext, super.key,
+    required this.onNext,
+    super.key,
     this.initialSelectedInterests = const {},
   });
 
@@ -45,7 +46,7 @@ class _Step2ScreenState extends State<Step2Screen> {
     'Movies',
     'Sports',
     'Parenting',
-    'Spirituality and Religion',
+    'Spirituality & Religion', //previously: 'Spirituality and Religion',
     'Music',
     'Finances',
     'Animals',
@@ -89,62 +90,63 @@ class _Step2ScreenState extends State<Step2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    return LightStatusBar(
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
-            child: Column(
-              children: [
-                SizedBox(height: 24.h),
-                Center(
-                  child: ColoredRichText(
-                    first: context.l10n.onboarding_step2,
-                    second: context.l10n.onboarding_steps_4,
-                    firstFontSize: 15.sp,
-                    secondFontSize: 15.sp,
-                    firstFontWeight: FontWeight.w600,
-                    secondFontWeight: FontWeight.w600,
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+        backgroundColor: Colors.white,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
+          child: Column(
+            children: [
+              SizedBox(height: 24.h),
+              Center(
+                child: ColoredRichText(
+                  first: context.l10n.onboarding_step2,
+                  second: context.l10n.onboarding_steps_4,
+                  firstFontSize: 15.sp,
+                  secondFontSize: 15.sp,
+                  firstFontWeight: FontWeight.w600,
+                  secondFontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Center(
+                child: Text(
+                  context.l10n.onboarding_step2_select_your_top_5_interests,
+                  style: context.typography.title.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 24.sp,
+                    color: context.colors.textDarkGreen,
                   ),
                 ),
-                SizedBox(height: 8.h),
-                Center(
-                  child: Text(
-                    context.l10n.onboarding_step2_select_your_top_5_interests,
-                    style: context.typography.title.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 24.sp,
-                      color: context.colors.textDarkGreen,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 24.h),
+              ),
+              SizedBox(height: 24.h),
 
-                // Chips grid
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 10.w,
-                  runSpacing: 10.h,
-                  children: _allInterests.map((item) {
-                    return MyChip(
-                      label: item,
-                      isSelected: _selectedInterests.contains(item),
-                      onChanged: (isSelected) =>
-                          _onChipToggled(item, isSelected),
-                    );
-                  }).toList(),
-                ),
+              // Chips grid
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 10.w,
+                runSpacing: 10.h,
+                children: _allInterests.map((item) {
+                  return MyChip(
+                    label: item,
+                    isSelected: _selectedInterests.contains(item),
+                    onChanged: (isSelected) => _onChipToggled(item, isSelected),
+                  );
+                }).toList(),
+              ),
 
-                const Spacer(),
+              const Spacer(),
 
-                // Next button, disabled until exactly 5 are selected
-                MyButton(
-                  label: context.l10n.onboarding_step2_next,
-                  onPressed: _canProceed ? _submit : null,
-                ),
-                SizedBox(height: 30.h),
-              ],
-            ),
+              // Next button, disabled until exactly 5 are selected
+              MyButton(
+                label: context.l10n.onboarding_step2_next,
+                onPressed: _canProceed ? _submit : null,
+              ),
+              SizedBox(height: 30.h),
+            ],
           ),
         ),
       ),

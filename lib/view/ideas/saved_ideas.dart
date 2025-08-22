@@ -1,32 +1,56 @@
+/*
+  NOTE:AutomaticKeepAliveClientMixin is used to keep the state of the widget
+  alive when navigating away from it.
+  This is useful for maintaining the state of the ExploreIdeasScreen when 
+  navigating to other screens and returning back to it, preventing the need
+  to reload the data.
+*/
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/ideas_service.dart';
 import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/view/ideas/widgets/idea_card.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class SavedIdeasScreen extends StatefulWidget {
-  const SavedIdeasScreen({super.key});
+  const SavedIdeasScreen({
+    required this.loadOnTabChanged,
+    super.key,
+  });
+  final bool loadOnTabChanged;
   @override
   State<SavedIdeasScreen> createState() => _SavedIdeasScreenState();
 }
 
-class _SavedIdeasScreenState extends State<SavedIdeasScreen> {
+class _SavedIdeasScreenState extends State<SavedIdeasScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   bool noMineIdea = false;
   bool noMutualIdea = false;
   late List<dynamic> mineSavedIdeas = [];
   List<dynamic> mutualSavedIdeas = [];
   bool isLoaded = false;
-
   final sessionController = SessionController();
 
-  Future<void> fetchSavedIdeas(String type) async {
+  Future<void> fetchSavedIdeas(String type, {bool showLoading = true}) async {
+    if (showLoading) {
+      setState(() {
+        isLoaded = false;
+      });
+    }
+
     if (type == 'mutual') {
       if (mutualSavedIdeas.isEmpty && !noMutualIdea) {
+        debugPrint('IN : mutualSavedIdeas.isEmpty && !noMutualIdea');
         final response = await IdeasServices().getSavedIdeas(type);
-        mutualSavedIdeas = response['ideas'] as List<dynamic>;
+        if (response['ideas'] != null) {
+          mutualSavedIdeas = response['ideas'] as List<dynamic>;
+        }
         if (mutualSavedIdeas.isEmpty) {
           noMutualIdea = true;
         }
@@ -41,9 +65,9 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen> {
       if (mineSavedIdeas.isEmpty && !noMineIdea) {
         final response = await IdeasServices().getSavedIdeas(type);
         mineSavedIdeas = response['ideas'] as List<dynamic>;
-        if (mutualSavedIdeas.isEmpty) {
-          noMutualIdea = true;
-        }
+        // if (mineSavedIdeas.isEmpty) {
+        //   noMineIdea = true;
+        // }
       }
       if (mounted) {
         setState(() {
@@ -86,12 +110,12 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen> {
       setState(() {
         mineSavedIdeas = [];
       });
-      await fetchSavedIdeas('mine');
+      await fetchSavedIdeas('mine', showLoading: false);
     } else {
       setState(() {
         mutualSavedIdeas = [];
       });
-      await fetchSavedIdeas('mutual');
+      await fetchSavedIdeas('mutual', showLoading: false);
     }
   }
 
@@ -99,106 +123,133 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen> {
   void initState() {
     super.initState();
     fetchSavedIdeas('mine'); //initially fetch mine saved ideas
-    // displaySavedIdeas = mineSavedIdeas;
+    displaySavedIdeas = mineSavedIdeas;
   }
 
   String selectedToggle = 'Mine Only';
   String selectedDropdown = 'All';
-  final List<String> dropdownItems = [
+  //this list is unchangeable, so we can define it as a constant
+  static const List<String> dropdownItems = [
     'All',
     'Gift',
     'Restaurant',
     'Travel',
     'Activity',
   ];
+
   @override
   Widget build(BuildContext context) {
+    super.build(context); // 👈 required for AutomaticKeepAliveClientMixin
+    final bool isPartnerConnected = sessionController.partner != null;
     final bool? isPremium = sessionController.user!.isPremium;
     if (isPremium != null && isPremium == false) {
       return _buildNoSubscription(context, isPremium);
     }
 
-    return Column(
-      children: [
-        SizedBox(
-          height: 16.h,
-        ),
-        //Top Controls
-        Row(
-          children: [
-            SizedBox(
-              width: 16.w,
-            ),
-            // Toggle Buttons
-            Container(
-              padding: EdgeInsets.all(5.w),
-              decoration: BoxDecoration(
-                color:
-                    const Color.fromRGBO(224, 231, 232, 1), // light background
-                borderRadius: BorderRadius.circular(12.r),
+    return VisibilityDetector(
+      key: const Key('MySavedIdeasTab'),
+      onVisibilityChanged: (info) {
+        if (info.visibleFraction > 0) {
+          debugPrint('MySavedIdeasTab is visible');
+          reloadSaveIdeas();
+        } else {
+          debugPrint('MySavedIdeasTab is NOT visible');
+        }
+      },
+      child: Column(
+        children: [
+          SizedBox(
+            height: 16.h,
+          ),
+          //Top Controls
+          Row(
+            children: [
+              SizedBox(
+                width: 16.w,
               ),
-              child: Row(
+              // Toggle Buttons
+              Container(
+                padding: EdgeInsets.all(5.w),
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(
+                      224, 231, 232, 1), // light background
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  children: [
+                    _buildToggleButton('Mine Only'),
+                    _buildToggleButton('Mutual'),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Dropdown
+              _buildSavedIdeasDropdown(context),
+              SizedBox(
+                width: 16.w,
+              ),
+            ],
+          ),
+          //END: Top Controls
+          SizedBox(
+            height: 16.h,
+          ),
+          if (isLoaded)
+            Expanded(
+              child: ListView(
                 children: [
-                  _buildToggleButton('Mine Only'),
-                  _buildToggleButton('Mutual'),
-                ],
-              ),
-            ),
-            const SizedBox(width: 16),
-            // Dropdown
-            _buildSavedIdeasDropdown(context),
-            SizedBox(
-              width: 16.w,
-            ),
-          ],
-        ),
-        //END: Top Controls
-        SizedBox(
-          height: 16.h,
-        ),
-        if (isLoaded)
-          Expanded(
-            child: ListView(
-              children: [
-                if (displaySavedIdeas.isNotEmpty)
-                  ...displaySavedIdeas.map(
-                    (item) {
-                      return IdeaCard(
-                        onBookmarkPressed: reloadSaveIdeas,
-                        onReturnFromDetails: reloadSaveIdeas,
-                        showOptionsButton: false,
-                        data: item as Map<String, dynamic>,
-                      );
-                    },
-                  )
-                else
-                  //no item
-                  Center(
-                    child: Column(
+                  if (displaySavedIdeas.isNotEmpty)
+                    ...displaySavedIdeas.map(
+                      (item) {
+                        return IdeaCard(
+                          onBookmarkOrDislikePressed: reloadSaveIdeas,
+                          onReturnFromDetails: reloadSaveIdeas,
+                          showOptionsButton: false,
+                          data: item as Map<String, dynamic>,
+                        );
+                      },
+                    )
+                  else if (displaySavedIdeas.isEmpty &&
+                      selectedToggle == 'Mutual' &&
+                      !isPartnerConnected)
+                    Column(
                       children: [
                         SizedBox(
-                          height: 160.h,
+                          height: 200.h,
                         ),
-                        Assets.icons.noItems.svg(),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No $selectedToggle Saved Ideas!!',
+                        const Text(
+                          textAlign: TextAlign.center,
+                          'No Partner Connected.',
                         ),
                       ],
+                    )
+                  else
+                    //no item
+                    Center(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 160.h,
+                          ),
+                          Assets.icons.noItems.svg(),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No $selectedToggle Saved Ideas!!',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-              ],
-            ),
-          )
-        else
-          Expanded(
-            child: Center(
-              child: CircularProgressIndicator(
-                color: context.colors.greenBg,
+                ],
+              ),
+            )
+          else
+            const Expanded(
+              child: Center(
+                child: LoadingWidget(),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

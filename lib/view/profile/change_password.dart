@@ -100,7 +100,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return context.l10n.error_password_required;
-                        } else if (!value.lessSecurePasswordValidator()) {
+                          // } else if (!value.lessSecurePasswordValidator()) {
+                        } else if (!value.passwordValidator()) {
                           return context.l10n.error_password_strength;
                         }
                         return null;
@@ -138,7 +139,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return context.l10n.error_password_required;
-                        } else if (!value.lessSecurePasswordValidator()) {
+                        } else if (!value.passwordValidator()) {
+                          // } else if (!value.lessSecurePasswordValidator()) {
                           return context.l10n.error_password_strength;
                         }
                         return null;
@@ -177,7 +179,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return context.l10n.error_password_required;
-                        } else if (!value.lessSecurePasswordValidator()) {
+                        } else if (!value.passwordValidator()) {
+                          // } else if (!value.lessSecurePasswordValidator()) {
                           return context.l10n.error_password_strength;
                         }
                         return null;

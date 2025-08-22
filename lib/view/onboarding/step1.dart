@@ -5,11 +5,14 @@ import 'package:sage/app/components/custom_radio_group.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_datepicker_button.dart';
 import 'package:sage/app/components/my_dropdown.dart';
+import 'package:sage/app/constants/countries.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/repository/settings_repo.dart';
+import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/services/views/signup_service.dart';
 
 class Step1Screen extends StatefulWidget {
@@ -59,16 +62,17 @@ class Step1Screen extends StatefulWidget {
 
 class _Step1ScreenState extends State<Step1Screen> {
   // local state fields
-  late String selectedLoveLanguage;
-  late String selectedApologyLanguage;
-  late String selectedCommunicationStyle;
-  late String selectedBudgetLevel;
+  String? selectedLoveLanguage;
+  String? selectedApologyLanguage;
+  String? selectedCommunicationStyle;
+  String? selectedBudgetLevel;
   late String selectedRelationshipStatus;
   DateTime? anniversaryDate;
   DateTime? dob;
-  late String selectedCity;
-  late String selectedState;
-  late String selectedCountry;
+  String? selectedCity;
+  String? selectedState;
+  String? selectedCountry;
+  final _service = SettingService();
 
   // dropdown options
   final List<String> loveLanguages = [
@@ -102,39 +106,21 @@ class _Step1ScreenState extends State<Step1Screen> {
     'Engaged',
     'Married',
   ];
-  final List<String> cities = [
-    'New York',
-    'Los Angeles',
-    'Chicago',
-    'Houston',
-    'Phoenix',
-  ];
-  final List<String> states = [
-    'California',
-    'Texas',
-    'New York',
-    'Florida',
-    'Illinois',
-  ];
-  final List<String> countries = [
-    'United States',
-    'Canada',
-    'United Kingdom',
-    'Australia',
-    'India',
-  ];
+  List<dynamic> cities = [];
+  List<dynamic> states = [];
+  List<dynamic> countries = Countires.allCountries;
 
   @override
   void initState() {
     super.initState();
 
     // load initial values or pick first option as default
-    selectedLoveLanguage = widget.initialLoveLanguage ?? loveLanguages.first;
-    selectedApologyLanguage =
-        widget.initialApologyLanguage ?? apologyLanguages.first;
-    selectedCommunicationStyle =
-        widget.initialCommunicationStyle ?? communicationStyles.first;
-    selectedBudgetLevel = widget.initialBudgetLevel ?? budgetLevels.first;
+    // selectedLoveLanguage = widget.initialLoveLanguage ?? loveLanguages.first;
+    // selectedApologyLanguage =
+    //     widget.initialApologyLanguage ?? apologyLanguages.first;
+    // selectedCommunicationStyle =
+    //     widget.initialCommunicationStyle ?? communicationStyles.first;
+    // selectedBudgetLevel = widget.initialBudgetLevel ?? budgetLevels.first;
     selectedRelationshipStatus =
         widget.initialRelationshipStatus ?? relationshipStatuses.first;
 
@@ -144,28 +130,95 @@ class _Step1ScreenState extends State<Step1Screen> {
     dob = widget.initialDateOfBirth != null
         ? DateTime.tryParse(widget.initialDateOfBirth!)
         : null;
+    //get countries on init
 
-    selectedCity = widget.initialCity ?? cities.first;
-    selectedState = widget.initialState ?? states.first;
-    selectedCountry = widget.initialCountry ?? countries.first;
+    // selectedCity = widget.initialCity ?? cities.first;
+    // selectedState = widget.initialState ?? states.first;
+    // selectedCountry = widget.initialCountry ?? countries.first;
   }
+
+  //get locations from api
+  final _settingsRepo = SettingsRepository();
+
+  Future<void> getStates(String countryCode) async {
+    try {
+      setState(() {
+        states = [];
+        cities = [];
+      });
+      selectedState = null;
+      selectedCity = null;
+      final statesResponse = await _settingsRepo.getStates(
+        countryCode,
+      );
+      final statesList = statesResponse['data'] as List<dynamic>;
+      if (mounted) {
+        setState(() {
+          states = statesList;
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch states Error: $e');
+      setState(() {});
+    }
+  }
+
+  Future<void> getCities(String countryCode, String stateCode) async {
+    debugPrint(
+        'HERE, MY ARGUMENTS: CONCODE: $countryCode, STATE CODE: $stateCode');
+    if (stateCode.isEmpty) return;
+    try {
+      setState(() {
+        cities = [];
+      });
+      selectedCity = null;
+      final citiesResponse = await _settingsRepo.getCities(
+        countryCode,
+        stateCode,
+      );
+
+      final citiesList = citiesResponse['data'] as List<dynamic>;
+
+      if (mounted) {
+        setState(() {
+          cities = citiesList;
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch cities Error: $e');
+    }
+  }
+
+  //END: get locations from api
 
   String _formatDate(DateTime? d) => d == null
       ? ''
       : "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
 
   void _validateAndProceed() {
+    if (selectedLoveLanguage == null ||
+        selectedApologyLanguage == null ||
+        selectedCommunicationStyle == null ||
+        selectedBudgetLevel == null ||
+        anniversaryDate == null ||
+        dob == null ||
+        selectedCity == null ||
+        selectedState == null ||
+        selectedCountry == null) {
+      return;
+    }
+
     // check that no field is "empty"
-    if (selectedLoveLanguage.isEmpty ||
-        selectedApologyLanguage.isEmpty ||
-        selectedCommunicationStyle.isEmpty ||
-        selectedBudgetLevel.isEmpty ||
+    if (selectedLoveLanguage!.isEmpty ||
+        selectedApologyLanguage!.isEmpty ||
+        selectedCommunicationStyle!.isEmpty ||
+        selectedBudgetLevel!.isEmpty ||
         selectedRelationshipStatus.isEmpty ||
         anniversaryDate == null ||
         dob == null ||
-        selectedCity.isEmpty ||
-        selectedState.isEmpty ||
-        selectedCountry.isEmpty) {
+        selectedCity!.isEmpty ||
+        selectedState!.isEmpty ||
+        selectedCountry!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.l10n.onboarding_error_complete_all_fields),
@@ -194,30 +247,37 @@ class _Step1ScreenState extends State<Step1Screen> {
     //END: date of birth and anniversary date validation
 
     widget.onNext(
-      selectedLoveLanguage,
-      selectedApologyLanguage,
-      selectedCommunicationStyle,
-      selectedBudgetLevel,
+      selectedLoveLanguage!,
+      selectedApologyLanguage!,
+      selectedCommunicationStyle!,
+      selectedBudgetLevel!,
       selectedRelationshipStatus,
       _formatDate(anniversaryDate),
       _formatDate(dob),
-      selectedCity,
-      selectedState,
-      selectedCountry,
+      selectedCity!,
+      selectedState!,
+      selectedCountry!,
     );
   }
 
   bool get _isFormComplete =>
-      selectedLoveLanguage.isNotEmpty &&
-      selectedApologyLanguage.isNotEmpty &&
-      selectedCommunicationStyle.isNotEmpty &&
-      selectedBudgetLevel.isNotEmpty &&
+      selectedLoveLanguage != null &&
+      selectedLoveLanguage!.isNotEmpty &&
+      selectedApologyLanguage != null &&
+      selectedApologyLanguage!.isNotEmpty &&
+      selectedCommunicationStyle != null &&
+      selectedCommunicationStyle!.isNotEmpty &&
+      selectedBudgetLevel != null &&
+      selectedBudgetLevel!.isNotEmpty &&
       selectedRelationshipStatus.isNotEmpty &&
       anniversaryDate != null &&
       dob != null &&
-      selectedCity.isNotEmpty &&
-      selectedState.isNotEmpty &&
-      selectedCountry.isNotEmpty;
+      selectedCity != null &&
+      selectedCity!.isNotEmpty &&
+      selectedState != null &&
+      selectedState!.isNotEmpty &&
+      selectedCountry != null &&
+      selectedCountry!.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +326,8 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 10.h),
               MyDropdown(
                 items: loveLanguages,
-                hint: selectedLoveLanguage,
+                value: selectedLoveLanguage,
+                hint: 'Select your love language?',
                 onChanged: (v) => setState(() => selectedLoveLanguage = v!),
               ),
               SizedBox(height: 16.h),
@@ -279,7 +340,8 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 10.h),
               MyDropdown(
                 items: apologyLanguages,
-                hint: selectedApologyLanguage,
+                value: selectedApologyLanguage,
+                hint: 'Select your apology languge',
                 onChanged: (v) => setState(() => selectedApologyLanguage = v!),
               ),
               SizedBox(height: 16.h),
@@ -292,7 +354,8 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 10.h),
               MyDropdown(
                 items: communicationStyles,
-                hint: selectedCommunicationStyle,
+                value: selectedCommunicationStyle,
+                hint: 'Select your communication style?',
                 onChanged: (v) =>
                     setState(() => selectedCommunicationStyle = v!),
               ),
@@ -306,7 +369,8 @@ class _Step1ScreenState extends State<Step1Screen> {
               SizedBox(height: 10.h),
               MyDropdown(
                 items: budgetLevels,
-                hint: selectedBudgetLevel,
+                value: selectedBudgetLevel,
+                hint: 'Select your budget level',
                 onChanged: (v) => setState(() => selectedBudgetLevel = v!),
               ),
               SizedBox(height: 16.h),
@@ -368,26 +432,86 @@ class _Step1ScreenState extends State<Step1Screen> {
               Text(context.l10n.onboarding_step1_location, style: labelStyle),
               SizedBox(height: 10.h),
               MyDropdown(
-                items: cities,
-                hint: selectedCity,
-                onChanged: (v) => setState(() => selectedCity = v!),
+                //itemType and ctx are used to show error messages
+                itemType: 'city',
+                ctx: context,
+                // items: cities,
+                value: selectedCity,
+                hint: 'Select City',
+                // onChanged: (v) => setState(() => selectedCity = v!),
+                items: cities.map((city) {
+                  return city['name'].toString();
+                }).toList(),
+                onChanged: (v) {
+                  if (mounted) {
+                    setState(() => selectedCity = v);
+                  }
+                },
               ),
               SizedBox(height: 10.h),
               Row(
                 children: [
                   Expanded(
                     child: MyDropdown(
-                      items: states,
-                      hint: selectedState,
-                      onChanged: (v) => setState(() => selectedState = v!),
+                      //itemType and ctx are used to show error messages
+                      itemType: 'state',
+                      ctx: context,
+                      // items: states,
+                      value: selectedState,
+                      hint: 'Select State',
+                      // onChanged: (v) => setState(() => selectedState = v!),
+                      items: states.map((state) {
+                        return state['name'].toString();
+                      }).toList(),
+                      onChanged: (v) {
+                        if (mounted) {
+                          setState(() => selectedState = v);
+                        }
+                        if (selectedCountry != null) {
+                          final String countryCode = _service.getCodeByName(
+                            countries,
+                            selectedCountry!,
+                          );
+                          final String stateCode =
+                              _service.getCodeByName(states, v!);
+                          getCities(countryCode, stateCode).then((_) {
+                            if (cities.isEmpty) {
+                              if (context.mounted) {
+                                context.flushBarErrorMessage(
+                                  message: 'No Cities found for this State.',
+                                );
+                              }
+                            }
+                          });
+                        }
+                      },
                     ),
                   ),
                   SizedBox(width: 16.w),
                   Expanded(
                     child: MyDropdown(
-                      items: countries,
-                      hint: selectedCountry,
-                      onChanged: (v) => setState(() => selectedCountry = v!),
+                      // items: countries,
+                      items: countries.map((country) {
+                        return country['name'].toString();
+                      }).toList(),
+                      value: selectedCountry,
+                      hint: 'Select Country',
+                      // onChanged: (v) => setState(() => selectedCountry = v!),
+                      onChanged: (v) {
+                        setState(() => selectedCountry = v);
+                        final String countryCode =
+                            _service.getCodeByName(countries, v!);
+                        getStates(countryCode).then((_) {
+                          if (states.isEmpty) {
+                            if (context.mounted) {
+                              context.flushBarErrorMessage(
+                                message: 'No States found for this Country.',
+                              );
+                            }
+                          }
+                        });
+                        ;
+                      },
                     ),
                   ),
                 ],

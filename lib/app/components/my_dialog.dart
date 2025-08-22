@@ -17,6 +17,8 @@ class MyDialog extends StatelessWidget {
     this.onCancel,
     this.image,
     this.confirmLabel,
+    this.cancelLabel,
+    this.disableCancel = false,
   });
 
   final String titleFirst;
@@ -25,9 +27,11 @@ class MyDialog extends StatelessWidget {
   final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
   final SvgGenImage? image;
+  final bool disableCancel;
 
-  /// Optional label for the confirm button
+  /// Optional label for the confirm  button
   final String? confirmLabel;
+  final String? cancelLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +64,16 @@ class MyDialog extends StatelessWidget {
             SizedBox(height: 30.h),
             Row(
               children: [
-                Expanded(
-                  child: MyButton(
-                    label: context.l10n.dialog_cancel,
-                    isDark: true,
-                    onPressed: onCancel ?? () => Navigator.of(context).pop(),
-                  ),
-                ),
+                if (!disableCancel)
+                  Expanded(
+                    child: MyButton(
+                      label: cancelLabel ?? context.l10n.dialog_cancel,
+                      isDark: true,
+                      onPressed: onCancel ?? () => Navigator.of(context).pop(),
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
                 SizedBox(width: 10.w),
                 Expanded(
                   child: MyButton(

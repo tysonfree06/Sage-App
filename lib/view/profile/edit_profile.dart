@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sage/app/components/custom_radio_group.dart';
+import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_datepicker_button.dart';
 import 'package:sage/app/components/my_dropdown.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
+import 'package:sage/app/constants/countries.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/repository/settings_repo.dart';
 import 'package:sage/services/image_picker.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/settings_service.dart';
@@ -43,9 +46,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late String _relationshipStatus;
   DateTime? _anniversaryDate;
   DateTime? _dob;
-  late String _city;
-  late String _state;
-  late String _country;
+  String? _city;
+  String? _state;
+  String? _country;
   File? _localImage;
   String? _uploadedUrl;
   bool _busy = false;
@@ -82,27 +85,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     'Engaged',
     'Married',
   ];
-  static const _cities = [
-    'New York',
-    'Los Angeles',
-    'Chicago',
-    'Houston',
-    'Phoenix',
-  ];
-  static const _states = [
-    'California',
-    'Texas',
-    'New York',
-    'Florida',
-    'Illinois',
-  ];
-  static const _countries = [
-    'United States',
-    'Canada',
-    'United Kingdom',
-    'Australia',
-    'India',
-  ];
+  List<dynamic> cities = [];
+  List<dynamic> states = [];
+  // List<dynamic> countries = [];
+  List<dynamic> countries = Countires.allCountries;
 
   @override
   void initState() {
@@ -118,10 +104,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         user?.relationshipStatus ?? _relationshipStatuses.first;
     _anniversaryDate = user?.anniversaryDate;
     _dob = user?.dateOfBirth;
-    _city = user?.location?.city ?? _cities.first;
-    _state = user?.location?.state ?? _states.first;
-    _country = user?.location?.country ?? _countries.first;
+    setLocations(); //remove comment #muttas
     _uploadedUrl = user?.image;
+
+    //get countries on init
+    // getCountries();
+  }
+
+  void setLocations() {
+    final user = _session.user;
+    if (user?.location?.city != null) {
+      cities.add({'code': '', 'name': user?.location?.city});
+      _city = user?.location?.city;
+    }
+
+    if (user?.location?.state != null) {
+      states.add({'code': '', 'name': user?.location?.state});
+      _state = user?.location?.state;
+    }
+    _country = user?.location?.country;
   }
 
   Future<void> _pickAndUploadImage() async {
@@ -177,7 +178,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
 
     if (!_formKey.currentState!.validate()) return;
-    if (!SignupService().isAtLeast18YearsOld(_dob!)) {
+    if (!SignupService().isAtLeast18YearsOld(_dob)) {
       context.flushBarErrorMessage(
         message: 'You should be at least 18 years old!',
       );
@@ -190,8 +191,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
 
     if (!SignupService().isAnniversaryDateLessThanDOB(
-      _dob!,
-      _anniversaryDate!,
+      _dob ?? DateTime.now(),
+      _anniversaryDate,
     )) {
       context.flushBarErrorMessage(
         message: 'Date of Birth should be before Anniversary Date!',
@@ -204,7 +205,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return;
     }
 
-    setState(() => _busy = true);
+    if (mounted) {
+      setState(() => _busy = true);
+    }
 
     await _service.updateProfile(
       context: context,
@@ -222,11 +225,74 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       image: _uploadedUrl,
       popScreen: true,
     );
-    setState(() {
-      _busy = false;
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _busy = false;
+        isLoading = false;
+      });
+    }
   }
+
+  //get locations from api
+  final _settingsRepo = SettingsRepository();
+  // Future<void> getCountries() async {
+  //   final countriesResponse = await _settingsRepo.getCountries();
+  //   final countriesList = countriesResponse['data'] as List<dynamic>;
+
+  //   if (mounted) {
+  //     setState(() {
+  //       countries = countriesList;
+  //     });
+  //   }
+  // }
+
+  Future<void> getStates(String countryCode) async {
+    try {
+      setState(() {
+        states = [];
+        cities = [];
+      });
+      _state = null;
+      _city = null;
+      final statesResponse = await _settingsRepo.getStates(
+        countryCode,
+      );
+      final statesList = statesResponse['data'] as List<dynamic>;
+      if (mounted) {
+        setState(() {
+          states = statesList;
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch states Error: $e');
+      setState(() {});
+    }
+  }
+
+  Future<void> getCities(String countryCode, String stateCode) async {
+    if (stateCode.isEmpty) return;
+    try {
+      setState(() {
+        cities = [];
+      });
+      _city = null;
+      final citiesResponse = await _settingsRepo.getCities(
+        countryCode,
+        stateCode,
+      );
+
+      final citiesList = citiesResponse['data'] as List<dynamic>;
+      if (mounted) {
+        setState(() {
+          cities = citiesList;
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch cities Error: $e');
+    }
+  }
+
+  //END: get locations from api
 
   @override
   Widget build(BuildContext context) {
@@ -267,6 +333,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 value: _loveLanguage,
                 items: _loveLanguages,
                 onChanged: (v) => setState(() => _loveLanguage = v!),
+                hint: 'Select your love language',
               ),
               SizedBox(height: 16.h),
               _buildDropdown(
@@ -275,6 +342,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 value: _apologyLanguage,
                 items: _apologyLanguages,
                 onChanged: (v) => setState(() => _apologyLanguage = v!),
+                hint: 'Select your apology language',
               ),
               SizedBox(height: 16.h),
               _buildDropdown(
@@ -282,6 +350,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     .l10n.onboarding_step1_what_is_your_communication_style,
                 value: _communicationStyle,
                 items: _communicationStyles,
+                hint: 'Select your communication style',
                 onChanged: (v) => setState(() {
                   _communicationStyle = v!;
                 }),
@@ -341,29 +410,81 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Text(context.l10n.onboarding_step1_location, style: labelStyle),
               SizedBox(height: 10.h),
               _buildDropdown(
+                itemType: 'city',
+                ctx: context,
                 value: _city,
-                items: _cities,
-                onChanged: (v) => setState(() => _city = v!),
-                hint: _city,
+                // items: cities,
+                items: cities.map((city) {
+                  return city['name'].toString();
+                }).toList(),
+                onChanged: (v) {
+                  if (mounted) {
+                    setState(() => _city = v);
+                  }
+                },
+                hint: 'Select City',
               ),
               SizedBox(height: 10.h),
               Row(
                 children: [
                   Expanded(
                     child: _buildDropdown(
+                      itemType: 'state',
+                      ctx: context,
                       value: _state,
-                      items: _states,
-                      onChanged: (v) => setState(() => _state = v!),
-                      hint: _state,
+                      // items: states,
+                      items: states.map((state) {
+                        return state['name'].toString();
+                      }).toList(),
+                      onChanged: (v) {
+                        if (mounted) {
+                          setState(() => _state = v);
+                        }
+                        if (_country != null) {
+                          final String countryCode = _service.getCodeByName(
+                            countries,
+                            _country!,
+                          );
+                          final String stateCode =
+                              _service.getCodeByName(states, v!);
+                          getCities(countryCode, stateCode).then((_) {
+                            if (cities.isEmpty) {
+                              if (context.mounted) {
+                                context.flushBarErrorMessage(
+                                  message: 'No Cities found for this state.',
+                                );
+                              }
+                            }
+                          });
+                        }
+                      },
+                      // hint: _state,
+                      hint: 'Select State',
                     ),
                   ),
                   SizedBox(width: 16.w),
                   Expanded(
                     child: _buildDropdown(
                       value: _country,
-                      items: _countries,
-                      onChanged: (v) => setState(() => _country = v!),
-                      hint: _country,
+                      // items: countries,
+                      items: countries.map((country) {
+                        return country['name'].toString();
+                      }).toList(),
+                      onChanged: (v) {
+                        setState(() => _country = v);
+                        final String countryCode =
+                            _service.getCodeByName(countries, v!);
+                        getStates(countryCode).then((_) {
+                          if (states.isEmpty) {
+                            if (context.mounted) {
+                              context.flushBarErrorMessage(
+                                message: 'No States found for this country.',
+                              );
+                            }
+                          }
+                        });
+                      },
+                      hint: 'Select Country',
                     ),
                   ),
                 ],
@@ -417,8 +538,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                     ),
             ),
-            child:
-                _busy ? const Center(child: CircularProgressIndicator()) : null,
+            child: _busy
+                ? Center(
+                    child: Container(
+                      width: 100.w,
+                      height: 100.h,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black26,
+                      ),
+                      child: const LoadingWidget(
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : null,
           ),
           Positioned(
             right: 0,
@@ -461,11 +595,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildDropdown({
-    required String value,
     required List<String> items,
     required ValueChanged<String?> onChanged,
+    String? value,
     String? label,
     String? hint,
+    String? itemType,
+    BuildContext?
+        ctx, //context and item type are only given from location dropdowns
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -477,7 +614,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 .copyWith(fontWeight: FontWeight.w700, fontSize: 16.sp),
           ),
         if (label != null) SizedBox(height: 10.h),
-        MyDropdown(items: items, hint: hint ?? value, onChanged: onChanged),
+        MyDropdown(
+          items: items,
+          hint: hint,
+          value: value,
+          onChanged: onChanged,
+          itemType: itemType,
+          ctx: ctx,
+        ),
       ],
     );
   }

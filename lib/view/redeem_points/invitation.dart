@@ -2,21 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
+import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
-import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 
-class InvitationScreen extends StatelessWidget {
+class InvitationScreen extends StatefulWidget {
   const InvitationScreen({super.key});
 
+  @override
+  State<InvitationScreen> createState() => _InvitationScreenState();
+}
+
+class _InvitationScreenState extends State<InvitationScreen> {
+  bool isCopyPressed = false;
   @override
   Widget build(BuildContext context) {
     final sessionController = SessionController();
     final user = sessionController.user!;
     final referalCode = user.mineinvitationCode ?? '';
-    final String points = user.points.toString();
+    final String referralPoints = user.totalReferralPoints.toString();
     final String refferals = user.referrals!.length.toString();
 
     // const String referalCode = 'nzkKFg';
@@ -57,36 +63,79 @@ class InvitationScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 4.h),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          referalCode,
-                          style: context.typography.title.copyWith(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w500,
-                              color: context.colors.white,),
+                    InkWell(
+                      onTap: () async {
+                        await Clipboard.setData(
+                          ClipboardData(
+                            text: referalCode,
+                          ),
+                        );
+                        if (mounted) {
+                          setState(() {
+                            isCopyPressed = true;
+                          });
+                        }
+                        await Future<void>.delayed(
+                          const Duration(
+                            milliseconds: 2000,
+                          ),
+                        );
+                        if (mounted) {
+                          setState(() {
+                            isCopyPressed = false;
+                          });
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 2.h,
                         ),
-                        SizedBox(width: 8.w),
-                        GestureDetector(
-                          onTap: () {
-                            Clipboard.setData(
-                              ClipboardData(
-                                text: referalCode,
+                        decoration: BoxDecoration(
+                          color: context.colors.yellow.withValues(
+                            alpha: 0.1,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            AppRadiuses.smallRadius,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              referalCode,
+                              style: context.typography.title.copyWith(
+                                fontSize: 24.sp,
+                                fontWeight: FontWeight.w500,
+                                color: context.colors.white,
                               ),
-                            );
-                            if (context.mounted) {
-                              context.flushBarSuccessMessage(
-                                message: 'Copied to clipboard',
-                              );
-                            }
-                          },
-                          child:
-                              Assets.icons.copy.svg(height: 12.h, width: 12.w),
+                            ),
+                            SizedBox(width: 8.w),
+                            if (isCopyPressed == true)
+                              Icon(
+                                Icons.check,
+                                color: context.colors.yellow,
+                                size: 20.w,
+                              )
+                            else
+                              Assets.icons.copy.svg(height: 16.h, width: 16.w),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ],
+                ),
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Text(
+                textAlign: TextAlign.center,
+                context.l10n.refer_instructions,
+                style: context.typography.title.copyWith(
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w400,
+                  color: context.colors.textDarkGreen,
                 ),
               ),
               SizedBox(height: 25.h),
@@ -110,7 +159,7 @@ class InvitationScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 10.h),
                           ColoredRichText(
-                            first: points,
+                            first: referralPoints,
                             firstFontSize: 18.sp,
                             firstFontWeight: FontWeight.w600,
                             firstColor: context.colors.textLightGreen,
@@ -181,7 +230,7 @@ class InvitationScreen extends StatelessWidget {
                   color: context.colors.textDarkGreen,
                 ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 8.h),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -195,12 +244,12 @@ class InvitationScreen extends StatelessWidget {
                     Text(
                       context.l10n.refer_to_friends_subtitle,
                       style: context.typography.title.copyWith(
-                        fontSize: 15.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
                         color: context.colors.textDarkGreen,
                       ),
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 24.h),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -222,7 +271,7 @@ class InvitationScreen extends StatelessWidget {
                   color: context.colors.textDarkGreen,
                 ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 8.h),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(

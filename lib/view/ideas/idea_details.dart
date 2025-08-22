@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/model/user/user_model.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
@@ -17,6 +18,7 @@ class IdeaDetailsScreen extends StatefulWidget {
   });
   final bool isAddedIdea;
   final Map<String, dynamic>? ideaDetails;
+
   @override
   State<IdeaDetailsScreen> createState() => _IdeaDetailsScreenState();
 }
@@ -29,6 +31,7 @@ Future<void> deleteAddeIdea(BuildContext context, String ideaId) async {
 class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
   @override
   Widget build(BuildContext context) {
+    debugPrint('IMAGE URL IS: ${widget.ideaDetails?['image']}');
     return Scaffold(
       appBar: IdeasServices.buildIdeaDetailsAppBar(
         isAddedIdea: widget.isAddedIdea,
@@ -36,6 +39,14 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
         ideaDetails: widget.ideaDetails,
         onIdeaDeletePressed: () async {
           await deleteAddeIdea(context, widget.ideaDetails?['_id'] as String);
+        },
+        onIdeaEdited: () async {
+          // if (mounted) {
+          //   Navigator.pop(context);
+          //   context.flushBarSuccessMessage(
+          //     message: 'Idea Updated Successfully!',
+          //   );
+          // }
         },
       ) as PreferredSizeWidget,
       body: Padding(
@@ -55,22 +66,20 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
 
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Stack(
-                children: [
-                  if (widget.ideaDetails?['image'] != null &&
-                      widget.ideaDetails?['image'] != '')
-                    Image.network(
-                      widget.ideaDetails?['image'] as String,
-                      width: double.infinity,
-                      height: 190.h,
-                    ),
-                  Container(
-                    alignment: Alignment.center,
-                    color: Colors.black38,
-                    width: double.infinity,
-                    height: 190.h,
-                  ),
-                ],
+              child:
+                  // if (widget.ideaDetails?['image'] != null &&
+                  //     widget.ideaDetails?['image'] != '')
+
+                  Image.network(
+                widget.ideaDetails?['image'] as String,
+                width: double.infinity,
+                height: 190.h,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  width: double.infinity,
+                  height: 190.h,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -238,7 +247,7 @@ class MyAddedIdeaInfo extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+                    color: Colors.white,
                   ),
                 ),
               ],

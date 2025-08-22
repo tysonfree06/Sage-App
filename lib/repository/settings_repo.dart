@@ -10,4 +10,28 @@ class SettingsRepository {
       data: data,
     );
   }
+
+  //Location
+  Future<Map<String, dynamic>> getCountries() async {
+    return _apiServices.get(
+      url: AppUrl.countries,
+    );
+  }
+
+  Future<Map<String, dynamic>> getStates(
+    String countryCode,
+  ) async {
+    return _apiServices.get(
+      url: '${AppUrl.states}/$countryCode',
+    );
+  }
+
+  Future<Map<String, dynamic>> getCities(
+    String countryCode,
+    String stateCode,
+  ) async {
+    return _apiServices.get(
+      url: '${AppUrl.cities}/$countryCode/$stateCode',
+    );
+  }
 }

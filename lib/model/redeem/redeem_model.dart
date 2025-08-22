@@ -1,33 +1,39 @@
-//FIXME: Remove this comment after generated files fix #muttas
 import 'package:json_annotation/json_annotation.dart';
 
-// part 'radeem_model.g.dart';
 part 'redeem_model.g.dart';
 
 @JsonSerializable()
 class RedeemOfferDetails {
   const RedeemOfferDetails({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.pointsRequired,
+    required this.isActive,
     required this.startDate,
     required this.endDate,
-    this.backendId = '',
-    this.offerId = '',
-    this.title = '',
-    this.points = 0,
-    this.description = '',
-    this.redemptionDate,
-    this.imageUrl = '',
+    this.campaignId,
+    this.image,
+    this.v,
+    this.redeemedAt,
   });
 
   factory RedeemOfferDetails.fromJson(Map<String, dynamic> json) =>
       _$RedeemOfferDetailsFromJson(json);
 
-  final String backendId;
-
-  final String offerId;
+  @JsonKey(name: '_id')
+  final String id;
 
   final String title;
 
-  final int points;
+  final String description;
+
+  @JsonKey(name: 'pointsRequired')
+  final int pointsRequired;
+
+  final String? campaignId;
+
+  final bool isActive;
 
   @JsonKey(
     name: 'startDate',
@@ -43,57 +49,55 @@ class RedeemOfferDetails {
   )
   final DateTime endDate;
 
-  @JsonKey(name: 'description')
-  final String description;
+  @JsonKey(name: 'image')
+  final String? image; // nullable now
+
+  @JsonKey(name: '__v')
+  final int? v; // nullable now
 
   @JsonKey(
-    name: 'redemptionDate',
-    includeIfNull: false,
+    name: 'redeemedAt',
     fromJson: _nullableDateTimeFromJson,
     toJson: _nullableDateTimeToJson,
   )
-  final DateTime? redemptionDate;
-
-  @JsonKey(name: 'imageUrl')
-  final String imageUrl;
+  final DateTime? redeemedAt; // nullable already
 
   RedeemOfferDetails copyWith({
-    String? backendId,
-    String? offerId,
+    String? id,
     String? title,
-    int? points,
+    String? description,
+    int? pointsRequired,
+    String? campaignId,
+    bool? isActive,
     DateTime? startDate,
     DateTime? endDate,
-    String? description,
-    DateTime? redemptionDate,
-    String? imageUrl,
+    String? image,
+    int? v,
+    DateTime? redeemedAt,
   }) {
     return RedeemOfferDetails(
-      backendId: backendId ?? this.backendId,
-      offerId: offerId ?? this.offerId,
+      id: id ?? this.id,
       title: title ?? this.title,
-      points: points ?? this.points,
+      description: description ?? this.description,
+      pointsRequired: pointsRequired ?? this.pointsRequired,
+      campaignId: campaignId ?? this.campaignId,
+      isActive: isActive ?? this.isActive,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
-      description: description ?? this.description,
-      redemptionDate: redemptionDate ?? this.redemptionDate,
-      imageUrl: imageUrl ?? this.imageUrl,
+      image: image ?? this.image,
+      v: v ?? this.v,
+      redeemedAt: redeemedAt ?? this.redeemedAt,
     );
   }
 
   Map<String, dynamic> toJson() => _$RedeemOfferDetailsToJson(this);
 
-  static DateTime _dateTimeFromJson(String date) {
-    if (date.isEmpty) {
-      throw const FormatException('Invalid date string');
-    }
-    return DateTime.parse(date);
-  }
+  static DateTime _dateTimeFromJson(String date) => DateTime.parse(date);
 
   static String _dateTimeToJson(DateTime date) => date.toIso8601String();
 
   static DateTime? _nullableDateTimeFromJson(String? date) =>
-      date == null || date.isEmpty ? null : DateTime.parse(date);
+      date == null ? null : DateTime.parse(date);
 
   static String? _nullableDateTimeToJson(DateTime? date) =>
       date?.toIso8601String();

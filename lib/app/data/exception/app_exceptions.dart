@@ -30,7 +30,9 @@ class FetchDataException extends AppException {
     try {
       final Map<String, dynamic> json =
           jsonDecode(responseBody ?? '{}') as Map<String, dynamic>;
-      return json['msg'] as String? ?? 'Invalid request';
+      return json['message'] as String? ??
+          json['msg'] as String? ??
+          'Invalid request';
     } catch (_) {
       return 'Invalid request';
     }
@@ -46,7 +48,9 @@ class BadRequestException extends AppException {
     try {
       final Map<String, dynamic> json =
           jsonDecode(responseBody ?? '{}') as Map<String, dynamic>;
-      return json['msg'] as String? ?? 'Invalid request';
+      return json['message'] as String? ??
+          json['msg'] as String? ??
+          'Invalid request';
     } catch (_) {
       return 'Invalid request';
     }
@@ -62,7 +66,9 @@ class UnauthorisedException extends AppException {
     try {
       final Map<String, dynamic> json =
           jsonDecode(responseBody ?? '{}') as Map<String, dynamic>;
-      return json['msg'] as String? ?? 'You are not authorized';
+      return json['message'] as String? ??
+          json['msg'] as String? ??
+          'You are not authorized';
     } catch (_) {
       return 'You are not authorized';
     }

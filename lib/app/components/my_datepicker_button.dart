@@ -57,7 +57,7 @@ class MyDatePickerButton extends StatelessWidget {
         child: selectedDate != null
             ? Text(
                 _formatDate(selectedDate!),
-                style: textStyle,
+                style: textStyle.copyWith(color: Colors.black87),
               )
             : null,
       ),

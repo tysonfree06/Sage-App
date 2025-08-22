@@ -10,6 +10,7 @@ import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/repository/ideas_repo.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/splash_services.dart';
 import 'package:sage/services/views/subscription_services.dart';
 import 'package:sage/view/ideas/widgets/idea_sheet.dart';
 
@@ -70,7 +71,7 @@ class IdeasServices {
       child: IdeaSheet(
         isBookmarked: isBookmarked,
         ideaId: ideaId,
-        onBookmarkPressedInSheet: () {
+        onBookmarkOrDislikePressedInSheet: () {
           onBookmarkPressed?.call();
         },
       ),
@@ -82,6 +83,7 @@ class IdeasServices {
     bool isAddedIdea = false,
     Map<String, dynamic>? ideaDetails,
     VoidCallback? onIdeaDeletePressed,
+    VoidCallback? onIdeaEdited,
   }) {
     String title;
     if (isAddedIdea) {
@@ -131,9 +133,7 @@ class IdeasServices {
                 isEditIdea: true,
                 ideaDetails: ideaDetails,
               );
-              // if (context.mounted) {
-              //   Navigator.of(context).pop();
-              // }
+              onIdeaEdited!.call();
             },
             style: IconButton.styleFrom(
               backgroundColor: Colors.white,
@@ -272,7 +272,13 @@ class IdeasServices {
     String ideaId,
   ) async {
     try {
-      final response = await _ideasRepository.addBookmark(ideaId);
+      final responses = await Future.wait([
+        _ideasRepository.addBookmark(ideaId),
+        SplashServices().fetchProfile(context),
+      ]);
+
+      final response = responses.first as Map<String, dynamic>?;
+      // final response = await _ideasRepository.addBookmark(ideaId);
       if (response != null) {
         if (context.mounted) {
           context.flushBarSuccessMessage(
@@ -439,13 +445,12 @@ class IdeasServices {
       await _ideasRepository.updateIdea(ideaId, data);
       if (context.mounted) {
         Navigator.pop(context);
-      }
-
-      if (context.mounted) {
+        Navigator.pop(context); //two pops are necessary
         context.flushBarSuccessMessage(
           message: 'Idea Updated Successfully!',
         );
       }
+
       debugPrint('Idea updated successfully');
     } catch (e) {
       if (e is AppException) {

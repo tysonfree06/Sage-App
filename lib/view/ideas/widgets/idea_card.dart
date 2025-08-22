@@ -12,14 +12,14 @@ class IdeaCard extends StatefulWidget {
     required this.data,
     this.showOptionsButton = true,
     this.isAddedIdeaScreen = false,
-    this.onBookmarkPressed,
+    this.onBookmarkOrDislikePressed,
     this.onReturnFromDetails,
     super.key,
   });
   final bool showOptionsButton;
   final Map<String, dynamic> data;
   final bool isAddedIdeaScreen;
-  final VoidCallback? onBookmarkPressed;
+  final VoidCallback? onBookmarkOrDislikePressed;
   final VoidCallback?
       onReturnFromDetails; //this function is used when user deltes an idea, it is required to load the previous screen
 
@@ -38,6 +38,8 @@ class _IdeaCardState extends State<IdeaCard> {
 
     final String imageUrl = widget.data['image'].toString();
 
+    debugPrint('IMAGE URL IN CARD: $imageUrl');
+
     final bool isBookmarked = savedBy.contains(userId.toString());
 
     return Padding(
@@ -45,7 +47,7 @@ class _IdeaCardState extends State<IdeaCard> {
         horizontal: 16.w,
       ),
       child: SizedBox(
-        height: 152.h,
+        height: 155.h,
         child: Card(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -60,20 +62,17 @@ class _IdeaCardState extends State<IdeaCard> {
                 // Image with category pill
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15.r),
-                  child: imageUrl.isNotEmpty ||
-                          imageUrl == 'null' //don't remove it
-                      ? Image.network(
-                          // 'https://picsum.photos/200/300',
-                          imageUrl,
-                          height: 116.h,
-                          width: 113.w,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          color: Colors.grey,
-                          width: 113.w,
-                          height: 116.h,
-                        ),
+                  child: Image.network(
+                    imageUrl,
+                    height: 126.h,
+                    width: 120.w,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: context.colors.white,
+                      width: 120.w,
+                      height: 126.h,
+                    ),
+                  ),
                 ),
 
                 SizedBox(width: 10.w),
@@ -100,13 +99,16 @@ class _IdeaCardState extends State<IdeaCard> {
                                     context,
                                     widget.data['_id'] as String,
                                     () {
-                                      widget.onBookmarkPressed?.call();
+                                      widget.onBookmarkOrDislikePressed?.call();
                                     },
-                                    () {},
+                                    () {
+                                      widget.onBookmarkOrDislikePressed?.call();
+                                    },
                                     isBookmarked: isBookmarked,
                                   );
                                 },
                                 child: Container(
+                                  color: Colors.transparent,
                                   alignment: Alignment.center,
                                   width: 18.w,
                                   height: 16.h,
@@ -187,15 +189,16 @@ class _IdeaCardState extends State<IdeaCard> {
                                     context,
                                     widget.data['_id'] as String,
                                   );
-                                  widget.onBookmarkPressed?.call();
+                                  widget.onBookmarkOrDislikePressed?.call();
+                                  debugPrint('CALLED THE FUNCTION IN THE CARD');
                                 } else {
                                   await IdeasServices().addBookmark(
                                     context,
                                     widget.data['_id'] as String,
                                   );
-                                  widget.onBookmarkPressed?.call();
+                                  widget.onBookmarkOrDislikePressed?.call();
                                 }
-                                debugPrint('Bookmark icon tapped!');
+                                debugPrint('CALLED THE FUNCTION IN THE CARD');
                               }
                             },
                             child: Padding(
@@ -206,7 +209,7 @@ class _IdeaCardState extends State<IdeaCard> {
                             ),
                           ),
                           SizedBox(
-                            width: 100.w,
+                            width: 90.w,
                           ),
                         ] else
                           const SizedBox.shrink(),

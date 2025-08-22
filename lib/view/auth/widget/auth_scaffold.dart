@@ -56,41 +56,39 @@ class _AuthScaffoldState extends State<AuthScaffold> {
           fit: BoxFit.cover,
         ),
       ),
-      child: DarkStatusBar(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SafeArea(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: widget.contentHeight,
-                width: double.infinity,
-                padding: EdgeInsets.all(AppDimensions.small),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(AppDimensions.extraLarge),
-                    topRight: Radius.circular(AppDimensions.extraLarge),
-                  ),
-                  color: context.colors.white,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: widget.contentHeight,
+              width: double.infinity,
+              padding: EdgeInsets.all(AppDimensions.small),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(AppDimensions.extraLarge),
+                  topRight: Radius.circular(AppDimensions.extraLarge),
                 ),
-                child: widget.body ?? const SizedBox.shrink(),
+                color: context.colors.white,
               ),
+              child: widget.body ?? const SizedBox.shrink(),
             ),
           ),
-          appBar: widget.appBar,
-          drawer: widget.drawer,
-          bottomNavigationBar: widget.bottomNavigationBar,
-          floatingActionButton: widget.floatingActionButton,
-          bottomSheet: widget.bottomSheet,
-          persistentFooterButtons: widget.persistentFooterButtons != null
-              ? [widget.persistentFooterButtons!]
-              : null,
-          endDrawer: widget.endDrawer,
-          resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-          primary: widget.primary ?? true,
-          extendBody: widget.extendBody ?? false,
-          extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,
         ),
+        appBar: widget.appBar,
+        drawer: widget.drawer,
+        bottomNavigationBar: widget.bottomNavigationBar,
+        floatingActionButton: widget.floatingActionButton,
+        bottomSheet: widget.bottomSheet,
+        persistentFooterButtons: widget.persistentFooterButtons != null
+            ? [widget.persistentFooterButtons!]
+            : null,
+        endDrawer: widget.endDrawer,
+        resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+        primary: widget.primary ?? true,
+        extendBody: widget.extendBody ?? false,
+        extendBodyBehindAppBar: widget.extendBodyBehindAppBar ?? false,
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/backButton.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_chip.dart';
 import 'package:sage/app/components/status_bar_style.dart';
@@ -35,7 +36,7 @@ class _UpdateGiftPreferenceScreenState
     'Home & Decor',
     'Food & Gourmet',
     'Travel & Adventure',
-    'Event Ticket',
+    'Event Tickets',
   ];
 
   final SessionController _sessionController = SessionController();
@@ -56,100 +57,97 @@ class _UpdateGiftPreferenceScreenState
 
   @override
   Widget build(BuildContext context) {
-    return LightStatusBar(
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          // leading: BackButton(color: context.colors.mainGreenLight),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            color: !_busy && !isLoading
-                ? context.colors.mainGreenLight
-                : Colors.grey,
-            onPressed:
-                !_busy && !isLoading ? () => Navigator.pop(context) : null,
-          ),
-          title: Text(
-            context.l10n.update_gift_preferences,
-            style: context.typography.title.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 20.sp,
-              color: context.colors.textDarkGreen,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        // leading: BackButton(color: context.colors.mainGreenLight),
+        leading: MyBackButton(
+          color: !_busy && !isLoading
+              ? context.colors.mainGreenLight
+              : Colors.grey,
+          onPressed: !_busy && !isLoading ? () => Navigator.pop(context) : null,
+        ),
+        title: Text(
+          context.l10n.update_gift_preferences,
+          style: context.typography.title.copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: 20.sp,
+            color: context.colors.textDarkGreen,
           ),
         ),
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
-            child: Column(
-              children: [
-                SizedBox(height: 16.h),
-                Center(
-                  child: Text(
-                    context.l10n.update_gift_choose_upto_5_preferences,
-                    style: context.typography.title.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16.sp,
-                      color: context.colors.textDarkGreen,
-                    ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppDimensions.medium),
+          child: Column(
+            children: [
+              SizedBox(height: 16.h),
+              Center(
+                child: Text(
+                  context.l10n.update_gift_choose_upto_5_preferences,
+                  style: context.typography.title.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16.sp,
+                    color: context.colors.textDarkGreen,
                   ),
                 ),
-                SizedBox(height: 20.h),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 10.w,
-                  runSpacing: 10.h,
-                  children: preferences
-                      .map(
-                        (item) => MyChip(
-                          label: item,
-                          isSelected: selectedPreferences.contains(item),
-                          onChanged: (selected) {
-                            setState(() {
-                              if (selected) {
-                                if (selectedPreferences.length < 5) {
-                                  selectedPreferences.add(item);
-                                } else {
-                                  // Optional: Show a toast or alert to limit 5
-                                  context.flushBarErrorMessage(
-                                    message:
-                                        'You can select up to 5 gift preferences only',
-                                  );
-                                }
+              ),
+              SizedBox(height: 20.h),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 10.w,
+                runSpacing: 10.h,
+                children: preferences
+                    .map(
+                      (item) => MyChip(
+                        label: item,
+                        isSelected: selectedPreferences.contains(item),
+                        onChanged: (selected) {
+                          setState(() {
+                            if (selected) {
+                              if (selectedPreferences.length < 5) {
+                                selectedPreferences.add(item);
                               } else {
-                                selectedPreferences.remove(item);
+                                // Optional: Show a toast or alert to limit 5
+                                context.flushBarErrorMessage(
+                                  message:
+                                      // ignore: lines_longer_than_80_chars
+                                      'You can select up to 5 gift preferences only',
+                                );
                               }
-                            });
-                          },
-                        ),
-                      )
-                      .toList(),
-                ),
-                const Spacer(),
-                MyButton(
-                  label: context.l10n.interests_update,
-                  isLoading: isLoading,
-                  onPressed: !_busy && !isLoading && _canProceed
-                      ? () async {
-                          setState(() {
-                            _busy = true;
-                            isLoading = true;
+                            } else {
+                              selectedPreferences.remove(item);
+                            }
                           });
-                          await _settingService.updateProfile(
-                            context: context,
-                            giftPreferences: selectedPreferences.toList(),
-                            popScreen: true,
-                          );
-                          setState(() {
-                            _busy = false;
-                            isLoading = false;
-                          });
-                        }
-                      : null,
-                ),
-                SizedBox(height: 30.h),
-              ],
-            ),
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
+              const Spacer(),
+              MyButton(
+                label: context.l10n.interests_update,
+                isLoading: isLoading,
+                onPressed: !_busy && !isLoading && _canProceed
+                    ? () async {
+                        setState(() {
+                          _busy = true;
+                          isLoading = true;
+                        });
+                        await _settingService.updateProfile(
+                          context: context,
+                          giftPreferences: selectedPreferences.toList(),
+                          popScreen: true,
+                        );
+                        setState(() {
+                          _busy = false;
+                          isLoading = false;
+                        });
+                      }
+                    : null,
+              ),
+              SizedBox(height: 30.h),
+            ],
           ),
         ),
       ),

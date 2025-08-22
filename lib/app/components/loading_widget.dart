@@ -16,7 +16,7 @@ class LoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = color ?? context.colors.mainGreenLight;
+    final effectiveColor = color ?? context.colors.greenBg;
 
     return Center(
       child: SizedBox(

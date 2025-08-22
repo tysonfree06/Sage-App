@@ -8,6 +8,7 @@ class UserModel {
     required this.id,
     required this.name,
     required this.email,
+    this.updatedAtAlt,
     this.location,
     this.verified,
     this.interests,
@@ -19,17 +20,20 @@ class UserModel {
     this.budgetLevel,
     this.communicationStyle,
     this.dateOfBirth,
-    this.partnerCode,
     this.image,
     this.loveLanguage,
     this.relationshipStatus,
-    this.partnerId,
+    this.partnerCode,
+    this.isPremium,
     this.subscriptionActive,
     this.mineinvitationCode,
     this.mineParterCode,
     this.referrals,
-    this.points,
-    this.isPremium,
+    this.totalPoints,
+    this.totalReferralPoints, // ✅ Added
+    this.stripeCustomerId,
+    this.v,
+    this.ideas,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -40,89 +44,58 @@ class UserModel {
   final Location? location;
 
   @JsonKey(name: '_id')
-  String id;
-  String name;
+  final String id;
+
+  final String name;
   final String email;
   final bool? verified;
   final List<String>? interests;
   final List<String>? giftPreferences;
+
+  @JsonKey(name: 'createdAt')
   final DateTime? createdAt;
+
+  // ✅ Handle both updatedAt and updated_at
+  @JsonKey(name: 'updatedAt')
   final DateTime? updatedAt;
+
+  @JsonKey(name: 'updated_at')
+  final DateTime? updatedAtAlt;
+
   final DateTime? anniversaryDate;
   final String? apologyLanguage;
   final String? budgetLevel;
   final String? communicationStyle;
   final DateTime? dateOfBirth;
-  final int? partnerCode;
   final String? image;
+
+  @JsonKey(name: 'total_points')
+  final int? totalPoints;
+
+  @JsonKey(name: 'total_referral_points')
+  final int? totalReferralPoints; // ✅ New field (nullable)
+
   final String? loveLanguage;
   final String? relationshipStatus;
-  final int? partnerId;
+  final int? partnerCode;
   final bool? isPremium;
 
-  // 🔽 New fields
   @JsonKey(name: 'subscription')
   final Subscription? subscriptionActive;
+
   final String? mineinvitationCode;
   final int? mineParterCode;
   final List<dynamic>? referrals;
-  final int? points;
 
-  UserModel copyWith({
-    Location? location,
-    String? id,
-    String? name,
-    String? email,
-    bool? verified,
-    List<String>? interests,
-    List<String>? giftPreferences,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    DateTime? anniversaryDate,
-    String? apologyLanguage,
-    String? budgetLevel,
-    String? communicationStyle,
-    DateTime? dateOfBirth,
-    int? partnerCode,
-    String? image,
-    String? loveLanguage,
-    String? relationshipStatus,
-    int? partnerId,
-    bool? isPremium,
-    Subscription? subscriptionActive,
-    String? mineinvitationCode,
-    int? mineParterCode,
-    List<dynamic>? referrals,
-    int? points,
-  }) {
-    return UserModel(
-      location: location ?? this.location,
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
-      verified: verified ?? this.verified,
-      interests: interests ?? this.interests,
-      giftPreferences: giftPreferences ?? this.giftPreferences,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      anniversaryDate: anniversaryDate ?? this.anniversaryDate,
-      apologyLanguage: apologyLanguage ?? this.apologyLanguage,
-      budgetLevel: budgetLevel ?? this.budgetLevel,
-      communicationStyle: communicationStyle ?? this.communicationStyle,
-      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-      partnerCode: partnerCode ?? this.partnerCode,
-      image: image ?? this.image,
-      loveLanguage: loveLanguage ?? this.loveLanguage,
-      relationshipStatus: relationshipStatus ?? this.relationshipStatus,
-      isPremium: isPremium ?? this.isPremium,
-      partnerId: partnerId ?? this.partnerId,
-      subscriptionActive: subscriptionActive ?? this.subscriptionActive,
-      mineinvitationCode: mineinvitationCode ?? this.mineinvitationCode,
-      mineParterCode: mineParterCode ?? this.mineParterCode,
-      referrals: referrals ?? this.referrals,
-      points: points ?? this.points,
-    );
-  }
+  final String? stripeCustomerId;
+
+  @JsonKey(name: '__v')
+  final int? v;
+
+  final List<Idea>? ideas;
+
+  /// Custom getter: prefer updatedAt over updatedAtAlt
+  DateTime? get effectiveUpdatedAt => updatedAt ?? updatedAtAlt;
 }
 
 @JsonSerializable()
@@ -141,28 +114,41 @@ class Location {
   final String? city;
   final String? state;
   final String? country;
-
-  Location copyWith({
-    String? city,
-    String? state,
-    String? country,
-  }) {
-    return Location(
-      city: city ?? this.city,
-      state: state ?? this.state,
-      country: country ?? this.country,
-    );
-  }
 }
 
 @JsonSerializable()
 class Subscription {
-  Subscription({this.active});
+  Subscription({
+    this.status,
+    this.plan,
+  });
 
   factory Subscription.fromJson(Map<String, dynamic> json) =>
       _$SubscriptionFromJson(json);
 
   Map<String, dynamic> toJson() => _$SubscriptionToJson(this);
 
-  final bool? active;
+  final String? status;
+  final String? plan;
+}
+
+@JsonSerializable()
+class Idea {
+  Idea({
+    required this.type,
+    required this.title,
+    required this.description,
+    required this.cost,
+    required this.location,
+  });
+
+  factory Idea.fromJson(Map<String, dynamic> json) => _$IdeaFromJson(json);
+
+  Map<String, dynamic> toJson() => _$IdeaToJson(this);
+
+  final String type;
+  final String title;
+  final String description;
+  final int cost;
+  final String location;
 }

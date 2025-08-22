@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
@@ -113,6 +115,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     firstColor: context.colors.textDarkGreen,
                     second: context.l10n.lets_get_started_2,
                     secondColor: context.colors.textLightGreen,
+                    firstFontSize: 16.sp,
+                    secondFontSize: 16.sp,
                   ),
                   SizedBox(height: 7.h),
                   Text(
@@ -214,7 +218,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return context.l10n.error_password_required;
-                      } else if (!value.lessSecurePasswordValidator()) {
+                        // } else if (!value.lessSecurePasswordValidator()) {
+                      } else if (!value.passwordValidator()) {
                         return context.l10n.error_password_strength;
                       }
                       return null;
@@ -329,6 +334,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               MyTextButton(
+                                fontSize: 15.sp,
                                 label: context.l10n.lets_terms_conditions,
                                 onPressed: isLoading
                                     ? null
@@ -347,6 +353,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               MyTextButton(
                                 label: context.l10n.lets_privacy_policy,
+                                fontSize: 15.sp,
                                 onPressed: isLoading
                                     ? null
                                     : () {
@@ -408,6 +415,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       SizedBox(width: 5.w),
                       MyTextButton(
+                        fontSize: 15.sp,
                         label: context.l10n.lets_login,
                         onPressed: isLoading
                             ? null

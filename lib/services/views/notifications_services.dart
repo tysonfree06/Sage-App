@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/repository/notifications_repo.dart';
@@ -35,6 +34,23 @@ class NotificationsServices {
     try {
       final response = await _notificationsRepository.getNotifications();
       debugPrint('✅ NOTIFICATIONS  FETCHED: $response');
+      return response as Map<String, dynamic>;
+    } catch (e) {
+      if (e is AppException) {
+        debugPrint('[NotificationsService] ❌ ${e.debugMessage}');
+      } else {
+        debugPrint('[NotificationsService] ❌ Unexpected: $e');
+      }
+    }
+    return {};
+  }
+
+  //Mark all Notifications as Read
+  Future<Map<String, dynamic>> markNotificationsRead() async {
+    try {
+      final response =
+          await _notificationsRepository.markAllNotificationsRead();
+      debugPrint('✅ NOTIFICATIONS  MARK AS READ: $response');
       return response as Map<String, dynamic>;
     } catch (e) {
       if (e is AppException) {

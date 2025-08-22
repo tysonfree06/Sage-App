@@ -3,15 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_button.dart';
-import 'package:sage/app/components/my_text_field.dart';
+import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
+import 'package:sage/app/utils/extensions/validations_exception.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/image_picker.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/ideas_service.dart';
 import 'package:sage/services/views/settings_service.dart';
+import 'package:sage/services/views/splash_services.dart';
 
 class AddIdeaScreen extends StatefulWidget {
   const AddIdeaScreen({
@@ -33,6 +36,7 @@ TextEditingController _descriptionController = TextEditingController();
 final _pickerService = ImagePickerService();
 final _sessionController = SessionController();
 final _service = SettingService();
+final formKey = GlobalKey<FormState>();
 
 String? _uploadedUrl;
 bool _busy = false;
@@ -78,6 +82,7 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
 
   //Add Idea
   Future<void> addOrUpdateIdea() async {
+    if (!formKey.currentState!.validate()) return;
     String imageUrl = '';
     if (widget.ideaDetails?['image'] != null &&
         widget.ideaDetails?['image'] != '') {
@@ -112,7 +117,9 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
         _locationController.text.isEmpty ||
         _linkController.text.isEmpty ||
         imageUrl == '') {
-      context.flushBarErrorMessage(message: 'Please fill all fields.');
+      context.flushBarErrorMessage(
+        message: 'All fields and image is mandatory,',
+      );
       setState(() {
         _busy = false;
         isLoading = false;
@@ -129,7 +136,10 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
         ideaData,
       );
     } else {
-      await IdeasServices().uploadIdea(context, ideaData);
+      await Future.wait([
+        IdeasServices().uploadIdea(context, ideaData),
+        SplashServices().fetchProfile(context),
+      ]);
     }
 
     setState(() {
@@ -197,127 +207,132 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.w),
-        child: ListView(
-          children: [
-            // Image box
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Stack(
-                children: [
-                  if (!widget.isEditIdea && _localImage == null)
-                    Image.asset(
-                      Assets.images.onboardingBg.path,
-                      height: 190.h,
+        child: Form(
+          key: formKey,
+          child: ListView(
+            children: [
+              // Image box
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Stack(
+                  children: [
+                    if (!widget.isEditIdea && _localImage == null)
+                      Image.asset(
+                        Assets.images.onboardingBg.path,
+                        height: 190.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    else if (_localImage != null)
+                      Image.file(
+                        _localImage!,
+                        height: 190.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    else if (widget.ideaDetails?['image'] != null &&
+                        widget.ideaDetails?['image'] != '')
+                      Image.network(
+                        widget.ideaDetails?['image'] as String,
+                        width: double.infinity,
+                        height: 190.h,
+                      ),
+                    Container(
+                      alignment: Alignment.center,
+                      color: Colors.black38,
                       width: double.infinity,
-                      fit: BoxFit.cover,
-                    )
-                  else if (_localImage != null)
-                    Image.file(
-                      _localImage!,
                       height: 190.h,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    )
-                  else if (widget.ideaDetails?['image'] != null &&
-                      widget.ideaDetails?['image'] != '')
-                    Image.network(
-                      widget.ideaDetails?['image'] as String,
-                      width: double.infinity,
-                      height: 190.h,
-                    ),
-                  Container(
-                    alignment: Alignment.center,
-                    color: Colors.black38,
-                    width: double.infinity,
-                    height: 190.h,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (_busy)
-                          const CircularProgressIndicator()
-                        else ...[
-                          IconButton(
-                            onPressed: _pickAndUploadImage,
-                            icon: Assets.icons.editImage.svg(
-                              height: 36.h,
-                              color: context.colors.textLightGreen,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          Text(
-                            !widget.isEditIdea ||
-                                    widget.ideaDetails?['image'] == '' ||
-                                    widget.ideaDetails?['image'] == null
-                                ? 'Add Image'
-                                : 'Change Image',
-                            style: TextStyle(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_busy)
+                            const LoadingWidget(
                               color: Colors.white,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w600,
+                            )
+                          else ...[
+                            IconButton(
+                              onPressed: _pickAndUploadImage,
+                              icon: Assets.icons.editImage.svg(
+                                height: 36.h,
+                                color: context.colors.textLightGreen,
+                              ),
                             ),
-                          ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Text(
+                              !widget.isEditIdea ||
+                                      widget.ideaDetails?['image'] == '' ||
+                                      widget.ideaDetails?['image'] == null
+                                  ? 'Add Image'
+                                  : 'Change Image',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            //END: Image Box
-            SizedBox(
-              height: 16.h,
-            ),
-            _buildAddIdeaSection(context, 'Idea Type', isDropdown: true),
-            _buildAddIdeaSection(
-              context,
-              'Title',
-              textController: _titleController,
-              hint: 'Enter Title',
-            ),
-            _buildAddIdeaSection(
-              context,
-              'Cost',
-              textController: _costController,
-              hint: 'Enter Cost',
-              suffixIcon: const Icon(
-                Icons.attach_money,
+              //END: Image Box
+              SizedBox(
+                height: 16.h,
               ),
-              inputType: TextInputType.number,
-            ),
-            _buildAddIdeaSection(
-              context,
-              'Location',
-              textController: _locationController,
-              hint: 'Location',
-              suffixIcon: Icon(
-                Icons.location_pin,
-                color: context.colors.greenBg,
+              _buildAddIdeaSection(context, 'Idea Type', isDropdown: true),
+              _buildAddIdeaSection(
+                context,
+                'Title',
+                textController: _titleController,
+                hint: 'Enter Title',
               ),
-            ),
-            _buildAddIdeaSection(
-              context,
-              'Link',
-              textController: _linkController,
-              hint: 'Enter Link',
-            ),
-            _buildAddIdeaSection(
-              context,
-              'Description',
-              textController: _descriptionController,
-              hint: 'Enter Description',
-              maxLines: 5,
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            MyButton(
-              isLoading: isLoading,
-              label: !widget.isEditIdea ? 'Add' : 'Update',
-              onPressed: !_busy ? addOrUpdateIdea : null,
-            ),
-          ],
+              _buildAddIdeaSection(
+                context,
+                'Cost',
+                textController: _costController,
+                hint: 'Enter Cost',
+                suffixIcon: const Icon(
+                  Icons.attach_money,
+                ),
+                inputType: TextInputType.number,
+              ),
+              _buildAddIdeaSection(
+                context,
+                'Location',
+                textController: _locationController,
+                hint: 'Location',
+                suffixIcon: Icon(
+                  Icons.location_pin,
+                  color: context.colors.greenBg,
+                ),
+              ),
+              _buildAddIdeaSection(
+                context,
+                'Link',
+                textController: _linkController,
+                hint: 'Enter Link',
+              ),
+              _buildAddIdeaSection(
+                context,
+                'Description',
+                textController: _descriptionController,
+                hint: 'Enter Description',
+                maxLines: 5,
+              ),
+              SizedBox(
+                height: 16.h,
+              ),
+              MyButton(
+                isLoading: isLoading,
+                label: !widget.isEditIdea ? 'Add' : 'Update',
+                onPressed: !_busy ? addOrUpdateIdea : null,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -350,13 +365,32 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
         if (isDropdown) ...[
           _buildAddIdeaDropdown(context),
         ] else
-          MyTextField(
+          MyFormTextField(
             keyboardType: inputType,
             textCapitalization: TextCapitalization.none,
             controller: textController as TextEditingController,
             hint: hint,
             suffixIcon: suffixIcon,
             maxLines: maxLines,
+            validator: (value) {
+              // if (value == null || value.isEmpty) {
+              //   return context.l10n.error_name_required;
+              // } else if (!value.nameValidator()) {
+              //   return context.l10n.error_name_invalid;
+              // }
+              if (value == null || value.isEmpty) {
+                return 'All fields are required';
+              } else if (title == 'Cost') {
+                if (!value.costValidator()) {
+                  return 'Only numbers are allowed in this field';
+                }
+              } else if (title == 'Link') {
+                if (!value.linkValidator()) {
+                  return 'Link is not valid!';
+                }
+              }
+              return null;
+            },
           ),
         // _buildAddIdeaField(context),
         SizedBox(

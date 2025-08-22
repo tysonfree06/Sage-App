@@ -22,6 +22,7 @@ class MyFormTextField extends StatelessWidget {
     this.initialValue,
     this.readOnly = false,
     this.focusNode,
+    this.maxLines,
   });
 
   final TextEditingController? controller;
@@ -42,6 +43,7 @@ class MyFormTextField extends StatelessWidget {
   final bool readOnly;
   final FocusNode? focusNode;
   final void Function(String)? onChanged;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class MyFormTextField extends StatelessWidget {
       maxLength: maxLength,
       validator: validator,
       onSaved: onSaved,
+      maxLines: maxLines ?? 1,
       autovalidateMode: autovalidateMode,
       decoration: InputDecoration(
         errorMaxLines: 3,

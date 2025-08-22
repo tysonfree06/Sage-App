@@ -6,6 +6,7 @@ import 'package:sage/app/components/my_pinput.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/settings_service.dart';
+import 'package:sage/services/views/splash_services.dart';
 
 class AddPartnerSheet extends StatefulWidget {
   const AddPartnerSheet({
@@ -75,9 +76,9 @@ class _AddPartnerSheetState extends State<AddPartnerSheet> {
                         setState(() => isLoading = false);
                       }
                     });
-                    // if (context.mounted) {
-                    //   await SplashServices().fetchPartner(context);
-                    // }
+                    if (context.mounted) {
+                      await SplashServices().fetchPartner(context);
+                    }
                   },
           ),
         ],

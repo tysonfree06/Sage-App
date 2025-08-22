@@ -166,35 +166,6 @@ class NetworkApiService implements BaseApiServices {
     return returnResponse(response);
   }
 
-  //This function in temporarily replaced with the actual function above to bypass SSL verification issue : #muttas
-  /// Handles POST request with IOClient to ignore SSL issues
-  // @override
-  // Future<Map<String, dynamic>> post({
-  //   required String url,
-  //   required Map<String, dynamic> data,
-  //   Map<String, dynamic>? params,
-  // }) async {
-  //   LogManager.logRequest('POST', url, data);
-
-  //   // 👇 Custom HttpClient that ignores bad SSL certs
-  //   final HttpClient httpClient = HttpClient()
-  //     ..badCertificateCallback =
-  //         (X509Certificate cert, String host, int port) => true;
-
-  //   final IOClient ioClient = IOClient(httpClient);
-
-  //   final response = await ioClient
-  //       .post(
-  //         Uri.parse(url),
-  //         headers: await _getHeaders(url),
-  //         body: jsonEncode(data),
-  //       )
-  //       .timeout(const Duration(seconds: 60));
-
-  //   LogManager.logResponse(response.statusCode.toString(), response.body);
-  //   return returnResponse(response);
-  // }
-
   /// Handles PUT request
   @override
   Future<Map<String, dynamic>> put({
@@ -213,7 +184,8 @@ class NetworkApiService implements BaseApiServices {
         .timeout(const Duration(seconds: 60));
 
     LogManager.logResponse(response.statusCode.toString(), response.body);
-    return _parseResponse(response);
+    // return _parseResponse(response);
+    return returnResponse(response);
   }
 
   /// Handles PATCH request

@@ -9,12 +9,19 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/redeem_model.dart';
+import 'package:sage/services/views/redeem_points_service.dart';
 
-class OfferDetailScreen extends StatelessWidget {
+class OfferDetailScreen extends StatefulWidget {
   const OfferDetailScreen({required this.offer, super.key});
 
   final RedeemOfferDetails offer;
 
+  @override
+  State<OfferDetailScreen> createState() => _OfferDetailScreenState();
+}
+
+class _OfferDetailScreenState extends State<OfferDetailScreen> {
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('MMM dd, yyyy');
@@ -48,8 +55,11 @@ class OfferDetailScreen extends StatelessWidget {
                 ),
                 clipBehavior: Clip.hardEdge,
                 child: Image.network(
-                  offer.imageUrl,
+                  widget.offer.image ?? '',
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: Colors.grey,
+                  ),
                 ),
               ),
               SizedBox(height: 15.h),
@@ -66,7 +76,7 @@ class OfferDetailScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          offer.offerId,
+                          widget.offer.id,
                           style: context.typography.title.copyWith(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
@@ -79,8 +89,7 @@ class OfferDetailScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 10.w),
-                  if (offer.endDate.isBefore(DateTime.now()) ||
-                      offer.redemptionDate != null)
+                  if (!widget.offer.isActive)
                     Container(
                       decoration: BoxDecoration(
                         color: const Color(0x30D4B843),
@@ -106,7 +115,7 @@ class OfferDetailScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      offer.title,
+                      widget.offer.title,
                       style: context.typography.title.copyWith(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
@@ -122,7 +131,7 @@ class OfferDetailScreen extends StatelessWidget {
                       ),
                       SizedBox(width: 6.w),
                       ColoredRichText(
-                        first: '${offer.points}',
+                        first: '${widget.offer.pointsRequired}',
                         firstFontSize: 16.sp,
                         firstFontWeight: FontWeight.w600,
                         firstColor: context.colors.textLightGreen,
@@ -144,7 +153,8 @@ class OfferDetailScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 5.w),
                   Text(
-                    '${dateFormat.format(offer.startDate)} - ${dateFormat.format(offer.endDate)}',
+                    // '${dateFormat.format(offer.startDate)} - ${dateFormat.format(offer.endDate)}',
+                    '${dateFormat.format(widget.offer.startDate)} - ${dateFormat.format(widget.offer.endDate)}',
                     style: context.typography.title.copyWith(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
@@ -156,7 +166,7 @@ class OfferDetailScreen extends StatelessWidget {
               ),
               SizedBox(height: 18.h),
               Text(
-                offer.description,
+                widget.offer.description,
                 style: context.typography.title.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
@@ -174,67 +184,83 @@ class OfferDetailScreen extends StatelessWidget {
           right: 16.w,
           bottom: MediaQuery.of(context).padding.bottom + 16.h,
         ),
-        child: (offer.endDate.isBefore(DateTime.now()) ||
-                offer.redemptionDate != null)
-            ? Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.colors.chipBg,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          context.l10n.redeem_date,
-                          style: context.typography.title.copyWith(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen.withAlpha(153),
-                          ),
+        child:
+            //  (offer.endDate.isBefore(DateTime.now()) || offer.endDate != null)
+            widget.offer.redeemedAt != null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: context.colors.chipBg,
+                          borderRadius: BorderRadius.circular(14),
                         ),
-                        Text(
-                          offer.redemptionDate != null
-                              ? dateFormat.format(offer.redemptionDate!)
-                              : '-',
-                          style: context.typography.title.copyWith(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.textDarkGreen,
-                          ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 14.h,
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              context.l10n.redeem_date,
+                              style: context.typography.title.copyWith(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color:
+                                    context.colors.textDarkGreen.withAlpha(153),
+                              ),
+                            ),
+                            Text(
+                              widget.offer.redeemedAt != null
+                                  ? dateFormat.format(widget.offer.redeemedAt!)
+                                  : '-',
+                              style: context.typography.title.copyWith(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w500,
+                                color: context.colors.textDarkGreen,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      MyButton(
+                        isLoading: isLoading,
+                        label:
+                            'Raffle for ${widget.offer.pointsRequired} Points',
+                        onPressed: () async {
+                          await showDialog<void>(
+                            context: context,
+                            builder: (_) => MyDialog(
+                              image: Assets.images.dialog.infoBlue,
+                              titleFirst: context.l10n.dialog_redeem,
+                              titleSecond:
+                                  context.l10n.redeem_dialog_second_title,
+                              subtitle:
+                                  context.l10n.dialog_redeem_offer_subtitle,
+                              confirmLabel: context.l10n.redeem_dialog_yes_sure,
+                              onConfirm: () async {
+                                setState(() => isLoading = true);
+                                Navigator.pop(context);
+                                await RedeemPointsService.redeemOffer(
+                                  context,
+                                  widget.offer.id,
+                                ).then((_) {
+                                  setState(() => isLoading = false);
+                                });
+                                // setState(() => isLoading = false);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              )
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  MyButton(
-                    label: context.l10n.redeem_btn_title,
-                    onPressed: () {
-                      showDialog<void>(
-                        context: context,
-                        builder: (_) => MyDialog(
-                          image: Assets.images.dialog.infoBlue,
-                          titleFirst: context.l10n.dialog_redeem,
-                          titleSecond: context.l10n.redeem_dialog_second_title,
-                          subtitle: context.l10n.dialog_redeem_offer_subtitle,
-                          confirmLabel: context.l10n.redeem_dialog_yes_sure,
-                          onConfirm: () {
-                            // do stuff
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
       ),
     );
   }

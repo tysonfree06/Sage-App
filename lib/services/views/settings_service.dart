@@ -210,7 +210,7 @@ class SettingService {
       if (giftPreferences != null &&
           !_listEq.equals(user?.giftPreferences ?? [], giftPreferences))
         'giftPreferences': giftPreferences,
-      if (partnerCode != null && user?.partnerId.toString() != partnerCode)
+      if (partnerCode != null && user?.partnerCode.toString() != partnerCode)
         'partnerCode': partnerCode, //previously 'partnerId' #muttas
     };
 
@@ -380,21 +380,30 @@ class SettingService {
 
       if (context.mounted) {
         context.flushBarSuccessMessage(message: 'Response Submitted');
-      }
-    } catch (e, stackTrace) {
-      // Developer logging
-      if (e is AppException) {
-        debugPrint(
-          '[SettingsService] ❌ Failed to send response: ${e.debugMessage}',
-        );
-      } else {
-        debugPrint('[SettingService] ❌ Unexpected error: $e');
 
-        // Print first 15 lines of the stack trace
-        final lines = stackTrace.toString().split('\n');
-        final limitedStack = lines.take(15).join('\n');
-        debugPrint('[SettingsService] 🔍 StackTrace:\n$limitedStack');
+        Future.delayed(const Duration(seconds: 3), () {
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
+        });
       }
+    } catch (e
+    // , stackTrace
+    ) {
+      // // Developer logging
+      // if (e is AppException) {
+      //   debugPrint(
+      //     '[SettingsService] ❌ Failed to send response: ${e.debugMessage}',
+      //   );
+
+      // } else {
+      //   debugPrint('[SettingService] ❌ Unexpected error: $e');
+
+      //   // Print first 15 lines of the stack trace
+      //   final lines = stackTrace.toString().split('\n');
+      //   final limitedStack = lines.take(15).join('\n');
+      //   debugPrint('[SettingsService] 🔍 StackTrace:\n$limitedStack');
+      // }
 
       // Show user-friendly error
       if (context.mounted) {
@@ -404,5 +413,13 @@ class SettingService {
         context.flushBarErrorMessage(message: errorMessage);
       }
     }
+  }
+
+  //services for location
+  String getCodeByName(List<dynamic> list, String name) {
+    final item = list.firstWhere(
+      (e) => e['name'] == name,
+    );
+    return item['code'].toString();
   }
 }

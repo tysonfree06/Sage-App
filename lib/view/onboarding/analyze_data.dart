@@ -7,8 +7,7 @@ import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/views/onboarding_service.dart';
 
 class AnalyzeDataScreen extends StatefulWidget {
-  const AnalyzeDataScreen({required this.payload, super.key});
-  final Map<String, dynamic> payload;
+  const AnalyzeDataScreen({super.key});
 
   @override
   State<AnalyzeDataScreen> createState() => _AnalyzeDataScreenState();
@@ -20,7 +19,6 @@ class _AnalyzeDataScreenState extends State<AnalyzeDataScreen> {
     super.initState();
     OnboardingService().goToSubscriptionDelayed(
       context,
-      payload: widget.payload,
     );
   }
 

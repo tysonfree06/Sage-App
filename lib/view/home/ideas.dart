@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 // import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/ideas_service.dart';
 import 'package:sage/view/ideas/explore_ideas.dart';
@@ -15,7 +16,6 @@ class IdeaScreen extends StatefulWidget {
 }
 
 class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
-  // final _sessionController = SessionController();
   late TabController _tabController;
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // final isPremium = _sessionController.user!.isPremium;
+    final sessionController = SessionController();
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16.w),
       child: Scaffold(
@@ -45,11 +45,13 @@ class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
               label: 'My Added Ideas',
               isDark: false,
               onPressed: () {
-                // if (!isPremium!) {
-                // IdeasServices.showSubscriptionDialog(context);
-                // } else {
-                IdeasServices.gotoMyAddedIdeas(context);
-                // }
+                final isPremium = sessionController.user!.isPremium;
+
+                if (!isPremium!) {
+                  IdeasServices.showSubscriptionDialog(context);
+                } else {
+                  IdeasServices.gotoMyAddedIdeas(context);
+                }
               },
             ),
             SizedBox(
@@ -75,14 +77,19 @@ class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
                 Tab(text: 'Saved Ideas'),
               ],
             ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  // Center(child: Text("Explore Ideas Content")),
-                  ExploreIdeasScreen(),
-                  SavedIdeasScreen(),
-                ],
+            DefaultTabController(
+              length: 2,
+              child: Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: const [
+                    // Center(child: Text("Explore Ideas Content")),
+                    ExploreIdeasScreen(),
+                    SavedIdeasScreen(
+                      loadOnTabChanged: true,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

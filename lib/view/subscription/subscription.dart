@@ -4,6 +4,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
+import 'package:sage/app/components/my_dialog.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
@@ -35,9 +36,37 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   String priceId = Env.stripeYearly;
   @override
   Widget build(BuildContext context) {
+    Future<void> showInfoDialog() async {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (mounted) {
+          await showDialog<void>(
+            context: context,
+            builder: (_) => MyDialog(
+              titleFirst: 'Subscribe ', //'Get ' //don't remove extra space
+              titleSecond: 'to Get Free Points!',
+              subtitle: 'Don’t miss out on free points to be used on prizes!',
+              confirmLabel: 'Subscribe',
+              cancelLabel: 'Skip Anyway',
+              onConfirm: () {
+                Navigator.pop(context);
+              },
+              onCancel: () {
+                context.read<NavigationProvider>().setIndex(0);
+                Navigator.pushNamedAndRemoveUntil(
+                  arguments: true,
+                  context,
+                  RoutesName.navigation,
+                  (route) => false,
+                );
+              },
+            ),
+          );
+        }
+      });
+    }
+
     //Step 3: Create subscription
     Future<void> createSubscription(Map<dynamic, dynamic> intent) async {
-      debugPrint('CREATE SUBSCRIPTION FUNCTION CALLED');
       await _subscriptionService.createSubscription(
         context,
         priceId,
@@ -60,6 +89,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           setupIntentClientSecret: clientSecret,
           merchantDisplayName: 'Sage',
           style: ThemeMode.light,
+          //add Apple Pay
+          applePay: const PaymentSheetApplePay(
+            buttonType: PlatformButtonType.subscribe,
+            merchantCountryCode: 'US',
+          ),
+          //
         ),
       );
 
@@ -120,14 +155,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               isDark: false,
               fontSize: 16.sp,
               label: context.l10n.sub_skip,
-              onPressed: () {
-                context.read<NavigationProvider>().setIndex(0);
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  RoutesName.navigation,
-                  (route) => false,
-                );
-              },
+              // onPressed: () {
+              //   context.read<NavigationProvider>().setIndex(0);
+              //   Navigator.pushNamedAndRemoveUntil(
+              //     arguments: true,
+              //     context,
+              //     RoutesName.navigation,
+              //     (route) => false,
+              //   );
+              // },
+              onPressed: showInfoDialog,
             ),
           SizedBox(width: 16.w),
         ],
@@ -171,18 +208,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       setState(() {
                         priceId = Env.stripeYearly;
                       });
-                      debugPrint('PRICE ID IS NOW: $priceId');
                     case 1:
                       setState(() {
                         priceId = Env.stripeMonthly;
                       });
-                      debugPrint('PRICE ID IS NOW: $priceId');
 
                     case 2:
                       setState(() {
                         priceId = Env.stripeWeekly;
                       });
-                      debugPrint('PRICE ID IS NOW: $priceId');
 
                     default:
                       setState(() {

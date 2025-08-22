@@ -1,4 +1,3 @@
-//FIXME: Remove this comment after generated files fix #muttas
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -12,23 +11,27 @@ import 'package:sage/services/views/redeem_points_service.dart';
 class OfferTile extends StatelessWidget {
   const OfferTile({
     required this.offer,
+    required this.onNavigation,
     super.key,
   });
-
   final RedeemOfferDetails offer;
+  final VoidCallback onNavigation;
   static final _dateFormat = DateFormat('MMM dd, yyyy');
 
   @override
   Widget build(BuildContext context) {
-    final redemptionDateFormatted = offer.redemptionDate != null
-        ? _dateFormat.format(offer.redemptionDate!)
-        : null;
+    final redemptionDateFormatted =
+        offer.redeemedAt != null ? _dateFormat.format(offer.redeemedAt!) : null;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
-        onTap: () => RedeemPointsService.goToDetailScreen(context, offer),
+        onTap: () {
+          // RedeemPointsService.goToDetailScreen(context, offer);
+
+          onNavigation.call();
+        },
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -39,9 +42,10 @@ class OfferTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildOfferRow(context),
-              if (redemptionDateFormatted != null) ...[
+              // if (redemptionDateFormatted != null) ...[
+              if (offer.redeemedAt != null) ...[
                 SizedBox(height: 12.h),
-                _buildRedemptionDateRow(context, redemptionDateFormatted),
+                _buildRedemptionDateRow(context, redemptionDateFormatted!),
               ],
             ],
           ),
@@ -56,10 +60,15 @@ class OfferTile extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.network(
-            offer.imageUrl,
-            width: 90,
-            height: 90,
+            offer.image ?? '',
+            width: 92.w,
+            height: 102.h,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Container(
+              color: Colors.grey,
+              width: 92.w,
+              height: 102.h,
+            ),
           ),
         ),
         SizedBox(width: 10.w),
@@ -93,7 +102,7 @@ class OfferTile extends StatelessWidget {
                   ),
                   SizedBox(width: 5.w),
                   ColoredRichText(
-                    first: '${offer.points}',
+                    first: '${offer.pointsRequired}',
                     firstFontSize: 13.sp,
                     firstFontWeight: FontWeight.w600,
                     firstColor: context.colors.textLightGreen,

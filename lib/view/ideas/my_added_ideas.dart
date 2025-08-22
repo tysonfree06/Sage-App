@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/views/ideas_service.dart';
@@ -83,7 +84,7 @@ class _MyAddedIdeasScreenState extends State<MyAddedIdeasScreen> {
               ],
             )
           : const Center(
-              child: CircularProgressIndicator(),
+              child: LoadingWidget(),
             ),
       floatingActionButton: IconButton(
         onPressed: () async {

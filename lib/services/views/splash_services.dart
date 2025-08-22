@@ -40,6 +40,7 @@ class SplashServices {
   Future<void> fetchPartner(
     BuildContext context,
   ) async {
+    debugPrint('NOW FETCH PARTNER CALLED');
     final dynamic partnerCode = _sessionController.user?.partnerCode ?? '';
     if (partnerCode == '') {
       debugPrint('[$tag] No partner code found, skipping partner fetch');
@@ -75,9 +76,8 @@ class SplashServices {
       debugPrint(
         '[$tag] No active session found, redirecting to welcome screen',
       );
-      Timer(const Duration(seconds: 1), () {
-        if (context.mounted) goToWelcome(context);
-      });
+
+      if (context.mounted) await goToWelcome(context);
     }
   }
 

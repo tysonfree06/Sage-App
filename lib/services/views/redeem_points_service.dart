@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/app/routes/routes_name.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/model/redeem/redeem_model.dart';
-import 'package:sage/repository/redeem_repo.dart';
+import 'package:sage/repository/redeem_points_repo.dart';
+import 'package:sage/services/views/splash_services.dart';
 
 RedeemRepository _redeemRepository = RedeemRepository();
 
@@ -14,27 +16,72 @@ class RedeemPointsService {
     );
   }
 
-  //FIXME: Remove this comment after generated files fix #muttas
-  static void goToDetailScreen(BuildContext context, RedeemOfferDetails offer) {
-    Navigator.pushNamed(
+  static Future<void> goToDetailScreen(
+    BuildContext context,
+    RedeemOfferDetails offer,
+  ) async {
+    await Navigator.pushNamed(
       context,
       RoutesName.offerDetail,
       arguments: offer,
     );
   }
 
-  //get points
-  Future<String> getPoints() async {
+  //get available offers
+  static Future<Map<String, dynamic>> getAvailableOffers() async {
     try {
-      final response = await _redeemRepository.getPoints();
-      return response['points'] as String;
+      final response = await _redeemRepository.getAvailableOffers();
+      debugPrint('✅ AVAILABLE OFFERS  FETCHED: $response');
+      return response as Map<String, dynamic>;
     } catch (e) {
       if (e is AppException) {
-        debugPrint('[RedeemService] ❌ ${e.debugMessage}');
+        debugPrint('[PointsService] ❌ ${e.debugMessage}');
       } else {
-        debugPrint('[SettingRedeemServiceService] ❌ Unexpected: $e');
+        debugPrint('[PointsService] ❌ Unexpected: $e');
       }
     }
-    return '';
+    return {};
+  }
+
+  //get past redemptions
+  static Future<Map<String, dynamic>> getPastRedemptions() async {
+    try {
+      final response = await _redeemRepository.getPastRedemptions();
+      debugPrint('✅ AVAILABLE OFFERS  FETCHED: $response');
+      return response as Map<String, dynamic>;
+    } catch (e) {
+      if (e is AppException) {
+        debugPrint('[PointsService] ❌ ${e.debugMessage}');
+      } else {
+        debugPrint('[PointsService] ❌ Unexpected: $e');
+      }
+    }
+    return {};
+  }
+
+  //get past redemptions
+  static Future<void> redeemOffer(BuildContext context, String offerId) async {
+    try {
+      final response = await _redeemRepository.redeemOffer(offerId);
+      if (context.mounted) {
+        await SplashServices().fetchProfile(context);
+      }
+      debugPrint('✅ AVAILABLE OFFERS  FETCHED: $response');
+      if (context.mounted) {
+        context.flushBarSuccessMessage(message: 'Redemption Successful!');
+      }
+    } catch (e) {
+      if (e is AppException) {
+        debugPrint('[PointsService] ❌ ${e.debugMessage}');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: e.userMessage);
+        }
+      } else {
+        debugPrint('[PointsService] ❌ Unexpected: $e');
+        if (context.mounted) {
+          context.flushBarErrorMessage(message: 'Something went wrong...');
+        }
+      }
+    }
   }
 }

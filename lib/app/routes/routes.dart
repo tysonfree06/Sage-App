@@ -23,7 +23,6 @@ class Routes {
     RoutesName.home: (_) => const HomeScreen(),
     RoutesName.onBoarding: (_) => const OnBoardingScreen(),
     RoutesName.onBoardingFlow: (_) => const OnboardingFlowScreen(),
-    RoutesName.navigation: (_) => const NavigationScreen(),
     RoutesName.editProfile: (_) => const EditProfileScreen(),
     RoutesName.changePassword: (_) => const ChangePasswordScreen(),
     RoutesName.updateInterests: (_) => const UpdateInterestsScreen(),
@@ -32,7 +31,7 @@ class Routes {
     RoutesName.redeemPoint: (_) => const RedeemPointsScreen(),
     RoutesName.contactUs: (_) => const ContactUsScreen(),
     RoutesName.exploreIdeas: (_) => const ExploreIdeasScreen(),
-    RoutesName.savedIdeas: (_) => const SavedIdeasScreen(),
+    // RoutesName.savedIdeas: (_) => const SavedIdeasScreen(),
     RoutesName.myAddedIdeas: (_) => const MyAddedIdeasScreen(),
     RoutesName.activeSubscription: (_) => const ActiveSubscriptionScreen(),
     RoutesName.notifications: (_) => const NotificationsScreen(),
@@ -48,9 +47,16 @@ class Routes {
         );
 
       case RoutesName.analyzeData:
-        final payload = settings.arguments! as Map<String, dynamic>;
         return MaterialPageRoute(
-          builder: (_) => AnalyzeDataScreen(payload: payload),
+          builder: (_) => const AnalyzeDataScreen(),
+          settings: settings,
+        );
+      case RoutesName.navigation:
+        final showPopup = settings.arguments as bool?;
+        return MaterialPageRoute(
+          builder: (_) => NavigationScreen(
+            showPopup: showPopup ?? false,
+          ),
           settings: settings,
         );
       case RoutesName.offerDetail:
