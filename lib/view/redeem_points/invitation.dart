@@ -25,7 +25,6 @@ class _InvitationScreenState extends State<InvitationScreen> {
     final String referralPoints = user.totalReferralPoints.toString();
     final String refferals = user.referrals!.length.toString();
 
-    // const String referalCode = 'nzkKFg';
     return Scaffold(
       appBar: AppBar(
         backgroundColor: context.colors.white,

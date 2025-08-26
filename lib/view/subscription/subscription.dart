@@ -44,7 +44,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             builder: (_) => MyDialog(
               titleFirst: 'Subscribe ', //'Get ' //don't remove extra space
               titleSecond: 'to Get Free Points!',
-              subtitle: 'Don’t miss out on free points to be used on prizes!',
+              subtitle: "Don't miss out on free points to be used on prizes!",
               confirmLabel: 'Subscribe',
               cancelLabel: 'Skip Anyway',
               onConfirm: () {
@@ -94,7 +94,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             buttonType: PlatformButtonType.subscribe,
             merchantCountryCode: 'US',
           ),
-          //
         ),
       );
 

@@ -113,12 +113,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   void setLocations() {
     final user = _session.user;
-    if (user?.location?.city != null) {
+    if (user?.location?.city != null && user?.location?.city != '') {
       cities.add({'code': '', 'name': user?.location?.city});
       _city = user?.location?.city;
     }
 
-    if (user?.location?.state != null) {
+    if (user?.location?.state != null && user?.location?.state != '') {
       states.add({'code': '', 'name': user?.location?.state});
       _state = user?.location?.state;
     }

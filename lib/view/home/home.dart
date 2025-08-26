@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/loading_widget.dart';
-import 'package:sage/app/components/status_bar_style.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
@@ -24,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final SessionController _sessionController = SessionController();
   final SplashServices _splashServices = SplashServices();
   final AuthRepository _userAuth = AuthRepository();
   final NotificationsServices _notificationServices = NotificationsServices();
@@ -32,34 +30,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
   UserModel? partner;
   Future<void> getPartner() async {
-    if (SessionController().partner == null &&
-        _sessionController.user?.partnerCode != null) {
-      final int? partnerCode = _sessionController.user?.partnerCode;
+    debugPrint('GET PARTNER CALLED...');
+    if (sessionController.partner == null &&
+        sessionController.user?.partnerCode != null) {
+      final int? partnerCode = sessionController.user?.partnerCode;
       try {
         final response = await _userAuth.getPartner(partnerCode);
 
         // Future.delayed(const Duration(milliseconds: 1000), () {
         if (mounted) {
           setState(() {
-            _sessionController.partner = UserModel.fromJson(
+            sessionController.partner = UserModel.fromJson(
               response['partner'] as Map<String, dynamic>,
             );
 
             partner = UserModel.fromJson(
               response['partner'] as Map<String, dynamic>,
             );
-
-            SessionController().isPartnerFetched = true;
           });
         }
+        setState(
+          () {
+            sessionController.setPartnerStatus(status: true);
+          },
+        );
 
         debugPrint('✅ Partner Fetched from Home');
       } catch (e) {
         debugPrint('❌ Error fetching partner: $e');
       }
     } else {
-      partner = SessionController().partner;
-      debugPrint('GOT PARTNER FROM SESSION');
+      partner = sessionController.partner;
+
+      if (sessionController.isPartnerFetched == false) {
+        debugPrint('GOT PARTNER FROM SESSION');
+        setState(
+          () {
+            sessionController.setPartnerStatus(status: true);
+          },
+        );
+      }
     }
   }
 
@@ -110,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     //get user form session
-    final user = _sessionController.user!;
+    final user = sessionController.user!;
     // final partner = _sessionController.partner;
 
     return Scaffold(
@@ -128,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 Text(
-                  _sessionController.user?.totalPoints.toString() ?? '0',
+                  sessionController.user?.totalPoints.toString() ?? '0',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15.sp,
@@ -196,6 +206,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Column(
                   children: [
+                    // ConstrainedBox( //it can also be used instead of intrinsic height
+                    //   constraints: BoxConstraints(
+                    //     maxHeight: 380.h,
+                    //   ),
                     IntrinsicHeight(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +232,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             dashSpacing: 4,
                             color: context.colors.yellow,
                           ),
-
                           // 👤 Partner Section
                           if (partner != null)
                             Expanded(
@@ -232,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             )
-                          else if (_sessionController.user?.partnerCode == null)
+                          else if (sessionController.user?.partnerCode == null)
                             PartnerUnavailable(
                               onParnerAdded: () {
                                 if (mounted) {
@@ -250,10 +263,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 getPartner();
                               }
                             });
-                            if (SessionController().isPartnerFetched == false &&
-                                SessionController().user!.partnerCode != null) {
-                              return const Expanded(
-                                child: LoadingWidget(),
+                            if (sessionController.isPartnerFetched == false &&
+                                sessionController.user!.partnerCode != null) {
+                              return Expanded(
+                                child: LoadingWidget(
+                                  color: context.colors.white,
+                                ),
                               );
                             }
                             return const SizedBox.shrink();
@@ -261,6 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 12.h),
                     //anniversary section
                     if (partner != null)
                       Container(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
-import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/model/user/user_model.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
@@ -71,6 +70,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                   //     widget.ideaDetails?['image'] != '')
 
                   Image.network(
+                fit: BoxFit.cover,
                 widget.ideaDetails?['image'] as String,
                 width: double.infinity,
                 height: 190.h,
@@ -157,26 +157,29 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                 await SettingService()
                     .sageLaunchUrl(widget.ideaDetails?['link'] as String);
               },
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.link,
-                    color: context.colors.textDarkGreen,
-                    size: 24.w,
-                  ),
-                  SizedBox(width: 6.w),
-                  Text(
-                    widget.ideaDetails?['link'] == null
-                        ? 'No link provided'
-                        : widget.ideaDetails?['link'] as String,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: context.colors.textDarkGreen,
-                      decoration: TextDecoration.underline,
+              child: widget.ideaDetails?['link'] == null
+                  ? const SizedBox.shrink()
+                  : Row(
+                      children: [
+                        Icon(
+                          Icons.link,
+                          color: context.colors.textDarkGreen,
+                          size: 24.w,
+                        ),
+                        SizedBox(width: 6.w),
+                        Text(
+                          // widget.ideaDetails?['link'] == null
+                          //     ? 'No link provided'
+                          // :
+                          widget.ideaDetails?['link'] as String,
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: context.colors.textDarkGreen,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
 
             const SizedBox(height: 12),

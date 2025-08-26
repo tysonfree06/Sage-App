@@ -319,7 +319,8 @@ class SettingService {
       if (context.mounted) {
         _sessionController.partner = null;
         await SplashServices().fetchProfile(context);
-        _sessionController.isPartnerFetched = false;
+        // _sessionController.isPartnerFetched = false;
+        await _sessionController.setPartnerStatus(); //set to false
       }
 
       //End: Remove Partner

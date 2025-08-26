@@ -202,8 +202,8 @@ class _Step1ScreenState extends State<Step1Screen> {
         selectedBudgetLevel == null ||
         anniversaryDate == null ||
         dob == null ||
-        selectedCity == null ||
-        selectedState == null ||
+        // selectedCity == null ||
+        // selectedState == null ||
         selectedCountry == null) {
       return;
     }
@@ -216,8 +216,8 @@ class _Step1ScreenState extends State<Step1Screen> {
         selectedRelationshipStatus.isEmpty ||
         anniversaryDate == null ||
         dob == null ||
-        selectedCity!.isEmpty ||
-        selectedState!.isEmpty ||
+        // selectedCity!.isEmpty ||
+        // selectedState!.isEmpty ||
         selectedCountry!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -254,8 +254,8 @@ class _Step1ScreenState extends State<Step1Screen> {
       selectedRelationshipStatus,
       _formatDate(anniversaryDate),
       _formatDate(dob),
-      selectedCity!,
-      selectedState!,
+      selectedCity ?? '',
+      selectedState ?? '',
       selectedCountry!,
     );
   }
@@ -272,10 +272,10 @@ class _Step1ScreenState extends State<Step1Screen> {
       selectedRelationshipStatus.isNotEmpty &&
       anniversaryDate != null &&
       dob != null &&
-      selectedCity != null &&
-      selectedCity!.isNotEmpty &&
-      selectedState != null &&
-      selectedState!.isNotEmpty &&
+      // selectedCity != null &&
+      // selectedCity!.isNotEmpty &&
+      // selectedState != null &&
+      // selectedState!.isNotEmpty &&
       selectedCountry != null &&
       selectedCountry!.isNotEmpty;
 

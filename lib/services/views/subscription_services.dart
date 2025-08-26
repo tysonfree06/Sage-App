@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
+import 'package:sage/provider/home/navigation_provider.dart';
 import 'package:sage/repository/subscription_repo.dart';
 import 'package:sage/services/views/splash_services.dart';
 
@@ -57,6 +59,7 @@ class SubscriptionService {
       if (context.mounted) {
         if (isSignupFlow) {
           debugPrint('NOW NAVIGATING TO HOME');
+          context.read<NavigationProvider>().setIndex(0);
           await Navigator.pushNamedAndRemoveUntil(
             context,
             RoutesName.navigation,

@@ -12,7 +12,6 @@ class MyButton extends StatelessWidget {
     this.isLoading = false,
     super.key,
   });
-
   final String label;
   final VoidCallback? onPressed;
   final bool isDark;

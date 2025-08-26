@@ -14,12 +14,13 @@ class SessionController extends ChangeNotifier {
   String? _token;
   UserModel? _user;
   UserModel? partner;
-  bool isPartnerFetched =
+  bool _isPartnerFetched =
       false; //#muttas remove it when partner is auto loading on splash..
 
   List<dynamic>? notifications;
 
   String? get token => _token;
+  bool get isPartnerFetched => _isPartnerFetched;
 
   //make user getter
   UserModel? get user => _user;
@@ -40,6 +41,10 @@ class SessionController extends ChangeNotifier {
     log('Token saved: $token');
   }
 
+  Future<void> setPartnerStatus({bool status = false}) async {
+    _isPartnerFetched = status;
+  }
+
   /// Retrieve token from local storage on app start
   Future<void> loadToken() async {
     _token = await _localStorage.readValue('auth_token');
@@ -55,7 +60,7 @@ class SessionController extends ChangeNotifier {
     _token = null;
     _user = null;
     partner = null;
-    isPartnerFetched = false;
+    _isPartnerFetched = false;
     notifications = null;
     notifyListeners();
     await _localStorage.clearValue('auth_token');
