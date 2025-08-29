@@ -53,7 +53,7 @@ class IdeasServices {
       RoutesName.ideaDetails,
       arguments: {
         'isAddedIdeaScreen': isAddedIdea,
-        'ideaDeetails': ideaDetails,
+        'ideaDetails': ideaDetails,
       },
     );
   }
@@ -212,7 +212,7 @@ class IdeasServices {
     return '';
   }
 
-  //is user is not premium/ not subcribed: show a dialog box
+  //is user is not premium/ not subscribed: show a dialog box
   static void showSubscriptionDialog(BuildContext context) {
     showDialog<void>(
       context: context,
@@ -311,15 +311,13 @@ class IdeasServices {
     String ideaId,
   ) async {
     try {
-      final response = await _ideasRepository.removeBookmark(ideaId);
-      if (response != null) {
-        if (context.mounted) {
-          context.flushBarSuccessMessage(
-            message: 'Bookmark removed successfully',
-          );
-        }
-        debugPrint('Bookmark removed successfully');
+      await _ideasRepository.removeBookmark(ideaId);
+      if (context.mounted) {
+        context.flushBarSuccessMessage(
+          message: 'Bookmark removed successfully',
+        );
       }
+      debugPrint('Bookmark removed successfully');
     } catch (e) {
       if (e is AppException) {
         if (context.mounted) {

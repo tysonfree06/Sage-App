@@ -34,7 +34,7 @@ class NotificationsServices {
     try {
       final response = await _notificationsRepository.getNotifications();
       debugPrint('✅ NOTIFICATIONS  FETCHED: $response');
-      return response as Map<String, dynamic>;
+      return response;
     } catch (e) {
       if (e is AppException) {
         debugPrint('[NotificationsService] ❌ ${e.debugMessage}');
@@ -51,7 +51,7 @@ class NotificationsServices {
       final response =
           await _notificationsRepository.markAllNotificationsRead();
       debugPrint('✅ NOTIFICATIONS  MARK AS READ: $response');
-      return response as Map<String, dynamic>;
+      return response;
     } catch (e) {
       if (e is AppException) {
         debugPrint('[NotificationsService] ❌ ${e.debugMessage}');

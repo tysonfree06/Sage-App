@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,12 +52,12 @@ class _SignupScreenState extends State<SignupScreen> {
     inviteCodeController.addListener(_updateButtonState);
   }
 
-  void _fillFormForTesting() {
-    nameController.text = 'MLB Test User';
-    emailController.text = 'mtalha2410+SAGE24@gmail.com';
-    passwordController.text = '12345678';
-    confirmPasswordController.text = '12345678';
-  }
+  // void _fillFormForTesting() {
+  //   nameController.text = 'MLB Test User';
+  //   emailController.text = 'mtalha2410+SAGE24@gmail.com';
+  //   passwordController.text = '12345678';
+  //   confirmPasswordController.text = '12345678';
+  // }
 
   @override
   void dispose() {

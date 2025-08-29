@@ -7,14 +7,14 @@ class NotificationsRepository {
   final BaseApiServices _apiServices = NetworkApiService();
   final _sessionController = SessionController();
 
-  Future getNotifications() async {
+  Future<Map<String, dynamic>> getNotifications() async {
     final userId = _sessionController.user!.id;
     return _apiServices.get(
       url: '${AppUrl.notifications}/$userId',
     );
   }
 
-  Future markAllNotificationsRead() async {
+  Future<Map<String, dynamic>> markAllNotificationsRead() async {
     final userId = _sessionController.user!.id;
     return _apiServices.patch(
       url: '${AppUrl.notifications}/user/$userId/read-all',

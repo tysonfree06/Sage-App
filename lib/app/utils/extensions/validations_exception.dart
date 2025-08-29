@@ -78,7 +78,7 @@ extension CostValidatorExtension on String {
 
 extension LinkValidatorExtension on String {
   bool linkValidator() {
-    final urlPattern = r'^(https?:\/\/)?' // protocol (optional)
+    const urlPattern = r'^(https?:\/\/)?' // protocol (optional)
         r'(([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})' // domain
         r'(\/[^\s]*)?$'; // path (optional)
 

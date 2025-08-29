@@ -165,7 +165,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
   Future<void> getCities(String countryCode, String stateCode) async {
     debugPrint(
-        'HERE, MY ARGUMENTS: CONCODE: $countryCode, STATE CODE: $stateCode');
+        'HERE, MY ARGUMENTS: CONCODE: $countryCode, STATE CODE: $stateCode',);
     if (stateCode.isEmpty) return;
     try {
       setState(() {
@@ -228,7 +228,7 @@ class _Step1ScreenState extends State<Step1Screen> {
     }
 
     //date of birth and anniversary date validation
-    if (!SignupService().isAtLeast18YearsOld(dob!)) {
+    if (!SignupService().isAtLeast18YearsOld(dob)) {
       context.flushBarErrorMessage(
         message: 'You should be at least 18 years old!',
       );
@@ -237,7 +237,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
     if (!SignupService().isAnniversaryDateLessThanDOB(
       dob!,
-      anniversaryDate!,
+      anniversaryDate,
     )) {
       context.flushBarErrorMessage(
         message: 'Date of Birth should be before Anniversary Date!',
@@ -328,7 +328,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                 items: loveLanguages,
                 value: selectedLoveLanguage,
                 hint: 'Select your love language?',
-                onChanged: (v) => setState(() => selectedLoveLanguage = v!),
+                onChanged: (v) => setState(() => selectedLoveLanguage = v),
               ),
               SizedBox(height: 16.h),
 
@@ -342,7 +342,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                 items: apologyLanguages,
                 value: selectedApologyLanguage,
                 hint: 'Select your apology languge',
-                onChanged: (v) => setState(() => selectedApologyLanguage = v!),
+                onChanged: (v) => setState(() => selectedApologyLanguage = v),
               ),
               SizedBox(height: 16.h),
 
@@ -357,7 +357,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                 value: selectedCommunicationStyle,
                 hint: 'Select your communication style?',
                 onChanged: (v) =>
-                    setState(() => selectedCommunicationStyle = v!),
+                    setState(() => selectedCommunicationStyle = v),
               ),
               SizedBox(height: 16.h),
 
@@ -371,7 +371,7 @@ class _Step1ScreenState extends State<Step1Screen> {
                 items: budgetLevels,
                 value: selectedBudgetLevel,
                 hint: 'Select your budget level',
-                onChanged: (v) => setState(() => selectedBudgetLevel = v!),
+                onChanged: (v) => setState(() => selectedBudgetLevel = v),
               ),
               SizedBox(height: 16.h),
 
@@ -510,7 +510,6 @@ class _Step1ScreenState extends State<Step1Screen> {
                             }
                           }
                         });
-                        ;
                       },
                     ),
                   ),

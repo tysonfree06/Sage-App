@@ -172,7 +172,7 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen>
                 padding: EdgeInsets.all(5.w),
                 decoration: BoxDecoration(
                   color: const Color.fromRGBO(
-                      224, 231, 232, 1), // light background
+                      224, 231, 232, 1,), // light background
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Row(

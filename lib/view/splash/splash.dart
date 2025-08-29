@@ -11,8 +11,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  double _opacity = 1.0;
-
   @override
   void initState() {
     super.initState();
@@ -20,38 +18,25 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _startSplashSequence() async {
-    // Run authentication check and wait for it to complete
     await SplashServices().checkAuthentication(context);
-
-    // Start fade-out after it finishes
-    if (mounted) {
-      setState(() {
-        _opacity = 0.0;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedOpacity(
-        opacity: _opacity,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-        child: Stack(
-          children: [
-            Positioned(
-              bottom: 0,
-              child: SizedBox(
-                width: context.mediaQueryWidth,
-                child: Assets.images.splashBg.svg(fit: BoxFit.fill),
-              ),
+      body: Stack(
+        children: [
+          Positioned(
+            bottom: 0,
+            child: SizedBox(
+              width: context.mediaQueryWidth,
+              child: Assets.images.splashBg.svg(fit: BoxFit.fill),
             ),
-            Center(
-              child: Assets.images.logo.greenLogo.svg(),
-            ),
-          ],
-        ),
+          ),
+          Center(
+            child: Assets.images.logo.greenLogo.svg(),
+          ),
+        ],
       ),
     );
   }

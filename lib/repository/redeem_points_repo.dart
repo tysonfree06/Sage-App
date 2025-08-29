@@ -13,13 +13,13 @@ class RedeemRepository {
   // }
   final sessionController = SessionController();
 
-  Future getAvailableOffers() async {
+  Future<Map<String, dynamic>> getAvailableOffers() async {
     return _apiServices.get(
       url: AppUrl.availableOffers,
     );
   }
 
-  Future getPastRedemptions() async {
+  Future<Map<String, dynamic>> getPastRedemptions() async {
     final userId = sessionController.user!.id;
     return _apiServices.get(
       url: '${AppUrl.pastRedemptions}/?userId=$userId',

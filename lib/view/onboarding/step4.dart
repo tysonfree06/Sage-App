@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_pinput.dart';
-import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
@@ -72,7 +71,7 @@ class _Step4ScreenState extends State<Step4Screen> {
           context,
         );
       }
-    } catch (e, st) {
+    } catch (e) {
       if (context.mounted) {
         ErrorHandler.handle(context, e, serviceName: 'OnboardingService');
       }

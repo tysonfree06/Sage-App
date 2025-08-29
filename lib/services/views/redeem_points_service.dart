@@ -32,7 +32,7 @@ class RedeemPointsService {
     try {
       final response = await _redeemRepository.getAvailableOffers();
       debugPrint('✅ AVAILABLE OFFERS  FETCHED: $response');
-      return response as Map<String, dynamic>;
+      return response;
     } catch (e) {
       if (e is AppException) {
         debugPrint('[PointsService] ❌ ${e.debugMessage}');
@@ -48,7 +48,7 @@ class RedeemPointsService {
     try {
       final response = await _redeemRepository.getPastRedemptions();
       debugPrint('✅ AVAILABLE OFFERS  FETCHED: $response');
-      return response as Map<String, dynamic>;
+      return response;
     } catch (e) {
       if (e is AppException) {
         debugPrint('[PointsService] ❌ ${e.debugMessage}');

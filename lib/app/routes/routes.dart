@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/model/redeem/redeem_model.dart';
 import 'package:sage/view/ideas/add_idea.dart';
-// import 'package:sage/model/redeem/radeem_model.dart';
 import 'package:sage/view/ideas/explore_ideas.dart';
 import 'package:sage/view/ideas/idea_details.dart';
 import 'package:sage/view/ideas/my_added_ideas.dart';
-import 'package:sage/view/ideas/saved_ideas.dart';
 import 'package:sage/view/notifications/notifications.dart';
 import 'package:sage/view/subscription/active_subscription.dart';
 import 'package:sage/view/views.dart';
@@ -90,7 +88,7 @@ class Routes {
       case RoutesName.ideaDetails:
         final args = settings.arguments! as Map<String, dynamic>;
         final isAddedIdeaScreen = args['isAddedIdeaScreen'];
-        final ideaDetails = args['ideaDeetails'] as Map<String, dynamic>?;
+        final ideaDetails = args['ideaDetails'] as Map<String, dynamic>?;
         return MaterialPageRoute(
           builder: (_) => IdeaDetailsScreen(
             isAddedIdea: isAddedIdeaScreen as bool,

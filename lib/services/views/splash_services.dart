@@ -81,31 +81,13 @@ class SplashServices {
     }
   }
 
-// Future<void> checkAuthentication(BuildContext context) async {
-  //   //TODO: Login using token and on failure go to welcome screen (on token) / login screen (token not working)
-  // }
-
   Future<void> goToWelcome(BuildContext context) async {
-    Timer(
-      const Duration(seconds: 2),
-      () => Navigator.pushNamedAndRemoveUntil(
-        context,
-        RoutesName.welcome,
-        (route) => false,
-      ),
+    await Navigator.pushNamedAndRemoveUntil(
+      context,
+      RoutesName.welcome,
+      (route) => false,
     );
   }
-
-  // Future<Map<String, dynamic>> loadRelationshipSuggestion() async {
-  //   try {
-  //     final response = await _userRepository.fetchRelationshipSuggestion();
-  //     debugPrint('[$tag] ✅ Relationship Suggestion Fetched');
-  //     return response;
-  //   } catch (e) {
-  //     debugPrint('[$tag] ❌ Error fetching partner: $e');
-  //     return {};
-  //   }
-  // }
 
   Future<Map<String, dynamic>> loadRelationshipSuggestion() async {
     try {

@@ -6,7 +6,6 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/redeem_model.dart';
-import 'package:sage/services/views/redeem_points_service.dart';
 
 class OfferTile extends StatelessWidget {
   const OfferTile({
@@ -27,11 +26,7 @@ class OfferTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
-        onTap: () {
-          // RedeemPointsService.goToDetailScreen(context, offer);
-
-          onNavigation.call();
-        },
+        onTap: onNavigation.call,
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
