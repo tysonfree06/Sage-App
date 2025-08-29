@@ -141,7 +141,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                                 titleFirst: 'Change ',
                                 titleSecond: 'Subscription?',
                                 subtitle:
-                                    'Changing subscription will discard your current susbcription.',
+                                    '''Changing subscription will discard your current susbcription.''',
                                 confirmLabel: 'Continue',
                                 onConfirm: () {
                                   SubscriptionService.goToChangeSubscription(
@@ -203,7 +203,6 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
               borderRadius: BorderRadius.circular(12.r),
             ),
             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 11.h),
-            // child: Icon(Icons.eco, color: context.colors.greenBg, size: 32.w),
             child: Assets.images.logo.onlyLogo.svg(width: 32, height: 32),
           ),
           SizedBox(width: 12.w),
@@ -252,10 +251,10 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
   }) {
     final String activeSubscriptionText =
         // ignore: lines_longer_than_80_chars
-        'Your plan will automatically renew on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end'] as String)}. you can change your\nsubscription plan after this or renew this plan';
+        '''Your plan will automatically renew on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end'] as String)}. you can change your\nsubscription plan after this or renew this plan''';
     // ignore: lines_longer_than_80_chars
     final String canceledSubscriptionText =
-        'Your subscription is ending on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end'] as String)} and will not be renewed. If you want to subscribe again, please press the "Subscribe" button below.';
+        '''Your subscription is ending on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end'] as String)} and will not be renewed. If you want to subscribe again, please press the "Subscribe" button below.''';
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -303,14 +302,14 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
           _planBullet(
             title: 'Discounts & Prizes for Healthy Habits:',
             subtitle:
-                'Just by practicing healthy relationship habits you’ll earn points for discounts and prizes!',
+                '''Just by practicing healthy relationship habits you’ll earn points for discounts and prizes!''',
             context: context,
           ),
           SizedBox(height: 12.h),
           _planBullet(
             title: 'Unlimited AI Generated Ideas:',
             subtitle:
-                'Sage AI will use your preferences to create ideas tailored to you and your partner',
+                '''Sage AI will use your preferences to create ideas tailored to you and your partner''',
             context: context,
           ),
           SizedBox(

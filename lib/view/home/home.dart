@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   UserModel? partner;
   Future<void> getPartner() async {
-    debugPrint('GET PARTNER CALLED...');
     if (sessionController.partner == null &&
         sessionController.user?.partnerCode != null) {
       final int? partnerCode = sessionController.user?.partnerCode;
@@ -210,6 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     //   constraints: BoxConstraints(
                     //     maxHeight: 380.h,
                     //   ),
+                    // IntrinsicHeight(
                     IntrinsicHeight(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

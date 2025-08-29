@@ -20,6 +20,7 @@ class App extends StatelessWidget {
         return MultiProvider(
           providers: providers,
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Sage',
             themeMode: ThemeMode.light,
             theme: ThemeFactory.lightThemeData(),

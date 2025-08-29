@@ -23,7 +23,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
     final user = sessionController.user!;
     final referalCode = user.mineinvitationCode ?? '';
     final String referralPoints = user.totalReferralPoints.toString();
-    final String refferals = user.referrals!.length.toString();
+    final String referrals = user.referrals!.length.toString();
 
     return Scaffold(
       appBar: AppBar(
@@ -199,7 +199,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                           ),
                           SizedBox(height: 10.h),
                           Text(
-                            refferals,
+                            referrals,
                             style: context.typography.title.copyWith(
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w500,

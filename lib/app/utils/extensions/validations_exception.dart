@@ -25,9 +25,9 @@ extension PasswordValidatorExtension on String {
     return passwordValid;
   }
 
-  bool lessSecurePasswordValidator() {
-    return length >= 8; // Checks if the password length is >= 8
-  }
+  // bool lessSecurePasswordValidator() {
+  //   return length >= 8; // Checks if the password length is >= 8
+  // }
 }
 
 extension NameValidatorExtension on String {

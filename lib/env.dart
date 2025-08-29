@@ -4,15 +4,15 @@ part 'env.g.dart';
 
 @Envied(path: '.env')
 abstract class Env {
-  @EnviedField(varName: 'STRIPE_PUBLIC_KEY')
-  static const String stripePublicKey = _Env.stripePublicKey;
+  @EnviedField(varName: 'STRIPE_PUBLIC_KEY', obfuscate: true)
+  static String stripePublicKey = _Env.stripePublicKey;
 
-  @EnviedField(varName: 'STRIPE_PRICE_WEEKLY')
-  static const String stripeWeekly = _Env.stripeWeekly;
+  @EnviedField(varName: 'STRIPE_PRICE_WEEKLY', obfuscate: true)
+  static String stripeWeekly = _Env.stripeWeekly;
 
-  @EnviedField(varName: 'STRIPE_PRICE_MONTHLY')
-  static const String stripeMonthly = _Env.stripeMonthly;
+  @EnviedField(varName: 'STRIPE_PRICE_MONTHLY', obfuscate: true)
+  static String stripeMonthly = _Env.stripeMonthly;
 
-  @EnviedField(varName: 'STRIPE_PRICE_YEARLY')
-  static const String stripeYearly = _Env.stripeYearly;
+  @EnviedField(varName: 'STRIPE_PRICE_YEARLY', obfuscate: true)
+  static String stripeYearly = _Env.stripeYearly;
 }

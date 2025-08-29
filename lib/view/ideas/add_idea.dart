@@ -379,7 +379,7 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
               //   return context.l10n.error_name_invalid;
               // }
               if (value == null || value.isEmpty) {
-                return 'All fields are required';
+                return 'Field required';
               } else if (title == 'Cost') {
                 if (!value.costValidator()) {
                   return 'Only numbers are allowed in this field';
