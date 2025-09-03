@@ -165,7 +165,8 @@ class _Step1ScreenState extends State<Step1Screen> {
 
   Future<void> getCities(String countryCode, String stateCode) async {
     debugPrint(
-        'HERE, MY ARGUMENTS: CONCODE: $countryCode, STATE CODE: $stateCode',);
+      'HERE, MY ARGUMENTS: CONCODE: $countryCode, STATE CODE: $stateCode',
+    );
     if (stateCode.isEmpty) return;
     try {
       setState(() {
@@ -278,6 +279,10 @@ class _Step1ScreenState extends State<Step1Screen> {
       // selectedState!.isNotEmpty &&
       selectedCountry != null &&
       selectedCountry!.isNotEmpty;
+
+  //Show/Hide Cities/States dropdown
+  bool showCitiesDropdown = true;
+  bool showStatesDropdown = true;
 
   @override
   Widget build(BuildContext context) {
@@ -431,63 +436,8 @@ class _Step1ScreenState extends State<Step1Screen> {
               // Location: City / State / Country
               Text(context.l10n.onboarding_step1_location, style: labelStyle),
               SizedBox(height: 10.h),
-              MyDropdown(
-                //itemType and ctx are used to show error messages
-                itemType: 'city',
-                ctx: context,
-                // items: cities,
-                value: selectedCity,
-                hint: 'Select City',
-                // onChanged: (v) => setState(() => selectedCity = v!),
-                items: cities.map((city) {
-                  return city['name'].toString();
-                }).toList(),
-                onChanged: (v) {
-                  if (mounted) {
-                    setState(() => selectedCity = v);
-                  }
-                },
-              ),
-              SizedBox(height: 10.h),
               Row(
                 children: [
-                  Expanded(
-                    child: MyDropdown(
-                      //itemType and ctx are used to show error messages
-                      itemType: 'state',
-                      ctx: context,
-                      // items: states,
-                      value: selectedState,
-                      hint: 'Select State',
-                      // onChanged: (v) => setState(() => selectedState = v!),
-                      items: states.map((state) {
-                        return state['name'].toString();
-                      }).toList(),
-                      onChanged: (v) {
-                        if (mounted) {
-                          setState(() => selectedState = v);
-                        }
-                        if (selectedCountry != null) {
-                          final String countryCode = _service.getCodeByName(
-                            countries,
-                            selectedCountry!,
-                          );
-                          final String stateCode =
-                              _service.getCodeByName(states, v!);
-                          getCities(countryCode, stateCode).then((_) {
-                            if (cities.isEmpty) {
-                              if (context.mounted) {
-                                context.flushBarErrorMessage(
-                                  message: 'No Cities found for this State.',
-                                );
-                              }
-                            }
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
                   Expanded(
                     child: MyDropdown(
                       // items: countries,
@@ -498,11 +448,17 @@ class _Step1ScreenState extends State<Step1Screen> {
                       hint: 'Select Country',
                       // onChanged: (v) => setState(() => selectedCountry = v!),
                       onChanged: (v) {
-                        setState(() => selectedCountry = v);
+                        setState(() {
+                          showStatesDropdown = true;
+                          selectedCountry = v;
+                        });
                         final String countryCode =
                             _service.getCodeByName(countries, v!);
                         getStates(countryCode).then((_) {
                           if (states.isEmpty) {
+                            setState(() {
+                              showStatesDropdown = false;
+                            });
                             if (context.mounted) {
                               context.flushBarErrorMessage(
                                 message: 'No States found for this Country.',
@@ -513,10 +469,72 @@ class _Step1ScreenState extends State<Step1Screen> {
                       },
                     ),
                   ),
+                  if (showStatesDropdown) ...[
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: MyDropdown(
+                        //itemType and ctx are used to show error messages
+                        itemType: 'state',
+                        ctx: context,
+                        // items: states,
+                        value: selectedState,
+                        hint: 'Select State',
+                        // onChanged: (v) => setState(() => selectedState = v!),
+                        items: states.map((state) {
+                          return state['name'].toString();
+                        }).toList(),
+                        onChanged: (v) {
+                          if (mounted) {
+                            showCitiesDropdown = true;
+                            setState(() => selectedState = v);
+                          }
+                          if (selectedCountry != null) {
+                            final String countryCode = _service.getCodeByName(
+                              countries,
+                              selectedCountry!,
+                            );
+                            final String stateCode =
+                                _service.getCodeByName(states, v!);
+                            getCities(countryCode, stateCode).then((_) {
+                              if (cities.isEmpty) {
+                                setState(() {
+                                  showCitiesDropdown = false;
+                                });
+                                if (context.mounted) {
+                                  context.flushBarErrorMessage(
+                                    message: 'No Cities found for this State.',
+                                  );
+                                }
+                              }
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ],
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 10.h),
+              if (showCitiesDropdown)
+                MyDropdown(
+                  //itemType and ctx are used to show error messages
+                  itemType: 'city',
+                  ctx: context,
+                  // items: cities,
+                  value: selectedCity,
+                  hint: 'Select City',
+                  // onChanged: (v) => setState(() => selectedCity = v!),
+                  items: cities.map((city) {
+                    return city['name'].toString();
+                  }).toList(),
+                  onChanged: (v) {
+                    if (mounted) {
+                      setState(() => selectedCity = v);
+                    }
+                  },
+                ),
 
+              SizedBox(height: 24.h),
               // NEXT button
               MyButton(
                 label: context.l10n.onboarding_step1_next,

@@ -16,18 +16,33 @@ extension UrlValidatorExtension on String {
   }
 }
 
+// extension PasswordValidatorExtension on String {
+//   bool passwordValidator() {
+//     final passwordValid = RegExp(
+//       r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+//     ).hasMatch(this);
+//     // Minimum 8 characters, 1 uppercase, 1 number, 1 special character
+//     return passwordValid;
+//   }
+
+//   // bool lessSecurePasswordValidator() {
+//   //   return length >= 8; // Checks if the password length is >= 8
+//   // }
+// }
+
 extension PasswordValidatorExtension on String {
   bool passwordValidator() {
     final passwordValid = RegExp(
-      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$',
     ).hasMatch(this);
-    // Minimum 8 characters, 1 uppercase, 1 number, 1 special character
+    // Explanation:
+    // (?=.*[a-z])        → At least one lowercase
+    // (?=.*[A-Z])        → At least one uppercase
+    // (?=.*\d)           → At least one digit
+    // (?=.*[^A-Za-z0-9]) → At least one special character (anything that's not a letter/number)
+    // .{8,}              → At least 8 characters total
     return passwordValid;
   }
-
-  // bool lessSecurePasswordValidator() {
-  //   return length >= 8; // Checks if the password length is >= 8
-  // }
 }
 
 extension NameValidatorExtension on String {

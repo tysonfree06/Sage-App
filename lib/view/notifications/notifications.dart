@@ -154,11 +154,9 @@ class NotificationTile extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 24.r,
-            backgroundColor: Colors.white,
-            // child: Icon(
-            //   notificationIcon,
-            //   color: context.colors.greenBg,
-            // ),
+            backgroundColor: notification['type'] != 'welcome'
+                ? Colors.white
+                : Colors.transparent,
             child: notificationIcon,
           ),
           SizedBox(

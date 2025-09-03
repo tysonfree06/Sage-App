@@ -7,7 +7,9 @@
 */
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/loading_widget.dart';
+import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
@@ -172,7 +174,11 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen>
                 padding: EdgeInsets.all(5.w),
                 decoration: BoxDecoration(
                   color: const Color.fromRGBO(
-                      224, 231, 232, 1,), // light background
+                    224,
+                    231,
+                    232,
+                    1,
+                  ), // light background
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Row(
@@ -212,16 +218,19 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen>
                   else if (displaySavedIdeas.isEmpty &&
                       selectedToggle == 'Mutual' &&
                       !isPartnerConnected)
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 200.h,
-                        ),
-                        const Text(
-                          textAlign: TextAlign.center,
-                          'No Partner Connected.',
-                        ),
-                      ],
+                    Center(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 160.h,
+                          ),
+                          Assets.icons.noItems.svg(),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'No Parnter Connected',
+                          ),
+                        ],
+                      ),
                     )
                   else
                     //no item
@@ -253,38 +262,79 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen>
     );
   }
 
-  Column _buildNoSubscription(BuildContext context, bool? isPremium) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          maxLines: 2,
-          'Subscription Required to enable this feature.',
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
-        ),
-        SizedBox(
-          height: 24.h,
-        ),
-        TextButton(
-          style: TextButton.styleFrom(
-            backgroundColor: context.colors.mainGreenLight,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+  Widget _buildNoSubscription(BuildContext context, bool? isPremium) {
+    // return Column(
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: [
+    //     Text(
+    //       maxLines: 2,
+    //       'Subscription Required to enable this feature.',
+    //       style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+    //     ),
+    //     SizedBox(
+    //       height: 24.h,
+    //     ),
+    //     TextButton(
+    //       style: TextButton.styleFrom(
+    //         backgroundColor: context.colors.mainGreenLight,
+    //         shape: RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(12),
+    //         ),
+    //       ),
+    //       onPressed: () async {
+    //         await SettingService.goToSubscriptionScreen(context, false);
+    //         setState(() {
+    //           isPremium = sessionController.user!.isPremium;
+    //         });
+    //         // Navigator.of(context).pop();
+    //       },
+    //       child: const Text(
+    //         'Subscribe',
+    //         style: TextStyle(color: Colors.white),
+    //       ),
+    //     ),
+    //   ],
+    // );
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 37.h),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Assets.images.dialog.infoBlue.svg(
+            height: 100.h,
+            fit: BoxFit.fitHeight,
           ),
-          onPressed: () async {
-            await SettingService.goToSubscriptionScreen(context, false);
-            setState(() {
-              isPremium = sessionController.user!.isPremium;
-            });
-            // Navigator.of(context).pop();
-          },
-          child: const Text(
-            'Subscribe',
-            style: TextStyle(color: Colors.white),
+          SizedBox(height: 20.h),
+          const ColoredRichText(
+            first: 'Subscription ',
+            second: 'Not Found',
           ),
-        ),
-      ],
+          SizedBox(height: 7.h),
+          Text(
+            'You have to subscribe in order to use this feature!',
+            textAlign: TextAlign.center,
+            style: context.typography.subtitle.copyWith(),
+          ),
+          SizedBox(height: 30.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: MyButton(
+                  label: 'Subscribe',
+                  onPressed: () async {
+                    await SettingService.goToSubscriptionScreen(context, false);
+                    setState(() {
+                      isPremium = sessionController.user!.isPremium;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

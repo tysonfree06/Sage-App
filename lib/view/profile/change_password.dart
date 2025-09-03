@@ -225,7 +225,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               message:
                                   context.l10n.error_confirm_password_mismatch,
                             );
-
                             return;
                           }
 

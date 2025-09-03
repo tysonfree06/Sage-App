@@ -212,56 +212,18 @@ class IdeasServices {
     return '';
   }
 
-  //is user is not premium/ not subscribed: show a dialog box
+//is user is not premium/ not subscribed: show a dialog box
   static void showSubscriptionDialog(BuildContext context) {
     showDialog<void>(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        title: const Text(
-          'Subscription not found',
-          style: TextStyle(color: Colors.black),
-        ),
-        content: const Text(
-          'You have to subscribe in order to use this feature!',
-          style: TextStyle(color: Colors.black),
-        ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: context.colors.red,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: context.colors.mainGreenLight,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: () {
-              SubscriptionService.goToChangeSubscription(context);
-              // Navigator.of(context).pop();
-            },
-            child: const Text(
-              'Subscribe',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
+      builder: (_) => MyDialog(
+        titleFirst: 'Subscription',
+        titleSecond: ' Not Found',
+        subtitle: 'You have to subscribe in order to use this feature!',
+        confirmLabel: 'Subscribe',
+        onConfirm: () {
+          SubscriptionService.goToChangeSubscription(context);
+        },
       ),
     );
   }

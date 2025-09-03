@@ -125,4 +125,6 @@ class SubscriptionService {
       RoutesName.subscription,
     );
   }
+
+  static void goToSubscriptionScreen(BuildContext context, bool bool) {}
 }

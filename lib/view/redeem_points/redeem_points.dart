@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/free_user_alert.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
@@ -120,6 +121,18 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
       ),
       body: Column(
         children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: const FreeUserAlert(
+              title: "Don't Miss Out 🚨",
+              subtitle:
+                  '''This month's raffle is almost here. Become a Sage Member to enter and win prizes.''',
+              buttonText: 'Unlock Prizes',
+            ),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 16.w),
             padding: EdgeInsets.symmetric(vertical: 13.h),

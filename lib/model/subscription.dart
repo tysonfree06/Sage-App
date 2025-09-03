@@ -27,14 +27,14 @@ class SubscriptionModel {
       label: 'Yearly',
       priceString: r'$67.99',
       discount: 60,
-      discountComparedTo: 'Less Compared To weekly',
+      discountComparedTo: 'Less Compared To Weekly',
       price: 67.99,
     ),
     Subscription(
       label: 'Monthly',
       priceString: r'$6.99',
       discount: 50,
-      discountComparedTo: 'Less Compared To weekly',
+      discountComparedTo: 'Less Compared To Weekly',
       price: 6.99,
     ),
     Subscription(

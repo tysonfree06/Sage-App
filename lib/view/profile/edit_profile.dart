@@ -294,6 +294,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   //END: get locations from api
 
+  bool showCitiesDropdown = true;
+  bool showStatesDropdown = true;
+
   @override
   Widget build(BuildContext context) {
     final labelStyle = context.typography.title.copyWith(
@@ -409,60 +412,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(height: 16.h),
               Text(context.l10n.onboarding_step1_location, style: labelStyle),
               SizedBox(height: 10.h),
-              _buildDropdown(
-                itemType: 'city',
-                ctx: context,
-                value: _city,
-                // items: cities,
-                items: cities.map((city) {
-                  return city['name'].toString();
-                }).toList(),
-                onChanged: (v) {
-                  if (mounted) {
-                    setState(() => _city = v);
-                  }
-                },
-                hint: 'Select City',
-              ),
-              SizedBox(height: 10.h),
               Row(
                 children: [
-                  Expanded(
-                    child: _buildDropdown(
-                      itemType: 'state',
-                      ctx: context,
-                      value: _state,
-                      // items: states,
-                      items: states.map((state) {
-                        return state['name'].toString();
-                      }).toList(),
-                      onChanged: (v) {
-                        if (mounted) {
-                          setState(() => _state = v);
-                        }
-                        if (_country != null) {
-                          final String countryCode = _service.getCodeByName(
-                            countries,
-                            _country!,
-                          );
-                          final String stateCode =
-                              _service.getCodeByName(states, v!);
-                          getCities(countryCode, stateCode).then((_) {
-                            if (cities.isEmpty) {
-                              if (context.mounted) {
-                                context.flushBarErrorMessage(
-                                  message: 'No Cities found for this state.',
-                                );
-                              }
-                            }
-                          });
-                        }
-                      },
-                      // hint: _state,
-                      hint: 'Select State',
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
                   Expanded(
                     child: _buildDropdown(
                       value: _country,
@@ -471,11 +422,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         return country['name'].toString();
                       }).toList(),
                       onChanged: (v) {
-                        setState(() => _country = v);
+                        setState(() {
+                          showStatesDropdown = true;
+                          _country = v;
+                        });
                         final String countryCode =
                             _service.getCodeByName(countries, v!);
                         getStates(countryCode).then((_) {
                           if (states.isEmpty) {
+                            setState(() {
+                              showStatesDropdown = false;
+                            });
                             if (context.mounted) {
                               context.flushBarErrorMessage(
                                 message: 'No States found for this country.',
@@ -487,8 +444,67 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       hint: 'Select Country',
                     ),
                   ),
+                  if (showStatesDropdown) ...[
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: _buildDropdown(
+                        itemType: 'state',
+                        ctx: context,
+                        value: _state,
+                        // items: states,
+                        items: states.map((state) {
+                          return state['name'].toString();
+                        }).toList(),
+                        onChanged: (v) {
+                          if (mounted) {
+                            showCitiesDropdown = true;
+                            setState(() => _state = v);
+                          }
+                          if (_country != null) {
+                            final String countryCode = _service.getCodeByName(
+                              countries,
+                              _country!,
+                            );
+                            final String stateCode =
+                                _service.getCodeByName(states, v!);
+                            getCities(countryCode, stateCode).then((_) {
+                              if (cities.isEmpty) {
+                                setState(() {
+                                  showCitiesDropdown = false;
+                                });
+                                if (context.mounted) {
+                                  context.flushBarErrorMessage(
+                                    message: 'No Cities found for this state.',
+                                  );
+                                }
+                              }
+                            });
+                          }
+                        },
+                        // hint: _state,
+                        hint: 'Select State',
+                      ),
+                    ),
+                  ],
                 ],
               ),
+              SizedBox(height: 10.h),
+              if (showCitiesDropdown)
+                _buildDropdown(
+                  itemType: 'city',
+                  ctx: context,
+                  value: _city,
+                  // items: cities,
+                  items: cities.map((city) {
+                    return city['name'].toString();
+                  }).toList(),
+                  onChanged: (v) {
+                    if (mounted) {
+                      setState(() => _city = v);
+                    }
+                  },
+                  hint: 'Select City',
+                ),
               SizedBox(height: 24.h),
               MyButton(
                 isLoading: isLoading,

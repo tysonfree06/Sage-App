@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/free_user_alert.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
@@ -195,6 +196,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const FreeUserAlert(
+                title: 'Get More Out of Sage 💕',
+                subtitle:
+                    '''Upgrade your Sage Membership to unlock Saved Ideas, unlimited suggestions, prizes and more!''',
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 21.h),
                 // height: 421.h,

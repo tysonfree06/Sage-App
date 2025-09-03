@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
@@ -30,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    fillFormForTesting();
     // emailController.text = 'malirazaansari45@gmail.com';
     // passwordController.text = '12345678';
     // emailController.text = 'mtalha2410+SAGE29@gmail.com';
@@ -37,6 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
     emailController.addListener(_updateButtonState);
     passwordController.addListener(_updateButtonState);
     _updateButtonState();
+  }
+
+  void fillFormForTesting() {
+    if (kDebugMode) {
+      emailController.text = 'mtalha2410@gmail.com';
+      passwordController.text = 'Mt@lh@2!';
+    }
   }
 
   void _updateButtonState() {

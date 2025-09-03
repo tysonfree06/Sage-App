@@ -163,11 +163,20 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                             setState(() {
                               isLoaded = false;
                             });
-                            await _subscriptionService
-                                .cancelSubcription(context);
-                            setState(() {
-                              isLoaded = true;
-                            });
+                            await showDialog<void>(
+                              context: context,
+                              builder: (_) => MyDialog(
+                                titleFirst: 'Cancel ',
+                                titleSecond: 'Subscription?',
+                                subtitle: '''Your subscription will''',
+                                confirmLabel: 'Cancel',
+                                onConfirm: () {
+                                  SubscriptionService.goToChangeSubscription(
+                                    context,
+                                  );
+                                },
+                              ),
+                            );
                           },
                         ),
                       SizedBox(height: 24.h),

@@ -8,6 +8,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/free_user_alert.dart';
+import 'package:sage/app/components/global_unfocus_keyboard.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_text_button.dart';
@@ -179,105 +181,116 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
     // ];
 
     return isLoaded
-        ? ListView(
-            children: [
-              SizedBox(height: 16.h),
-              if (isPremium == true) ...[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: MyFormTextField(
-                    controller: searchController,
-                    hint: 'Search Ideas',
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: 24.w,
-                      color: Colors.teal.shade400, // similar to the image
-                    ),
-                    onChanged: searchFilter,
-                  ),
-                ),
-              ],
-              //END: search box
-              SizedBox(height: 20.h),
-              _buildCategories(categories),
-              if (moreIdeas.isEmpty && topPicks.isEmpty) ...[
-                Center(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 80.h,
-                      ),
-                      Assets.icons.noItems.svg(),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'No Ideas Today!',
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              if (noResults == false) ...[
-                if (topPicks.isNotEmpty) ...[
-                  SizedBox(height: 16.h),
+        ? GlobalUnfocusKeyboard(
+            child: ListView(
+              children: [
+                SizedBox(height: 16.h),
+                if (isPremium == true)
                   Padding(
-                    padding: EdgeInsets.only(left: 16.w),
-                    child: Text(
-                      'Top Picks',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20.sp,
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: MyFormTextField(
+                      controller: searchController,
+                      hint: 'Search Ideas',
+                      prefixIcon: Icon(
+                        Icons.search,
+                        size: 24.w,
+                        color: Colors.teal.shade400, // similar to the image
                       ),
+                      onChanged: searchFilter,
                     ),
-                  ),
-                  SizedBox(height: 5.h),
-                  _buildTopPicks(topPicks),
-                ],
-                if (moreIdeas.isNotEmpty) ...[
-                  SizedBox(height: 16.h),
+                  )
+                else
                   Padding(
-                    padding: EdgeInsets.only(left: 16.w),
-                    child: Text(
-                      'More Ideas',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20.sp,
-                      ),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: const FreeUserAlert(
+                      title: 'Get More Ideas!',
+                      subtitle:
+                          '''You are not subscribed, so you can only see 5 ideas per day. Upgrade now to see more ideas!''',
+                      buttonText: 'Unlock more Ideas',
                     ),
                   ),
-                  SizedBox(height: 5.h),
-                  //More Ideas
-                  ...moreIdeas.map(
-                    (item) {
-                      return IdeaCard(
-                        // onBookmarkOrDislikePressed: () async {
-                        //   await loadFeed();
-                        // },
-                        onBookmarkOrDislikePressed: loadFeed,
-                        onReturnFromDetails: () {
-                          loadFeed();
-                          debugPrint('ON RETURN FROM DETAILS CALLED');
-                        },
-                        data: item as Map<String, dynamic>,
-                      );
-                    },
+                //END: search box
+                SizedBox(height: 20.h),
+                _buildCategories(categories),
+                if (moreIdeas.isEmpty && topPicks.isEmpty) ...[
+                  Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 80.h,
+                        ),
+                        Assets.icons.noItems.svg(),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'No Ideas Today!',
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ] else ...[
-                Center(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 140.h,
+                if (noResults == false) ...[
+                  if (topPicks.isNotEmpty) ...[
+                    SizedBox(height: 16.h),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.w),
+                      child: Text(
+                        'Top Picks',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20.sp,
+                        ),
                       ),
-                      Text(
-                        'No results...',
-                        style: TextStyle(fontSize: 14.h),
+                    ),
+                    SizedBox(height: 5.h),
+                    _buildTopPicks(topPicks),
+                  ],
+                  if (moreIdeas.isNotEmpty) ...[
+                    SizedBox(height: 16.h),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.w),
+                      child: Text(
+                        'More Ideas',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20.sp,
+                        ),
                       ),
-                    ],
+                    ),
+                    SizedBox(height: 5.h),
+                    //More Ideas
+                    ...moreIdeas.map(
+                      (item) {
+                        return IdeaCard(
+                          // onBookmarkOrDislikePressed: () async {
+                          //   await loadFeed();
+                          // },
+                          onBookmarkOrDislikePressed: loadFeed,
+                          onReturnFromDetails: () {
+                            loadFeed();
+                            debugPrint('ON RETURN FROM DETAILS CALLED');
+                          },
+                          data: item as Map<String, dynamic>,
+                        );
+                      },
+                    ),
+                  ],
+                ] else ...[
+                  Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 140.h,
+                        ),
+                        Text(
+                          'No results...',
+                          style: TextStyle(fontSize: 14.h),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           )
         : const Center(
             child: LoadingWidget(),
