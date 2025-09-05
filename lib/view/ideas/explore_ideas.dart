@@ -6,6 +6,8 @@
   to reload the data.
 */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/free_user_alert.dart';
@@ -14,6 +16,7 @@ import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/ideas_service.dart';
@@ -38,22 +41,29 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
   bool noResults = false;
 
   Future<void> loadFeed() async {
-    if (feed.isEmpty) {
+    try {
+      if (feed.isEmpty) {
+        if (mounted) {
+          setState(() {
+            isLoaded = false;
+          });
+        }
+      }
+
+      final response = await IdeasServices().getFeed(context);
       if (mounted) {
         setState(() {
-          isLoaded = false;
+          isLoaded = true;
+          feed = response as Map<String, dynamic>;
+          topPicks = response['topPicks'] as List<dynamic>;
+          moreIdeas = response['moreIdeas'] as List<dynamic>;
         });
       }
-    }
-
-    final response = await IdeasServices().getFeed();
-    if (mounted) {
-      setState(() {
-        isLoaded = true;
-        feed = response as Map<String, dynamic>;
-        topPicks = response['topPicks'] as List<dynamic>;
-        moreIdeas = response['moreIdeas'] as List<dynamic>;
-      });
+    } catch (e) {
+      debugPrint('Failed to load feed Error: $e');
+      if (mounted) {
+        context.flushBarErrorMessage(message: 'Something went wrong..');
+      }
     }
   }
 

@@ -76,46 +76,63 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic> relationshipSuggestion = {};
   bool isTipLoaded = false;
   Future<void> getRelationshipSuggestion() async {
-    relationshipSuggestion = await _splashServices.loadRelationshipSuggestion();
-    if (mounted) {
-      setState(() {
-        isTipLoaded = true;
-      }); //don't remove it
+    try {
+      relationshipSuggestion =
+          await _splashServices.loadRelationshipSuggestion();
+      if (mounted && relationshipSuggestion.isNotEmpty) {
+        setState(() {
+          isTipLoaded = true;
+        }); //don't remove it
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch Relationship Suggestions / Daily Tip');
     }
   }
 
   List<dynamic> notificationsList = [];
   int unreadMessagesCount = 0;
   Future<void> fetchNotifications() async {
-    final response = await _notificationServices.getNotifications();
-    final data = response['data'] as List<dynamic>;
-    if (mounted) {
-      setState(() {
-        notificationsList = data;
-      });
+    try {
+      final response = await _notificationServices.getNotifications();
+      final data = response['data'] as List<dynamic>;
+      if (mounted) {
+        setState(() {
+          notificationsList = data;
+        });
+      }
+      sessionController.notifications = data;
+      final List<dynamic> unreadMessages =
+          notificationsList.where((msg) => msg['isRead'] == false).toList();
+      if (mounted) {
+        setState(() {
+          unreadMessagesCount = unreadMessages.length;
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch notifications');
     }
-    sessionController.notifications = data;
-    final List<dynamic> unreadMessages =
-        notificationsList.where((msg) => msg['isRead'] == false).toList();
-    if (mounted) {
-      setState(() {
-        unreadMessagesCount = unreadMessages.length;
-      });
-    }
+  }
+
+  void loadProfile() {
+    // final user = sessionController.user;
+    // if (user == null)
+    SplashServices().fetchProfile(context);
   }
 
   @override
   void initState() {
     super.initState();
     getRelationshipSuggestion();
+    loadProfile(); //fetch profile on home
     getPartner();
     fetchNotifications();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   PointsServices.showPointsEarnedDialog(
+    //     context,
+    //     points: 50,
+    //   );
+    // });
   }
-
-  // List<String> relationshipSuggestions = [
-  //   'Send a Thoghtful Message',
-  //   'Send a Thoghtful Message',
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -190,160 +207,189 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const FreeUserAlert(
-                title: 'Get More Out of Sage 💕',
-                subtitle:
-                    '''Upgrade your Sage Membership to unlock Saved Ideas, unlimited suggestions, prizes and more!''',
+      body: RefreshIndicator(
+        color: context.colors.textLightGreen,
+        onRefresh: () async {
+          await Future.wait([
+            SplashServices().fetchProfile(context),
+            getPartner(),
+            getRelationshipSuggestion(),
+            fetchNotifications(),
+          ]);
+        },
+        child: LayoutBuilder(
+            // FixedIt: Wrap in LayoutBuilder to force scrollable physics
+            builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics:
+                const AlwaysScrollableScrollPhysics(), // FixedIt: Always allow pull-to-refresh
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints
+                    .maxHeight, // FixedIt: Force scrollable even with small content
               ),
-              SizedBox(
-                height: 10.h,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 21.h),
-                // height: 421.h,
-                decoration: BoxDecoration(
-                  color: context.colors.greenBg,
-                  borderRadius:
-                      BorderRadius.circular(AppRadiuses.extraLargeRadius),
-                ),
+              child: Padding(
+                padding: EdgeInsets.all(16.w),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ConstrainedBox( //it can also be used instead of intrinsic height
-                    //   constraints: BoxConstraints(
-                    //     maxHeight: 380.h,
-                    //   ),
-                    // IntrinsicHeight(
-                    IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    const FreeUserAlert(
+                      title: 'Get More Out of Sage 💕',
+                      subtitle:
+                          '''Upgrade your Sage Membership to unlock Saved Ideas, unlimited suggestions, prizes and more!''',
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 21.h),
+                      // height: 421.h,
+                      decoration: BoxDecoration(
+                        color: context.colors.greenBg,
+                        borderRadius:
+                            BorderRadius.circular(AppRadiuses.extraLargeRadius),
+                      ),
+                      child: Column(
                         children: [
-                          // 👤 User Section
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              child: UserContentWidget(
-                                user: user,
-                                isPartner: false,
-                              ),
-                            ),
-                          ),
+                          // ConstrainedBox( //it can also be used instead of intrinsic height
+                          //   constraints: BoxConstraints(
+                          //     maxHeight: 380.h,
+                          //   ),
+                          // IntrinsicHeight(
+                          IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 👤 User Section
+                                Expanded(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.w),
+                                    child: UserContentWidget(
+                                      user: user,
+                                      isPartner: false,
+                                    ),
+                                  ),
+                                ),
 
-                          // 🔸 Dashed Divider
-                          VerticalDashedDivider(
-                            height: double.infinity,
-                            dashHeight: 4,
-                            dashSpacing: 4,
-                            color: context.colors.yellow,
-                          ),
-                          // 👤 Partner Section
-                          if (partner != null)
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16.w,
+                                // 🔸 Dashed Divider
+                                VerticalDashedDivider(
+                                  height: double.infinity,
+                                  dashHeight: 4,
+                                  dashSpacing: 4,
+                                  color: context.colors.yellow,
                                 ),
-                                child: UserContentWidget(
-                                  user: partner!,
-                                  isPartner: true,
-                                ),
-                              ),
-                            )
-                          else if (sessionController.user?.partnerCode == null)
-                            PartnerUnavailable(
-                              onParnerAdded: () {
-                                if (mounted) {
-                                  setState(() {
-                                    debugPrint('SET STATE CALLED IN HOME...');
-                                    getPartner();
+                                // 👤 Partner Section
+                                if (partner != null)
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w,
+                                      ),
+                                      child: UserContentWidget(
+                                        user: partner!,
+                                        isPartner: true,
+                                      ),
+                                    ),
+                                  )
+                                else if (sessionController.user?.partnerCode ==
+                                    null)
+                                  PartnerUnavailable(
+                                    onParnerAdded: () {
+                                      if (mounted) {
+                                        setState(() {
+                                          debugPrint(
+                                              'SET STATE CALLED IN HOME...');
+                                          getPartner();
+                                        });
+                                      }
+                                    },
+                                  ),
+
+                                () {
+                                  Future.delayed(const Duration(seconds: 2),
+                                      () {
+                                    if (mounted) {
+                                      getPartner();
+                                    }
                                   });
-                                }
-                              },
+                                  if (sessionController.isPartnerFetched ==
+                                          false &&
+                                      sessionController.user!.partnerCode !=
+                                          null) {
+                                    return Expanded(
+                                      child: LoadingWidget(
+                                        color: context.colors.white,
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                }(),
+                              ],
                             ),
-
-                          () {
-                            Future.delayed(const Duration(seconds: 2), () {
-                              if (mounted) {
-                                getPartner();
-                              }
-                            });
-                            if (sessionController.isPartnerFetched == false &&
-                                sessionController.user!.partnerCode != null) {
-                              return Expanded(
-                                child: LoadingWidget(
-                                  color: context.colors.white,
+                          ),
+                          SizedBox(height: 12.h),
+                          //anniversary section
+                          if (partner != null)
+                            Container(
+                              margin: EdgeInsets.only(
+                                top: 12.h,
+                                left: 14.w,
+                                right: 14.w,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                vertical: 10.h,
+                                horizontal: 16.w,
+                              ),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: context.colors.yellow,
+                                borderRadius: BorderRadius.circular(
+                                  AppRadiuses.largeRadius,
                                 ),
-                              );
-                            }
-                            return const SizedBox.shrink();
-                          }(),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Next Anniversary In',
+                                    style: context.typography.label.copyWith(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: context.colors.mainGreenDark,
+                                    ),
+                                  ),
+                                  SizedBox(height: 9.h),
+                                  CountdownTimerWidget(
+                                    targetDate: partner?.anniversaryDate ??
+                                        DateTime.now(),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 12.h),
-                    //anniversary section
-                    if (partner != null)
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: 12.h,
-                          left: 14.w,
-                          right: 14.w,
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 10.h,
-                          horizontal: 16.w,
-                        ),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: context.colors.yellow,
-                          borderRadius: BorderRadius.circular(
-                            AppRadiuses.largeRadius,
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Next Anniversary In',
-                              style: context.typography.label.copyWith(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.mainGreenDark,
-                              ),
-                            ),
-                            SizedBox(height: 9.h),
-                            CountdownTimerWidget(
-                              targetDate:
-                                  partner?.anniversaryDate ?? DateTime.now(),
-                            ),
-                          ],
+                    SizedBox(height: 14.h),
+                    if (isTipLoaded) ...[
+                      Text(
+                        'Relationship Suggestions',
+                        style: context.typography.title.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20.sp,
+                          color: context.colors.textDarkGreen,
                         ),
                       ),
+                      SizedBox(height: 14.h),
+                      RelationshipSuggestionTile(
+                        suggestion: relationshipSuggestion,
+                      ),
+                    ],
                   ],
                 ),
               ),
-              SizedBox(height: 14.h),
-              if (isTipLoaded) ...[
-                Text(
-                  'Relationship Suggestions',
-                  style: context.typography.title.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.sp,
-                    color: context.colors.textDarkGreen,
-                  ),
-                ),
-                SizedBox(height: 14.h),
-                RelationshipSuggestionTile(
-                  suggestion: relationshipSuggestion,
-                ),
-              ],
-            ],
-          ),
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

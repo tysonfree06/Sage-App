@@ -71,6 +71,13 @@ class LoginService {
         ),
       );
 
+      //save user to session #muttas
+      await SessionController().saveUser(
+        UserModel.fromJson(
+          userData,
+        ),
+      );
+
       debugPrint('User saved: ${SessionController().user}');
 
       if (context.mounted) {

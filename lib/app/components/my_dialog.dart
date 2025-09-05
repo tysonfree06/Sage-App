@@ -19,6 +19,7 @@ class MyDialog extends StatelessWidget {
     this.confirmLabel,
     this.cancelLabel,
     this.disableCancel = false,
+    this.disableButtons = false,
   });
 
   final String titleFirst;
@@ -28,6 +29,7 @@ class MyDialog extends StatelessWidget {
   final VoidCallback? onCancel;
   final SvgGenImage? image;
   final bool disableCancel;
+  final bool disableButtons;
 
   /// Optional label for the confirm  button
   final String? confirmLabel;
@@ -61,28 +63,31 @@ class MyDialog extends StatelessWidget {
               textAlign: TextAlign.center,
               style: context.typography.subtitle.copyWith(),
             ),
-            SizedBox(height: 30.h),
-            Row(
-              children: [
-                if (!disableCancel)
+            if (!disableButtons) ...[
+              SizedBox(height: 30.h),
+              Row(
+                children: [
+                  if (!disableCancel)
+                    Expanded(
+                      child: MyButton(
+                        label: cancelLabel ?? context.l10n.dialog_cancel,
+                        isDark: true,
+                        onPressed:
+                            onCancel ?? () => Navigator.of(context).pop(),
+                      ),
+                    )
+                  else
+                    const SizedBox.shrink(),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: MyButton(
-                      label: cancelLabel ?? context.l10n.dialog_cancel,
-                      isDark: true,
-                      onPressed: onCancel ?? () => Navigator.of(context).pop(),
+                      label: confirmLabel ?? context.l10n.dialog_yes_sure,
+                      onPressed: onConfirm,
                     ),
-                  )
-                else
-                  const SizedBox.shrink(),
-                SizedBox(width: 10.w),
-                Expanded(
-                  child: MyButton(
-                    label: confirmLabel ?? context.l10n.dialog_yes_sure,
-                    onPressed: onConfirm,
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

@@ -11,6 +11,7 @@ import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/ideas_service.dart';
@@ -40,42 +41,49 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen>
   final sessionController = SessionController();
 
   Future<void> fetchSavedIdeas(String type, {bool showLoading = true}) async {
-    if (showLoading) {
-      setState(() {
-        isLoaded = false;
-      });
-    }
+    try {
+      if (showLoading) {
+        setState(() {
+          isLoaded = false;
+        });
+      }
 
-    if (type == 'mutual') {
-      if (mutualSavedIdeas.isEmpty && !noMutualIdea) {
-        debugPrint('IN : mutualSavedIdeas.isEmpty && !noMutualIdea');
-        final response = await IdeasServices().getSavedIdeas(type);
-        if (response['ideas'] != null) {
-          mutualSavedIdeas = response['ideas'] as List<dynamic>;
+      if (type == 'mutual') {
+        if (mutualSavedIdeas.isEmpty && !noMutualIdea) {
+          debugPrint('IN : mutualSavedIdeas.isEmpty && !noMutualIdea');
+          final response = await IdeasServices().getSavedIdeas(type);
+          if (response['ideas'] != null) {
+            mutualSavedIdeas = response['ideas'] as List<dynamic>;
+          }
+          if (mutualSavedIdeas.isEmpty) {
+            noMutualIdea = true;
+          }
         }
-        if (mutualSavedIdeas.isEmpty) {
-          noMutualIdea = true;
+        if (mounted) {
+          setState(() {
+            displaySavedIdeas = mutualSavedIdeas;
+            isLoaded = true;
+          });
+        }
+      } else {
+        if (mineSavedIdeas.isEmpty && !noMineIdea) {
+          final response = await IdeasServices().getSavedIdeas(type);
+          mineSavedIdeas = response['ideas'] as List<dynamic>;
+          // if (mineSavedIdeas.isEmpty) {
+          //   noMineIdea = true;
+          // }
+        }
+        if (mounted) {
+          setState(() {
+            displaySavedIdeas = mineSavedIdeas;
+            isLoaded = true;
+          });
         }
       }
+    } catch (e) {
+      debugPrint('Failed to load saved ideas');
       if (mounted) {
-        setState(() {
-          displaySavedIdeas = mutualSavedIdeas;
-          isLoaded = true;
-        });
-      }
-    } else {
-      if (mineSavedIdeas.isEmpty && !noMineIdea) {
-        final response = await IdeasServices().getSavedIdeas(type);
-        mineSavedIdeas = response['ideas'] as List<dynamic>;
-        // if (mineSavedIdeas.isEmpty) {
-        //   noMineIdea = true;
-        // }
-      }
-      if (mounted) {
-        setState(() {
-          displaySavedIdeas = mineSavedIdeas;
-          isLoaded = true;
-        });
+        context.flushBarErrorMessage(message: 'Something went wrong..');
       }
     }
   }

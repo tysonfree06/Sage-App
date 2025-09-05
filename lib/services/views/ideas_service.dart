@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/my_bottom_sheet.dart';
@@ -9,6 +10,7 @@ import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/repository/ideas_repo.dart';
+import 'package:sage/services/points_services.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/splash_services.dart';
 import 'package:sage/services/views/subscription_services.dart';
@@ -198,10 +200,15 @@ class IdeasServices {
   }
 
   //API CALLS
-  Future<dynamic> getFeed() async {
+  Future<dynamic> getFeed(BuildContext context) async {
     try {
       final response = await _ideasRepository.getIdeasFeed();
       return response;
+    } on SocketException {
+      debugPrint('Socket Exception');
+      if (context.mounted) {
+        context.flushBarErrorMessage(message: 'No Internet Connection');
+      }
     } catch (e) {
       if (e is AppException) {
         debugPrint('[RedeemService] ❌ ${e.debugMessage}');
@@ -240,9 +247,19 @@ class IdeasServices {
       ]);
 
       final response = responses.first as Map<String, dynamic>?;
+      debugPrint('SAVE IDEA RESPONSE IS: $response');
       // final response = await _ideasRepository.addBookmark(ideaId);
       if (response != null) {
+        final int pointEarned = response['points_earned'] as int;
         if (context.mounted) {
+          if (pointEarned > 0) {
+            PointsServices.showPointsEarnedDialog(
+              context,
+              'Saving Idea',
+              points: pointEarned,
+            );
+          }
+
           context.flushBarSuccessMessage(
             message: 'Idea saved successfully',
           );
@@ -365,12 +382,22 @@ class IdeasServices {
     Map<String, dynamic> data,
   ) async {
     try {
-      await _ideasRepository.addIdea(data);
+      final response = await _ideasRepository.addIdea(data);
       if (context.mounted) {
         Navigator.pop(context);
       }
-
       if (context.mounted) {
+        final int pointEarned = response['points_earned'] as int;
+        if (context.mounted) {
+          if (pointEarned > 0) {
+            PointsServices.showPointsEarnedDialog(
+              context,
+              'Adding Idea',
+              points: pointEarned,
+            );
+          }
+        }
+
         context.flushBarSuccessMessage(
           message: 'Idea Added Successfully!',
         );

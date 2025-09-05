@@ -5,6 +5,7 @@ import 'package:sage/app/utils/service_error_handler.dart';
 import 'package:sage/model/user/user_model.dart';
 import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/repository/user_repo.dart';
+import 'package:sage/services/points_services.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/storage/local_storage.dart';
 import 'package:sage/services/views/login_service.dart';
@@ -24,6 +25,18 @@ class SplashServices {
       // SessionController().user = UserModel.fromJson(
       //   response['user'] as Map<String, dynamic>,
       // );
+
+      final int pointEarned = response['points_earned'] as int;
+      if (context.mounted) {
+        if (pointEarned > 0) {
+          PointsServices.showPointsEarnedDialog(
+            context,
+            'Opening the App',
+            points: pointEarned,
+          );
+        }
+      }
+
       await _sessionController.updateUser(
         UserModel.fromJson(
           response['user'] as Map<String, dynamic>,
@@ -33,7 +46,7 @@ class SplashServices {
       debugPrint('[$tag] ✅ Profile fetched');
     } catch (e) {
       if (context.mounted) ErrorHandler.handle(context, e, serviceName: tag);
-      rethrow;
+      // rethrow;
     }
   }
 
@@ -59,13 +72,15 @@ class SplashServices {
 
   Future<void> checkAuthentication(BuildContext context) async {
     final authToken = await _localStorage.readValue('auth_token') ?? '';
+    await _sessionController.loadToken();
+    await _sessionController.loadUser();
     debugPrint('[$tag] Auth Token: $authToken');
     // if (_session.isLoggedIn) {
     if (authToken.isNotEmpty) {
       debugPrint('[$tag] Active session found, fetching profile');
       if (context.mounted) await fetchPartner(context);
       try {
-        if (context.mounted) await fetchProfile(context);
+        // if (context.mounted) await fetchProfile(context); //moved to home
         if (context.mounted) LoginService.goToHome(context);
       } catch (_) {
         debugPrint('[$tag] Error fetching profile, clearing session');

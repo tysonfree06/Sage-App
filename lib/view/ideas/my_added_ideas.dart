@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/views/ideas_service.dart';
 import 'package:sage/view/ideas/widgets/idea_card.dart';
@@ -19,13 +20,19 @@ class _MyAddedIdeasScreenState extends State<MyAddedIdeasScreen> {
   bool isLoaded = false;
 
   Future<void> fetchMyAddedIdeas() async {
-    debugPrint('FETHING MY ADDED IDEAS...');
-    final response = await IdeasServices().getAddedIdeas();
-    if (mounted) {
-      setState(() {
-        addedIdeas = response['data'] as List<dynamic>;
-        isLoaded = true;
-      });
+    try {
+      final response = await IdeasServices().getAddedIdeas();
+      if (mounted) {
+        setState(() {
+          addedIdeas = response['data'] as List<dynamic>;
+          isLoaded = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch My Added Ideas Error: $e');
+      if (mounted) {
+        context.flushBarErrorMessage(message: 'Something went wrong..');
+      }
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sage/app/network/base_api_services.dart';
 import 'package:sage/app/network/network_api_services.dart';
 import 'package:sage/app/utils/app_url.dart';
@@ -23,6 +24,7 @@ class SubscriptionRepository {
     String customerId,
     String setupIntentId,
   ) async {
+    debugPrint('->WE ARE IN CREATE SUBSCRIPTION');
     final userId = _sessionController.user!.id;
     return _apiServices.post(
       url: AppUrl.createSubscription,
@@ -31,6 +33,30 @@ class SubscriptionRepository {
         'priceId': priceId,
         'customerId': customerId,
         'setupIntentId': setupIntentId,
+        'platform': 'android',
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> createAppleSubscription(
+    String receiptData,
+    String productId,
+    String transactionId,
+  ) async {
+    debugPrint('->WE ARE IN CREATE APPLE SUBSCRIPTION');
+    final userId = _sessionController.user!.id;
+    return _apiServices.post(
+      url: AppUrl.createSubscription,
+      data: {
+        'userId': userId,
+        'receiptData': receiptData,
+        'productId': productId,
+        'transactionId': transactionId,
+        'originalTransactionId': null,
+        /*initially it's null, but once the
+        subscription is created, it will be returned from Apple */
+        'environment': 'Sandbox',
+        'platform': 'ios',
       },
     );
   }

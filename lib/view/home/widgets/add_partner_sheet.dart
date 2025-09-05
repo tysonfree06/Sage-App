@@ -10,9 +10,11 @@ import 'package:sage/services/views/splash_services.dart';
 
 class AddPartnerSheet extends StatefulWidget {
   const AddPartnerSheet({
+    required this.context,
     super.key,
   });
 
+  final BuildContext context;
   @override
   State<AddPartnerSheet> createState() => _AddPartnerSheetState();
 }

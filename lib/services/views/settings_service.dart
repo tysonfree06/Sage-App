@@ -12,6 +12,7 @@ import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/repository/image_upload_repo.dart';
 import 'package:sage/repository/settings_repo.dart';
 import 'package:sage/repository/user_repo.dart';
+import 'package:sage/services/points_services.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/logout_service.dart';
 import 'package:sage/services/views/splash_services.dart';
@@ -221,12 +222,30 @@ class SettingService {
     }
 
     try {
-      await _userRepo.updateProfile(data);
-
+      final response = await _userRepo.updateProfile(data);
       if (context.mounted) {
         await SplashServices().fetchProfile(context);
-        if (popScreen) Navigator.pop(context);
-        context.flushBarSuccessMessage(message: 'Profile updated successfully');
+        if (context.mounted && popScreen && partnerCode != null) {
+          Navigator.pop(context);
+        }
+        if (context.mounted) {
+          context.flushBarSuccessMessage(
+            message: 'Profile updated successfully',
+          );
+        }
+        final String action =
+            partnerCode != null ? 'Adding Partner' : 'Updating Profile';
+        //check if it gets points
+        final int pointEarned = response['points_earned'] as int;
+        if (context.mounted) {
+          if (pointEarned > 0) {
+            PointsServices.showPointsEarnedDialog(
+              context,
+              action,
+              points: pointEarned,
+            );
+          }
+        }
       }
 
       debugPrint('[OnboardingService] ✅ Profile update success');

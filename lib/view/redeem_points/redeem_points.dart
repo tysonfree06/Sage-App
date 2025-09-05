@@ -54,17 +54,23 @@ class _RedeemPointsScreenState extends State<RedeemPointsScreen>
 
       pastRedemptions =
           pastRedemptionsData.map(RedeemOfferDetails.fromJson).toList();
-    } catch (e) {
-      if (mounted) {
-        context.flushBarErrorMessage(message: 'Failed to load offers');
-      }
-    } finally {
       if (mounted) {
         setState(() {
           isLoaded = true;
         });
       }
+    } catch (e) {
+      if (mounted) {
+        context.flushBarErrorMessage(message: 'Failed to load offers');
+      }
     }
+    //  finally {
+    //   if (mounted) {
+    //     setState(() {
+    //       isLoaded = true;
+    //     });
+    //   }
+    // }
   }
 
   @override

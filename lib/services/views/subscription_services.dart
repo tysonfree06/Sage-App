@@ -4,6 +4,7 @@ import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
 import 'package:sage/repository/subscription_repo.dart';
+import 'package:sage/services/points_services.dart';
 import 'package:sage/services/views/splash_services.dart';
 
 class SubscriptionService {
@@ -38,25 +39,54 @@ class SubscriptionService {
   Future<void> createSubscription(
     //Create subscription on server
     BuildContext context,
-    String priceId,
-    String customerId,
-    String setupIntentId, {
+    //for ios
+    {
+    String? receiptData,
+    String? productId,
+    String? transactionId,
+    //for android and others
+    String? priceId,
+    String? customerId,
+    String? setupIntentId,
     bool isSignupFlow = true,
+    bool isAndroid = true,
   }) async {
     debugPrint('[NOW CREATING SUBSCRIPTION] with isSignupFlow: $isSignupFlow');
+    debugPrint('IsAndroid: $isAndroid');
+    debugPrint('In createSubscription FUNCTION:');
+    debugPrint('RECEIPT DATA: $receiptData');
+    debugPrint('PRODUCT ID: $productId');
+    debugPrint('TRANSACTION ID: $transactionId');
     try {
-      await _subscriptionRepo.createSubscription(
-        priceId,
-        customerId,
-        setupIntentId,
-      );
+      debugPrint('NOW TYRING TO CREATE SUBSCRIPTION');
+      final response = isAndroid
+          ? await _subscriptionRepo.createSubscription(
+              priceId!,
+              customerId!,
+              setupIntentId!,
+            )
+          : await _subscriptionRepo.createAppleSubscription(
+              receiptData!, //receiptData
+              productId!, //productId
+              transactionId!, //transactionId
+            );
       debugPrint('[$tag] ✅ Subscription Created Created');
 
       if (context.mounted) {
         await SplashServices().fetchProfile(context);
       }
-
       if (context.mounted) {
+        final int pointEarned = response['points_earned'] as int;
+        if (context.mounted) {
+          if (pointEarned > 0) {
+            PointsServices.showPointsEarnedDialog(
+              context,
+              'Subscribing to Sage!',
+              points: pointEarned,
+            );
+          }
+        }
+
         if (isSignupFlow) {
           debugPrint('NOW NAVIGATING TO HOME');
           context.read<NavigationProvider>().setIndex(0);
@@ -64,7 +94,7 @@ class SubscriptionService {
             context,
             RoutesName.navigation,
             (route) => false,
-          );
+          ).then((_) {});
         } else {
           await goToActiveSubscription(context);
         }

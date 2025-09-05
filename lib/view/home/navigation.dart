@@ -23,28 +23,6 @@ class NavigationScreen extends StatefulWidget {
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
-  // Future<void> showInfoDialog() async {
-  //   if (widget.showPopup) {
-  //     WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //       if (mounted) {
-  //         await showDialog<void>(
-  //           context: context,
-  //           builder: (_) => MyDialog(
-  //             titleFirst: 'Get ', //'Get ' //don't remove extra space
-  //             titleSecond: 'Free Points!',
-  //             subtitle: 'Don’t miss out on free points to be used on prizes!',
-  //             confirmLabel: 'Got it',
-  //             disableCancel: true,
-  //             onConfirm: () {
-  //               Navigator.pop(context);
-  //             },
-  //           ),
-  //         );
-  //       }
-  //     });
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();

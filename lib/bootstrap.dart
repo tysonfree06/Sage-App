@@ -38,6 +38,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   Stripe.merchantIdentifier = 'com.sage.apple.pay';
   // Stripe.urlScheme = 'flutterstripe';
   await Stripe.instance.applySettings();
+  //END: Initialized Stripe
 
+  //For In-App Purchase (Subscriptions)
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(await builder());
 }

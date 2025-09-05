@@ -85,9 +85,12 @@ class SignupService {
       //save token in session controller
       await _sessionController.saveToken(token);
       //save user
-      // SessionController().user = UserModel.fromJson(
-      //   userData,
-      // );
+      //save user to session #muttas
+      await SessionController().saveUser(
+        UserModel.fromJson(
+          userData,
+        ),
+      );
       await SessionController().updateUser(
         UserModel.fromJson(
           userData,

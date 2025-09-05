@@ -38,7 +38,7 @@ class _UserNotAvailableWidgetState extends State<UserNotAvailableWidget> {
           GestureDetector(
             onTap: () => MyBottomSheet.show<void>(
               context,
-              child: const AddPartnerSheet(),
+              child: AddPartnerSheet(context: context),
             ).then((_) {
               // This runs after EditProfileScreen is popped
               // Refresh the screen or fetch new data

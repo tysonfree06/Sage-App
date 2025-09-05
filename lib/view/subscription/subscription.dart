@@ -1,6 +1,9 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
@@ -30,10 +33,188 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
+  //APPLE IN APP PURCHASE / SUBSCRIPTIONS
+  //Define Subscription Product IDs
+  static const Set<String> _subscriptionIds = {
+    'sage_weekly_subscription',
+    'sage_monthly_subscription',
+    'sage_yearly_subscription',
+  };
+
+  //Fetch Subscription Products
+
+  int selectedSubscription = 2; //Yearly
+  List<ProductDetails> _subscriptions = [];
+
+  Future<void> _loadSubscriptions() async {
+    try {
+      final bool available = await InAppPurchase.instance.isAvailable();
+      if (!available) {
+        debugPrint('In App Purchase not available');
+        return;
+      }
+
+      final ProductDetailsResponse response =
+          await InAppPurchase.instance.queryProductDetails(_subscriptionIds);
+      if (response.notFoundIDs.isNotEmpty) {
+        debugPrint('Products not found: ${response.notFoundIDs}');
+      }
+
+      _subscriptions = response.productDetails;
+    } catch (e) {
+      debugPrint('Failed to load subscriptions Error: $e');
+    }
+  }
+
+  void _buySubscription(ProductDetails product) {
+    final purchaseParam = PurchaseParam(productDetails: product);
+    InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
+  }
+
+  // void _listenToPurchaseUpdates() {
+  //   InAppPurchase.instance.purchaseStream.listen((purchases) {
+  //     for (final purchase in purchases) {
+  //       if (purchase.status == PurchaseStatus.purchased) {
+  //         _verifyAndUnlock(purchase);
+  //       } else if (purchase.status == PurchaseStatus.error) {
+  //         debugPrint(
+  //           'Purchase error: ${purchase.error}',
+  //         );
+  //         if (mounted) {
+  //           context.flushBarErrorMessage(
+  //             message: 'Failed to Create Subscription...',
+  //           );
+  //         }
+  //       } else {
+  //         debugPrint('Purchase Failed');
+  //         debugPrint('Purchase Status: ${purchase.status}');
+  //         if (mounted) {
+  //           context.flushBarErrorMessage(message: 'Something went wrong...');
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
+
+  StreamSubscription<List<PurchaseDetails>>? _subscription;
+
+  void _startListeningToPurchaseUpdates() {
+    _subscription = InAppPurchase.instance.purchaseStream.listen(
+      (purchaseDetailsList) async {
+        for (final purchase in purchaseDetailsList) {
+          debugPrint('IAP update: id=${purchase.productID} '
+              'status=${purchase.status} '
+              'pendingComplete=${purchase.pendingCompletePurchase} '
+              'error=${purchase.error}');
+
+          try {
+            if (purchase.status == PurchaseStatus.pending) {
+              // Show pending UI (spinner / message)
+              if (mounted) {
+                context.flushBarSuccessMessage(message: 'Purchase pending...');
+              }
+            } else if (purchase.status == PurchaseStatus.error) {
+              // Handle the error
+              debugPrint('In-app purchase error: ${purchase.error}');
+              if (mounted) {
+                context.flushBarErrorMessage(
+                  message: 'Purchase error occurred.',
+                );
+              }
+            } else if (purchase.status == PurchaseStatus.purchased ||
+                purchase.status == PurchaseStatus.restored) {
+              // Treat restored same as purchased for subscriptions (common approach)
+              // 1) Verify receipt on your server (recommended)
+              // 2) Unlock content / update backend
+              // 3) Complete the purchase so the store finalizes the transaction
+
+              // Example: verify and unlock (your existing method)
+              await _verifyAndUnlock(purchase);
+
+              // After successful verification/delivery, mark as complete:
+              if (purchase.pendingCompletePurchase) {
+                await InAppPurchase.instance.completePurchase(purchase);
+              }
+
+              if (mounted) {
+                context.flushBarSuccessMessage(
+                  message: 'Subscription successful: ${purchase.productID}',
+                );
+              }
+            } else {
+              // Unexpected status -- log it
+              debugPrint('Unhandled purchase status: ${purchase.status}');
+              if (mounted) {
+                context.flushBarErrorMessage(
+                  message: 'Something went wrong...',
+                );
+              }
+            }
+          } catch (e, st) {
+            debugPrint('Error handling purchase: $e\n$st');
+            // If verification failed, you might want to NOT call
+            // completePurchase,
+            // so store/the store can retry sending the transaction.
+            if (mounted) {
+              context.flushBarErrorMessage(
+                message: 'Purchase verification failed.',
+              );
+            }
+          }
+        }
+      },
+      onError: (err) => debugPrint('purchaseStream error: $err'),
+    );
+  }
+
+  Future<void> _verifyAndUnlock(PurchaseDetails purchase) async {
+    debugPrint('VERIFY AND UNLOCK CALLED');
+    debugPrint('RECEIPT DATA: ${purchase.productID}');
+    debugPrint('PRODUCT ID: ${purchase.productID}');
+    debugPrint('TRANSACTION ID: ${purchase.purchaseID}');
+    debugPrint('-----------------------------------------------');
+    // Best practice: verify with your server and Apple’s receipt system
+    //create here
+    await _subscriptionService.createSubscription(
+      context,
+      isAndroid: false,
+      receiptData: purchase.verificationData.serverVerificationData,
+      productId: purchase.productID,
+      transactionId: purchase.purchaseID,
+      isSignupFlow: widget.showSkip,
+    );
+  }
+
+//   {
+//   "userId": "user123", (original user id)
+//   "receiptData": "base64EncodedReceiptData...",
+//   "productId": "com.yourapp.premium_monthly",
+//   "transactionId": "1000000123456789",
+//   "originalTransactionId": "1000000123456789",
+//   "environment": "production"
+// }
+
+  //END: APPLE IN APP PURCHASE / SUBSCRIPTIONS
+
   final _subscriptionService = SubscriptionService();
   bool isLoading = false;
   //initial payment id
   String priceId = Env.stripeYearly;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSubscriptions(); //load Subscripions for in app purchase
+    // _listenToPurchaseUpdates();
+    _startListeningToPurchaseUpdates();
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<void> showInfoDialog() async {
@@ -69,9 +250,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     Future<void> createSubscription(Map<dynamic, dynamic> intent) async {
       await _subscriptionService.createSubscription(
         context,
-        priceId,
-        intent['customerId'] as String,
-        intent['setupIntentId'] as String,
+        priceId: priceId,
+        customerId: intent['customerId'] as String,
+        setupIntentId: intent['setupIntentId'] as String,
         isSignupFlow: widget.showSkip,
       );
     }
@@ -205,22 +386,36 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   switch (index) {
                     case 0:
                       setState(() {
+                        selectedSubscription = 0; //yearly
+                        debugPrint(
+                          'selectedSubscription now: $selectedSubscription',
+                        );
                         priceId = Env.stripeYearly;
                       });
+
                     case 1:
                       setState(() {
+                        selectedSubscription = 1; //monthly
+                        debugPrint(
+                          'selectedSubscription now: $selectedSubscription',
+                        );
                         priceId = Env.stripeMonthly;
                       });
 
                     case 2:
                       setState(() {
+                        selectedSubscription = 2; //weekly
+                        debugPrint(
+                          'selectedSubscription now: $selectedSubscription',
+                        );
                         priceId = Env.stripeWeekly;
                       });
 
-                    default:
-                      setState(() {
-                        priceId = Env.stripeYearly;
-                      });
+                    // default:
+                    //   setState(() {
+                    //     selectedSubscription = 2;
+                    //     priceId = Env.stripeYearly;
+                    //   });
                   }
                 },
               ),
@@ -296,7 +491,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 label: context.l10n.subscribe,
                 onPressed: () async {
                   setState(() => isLoading = true);
-                  await getPaymentIntent();
+                  if (Platform.isIOS && _subscriptions.isNotEmpty) {
+                    debugPrint(
+                      'selectedSubscription on Button Pressed: $selectedSubscription',
+                    );
+                    final product = _subscriptions[selectedSubscription];
+                    _buySubscription(product);
+                  } else {
+                    await getPaymentIntent();
+                  }
+
                   if (mounted) {
                     setState(() => isLoading = false);
                   }

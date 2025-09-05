@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:sage/model/user/user_model.dart';
@@ -34,15 +35,11 @@ class SessionController extends ChangeNotifier {
 
   bool get isLoggedIn => _token != null;
 
-  /// Save only the token in local storage
+  /// Save the token in local storage
   Future<void> saveToken(String token) async {
     _token = token;
     await _localStorage.setValue('auth_token', token);
     log('Token saved: $token');
-  }
-
-  Future<void> setPartnerStatus({bool status = false}) async {
-    _isPartnerFetched = status;
   }
 
   /// Retrieve token from local storage on app start
@@ -53,6 +50,28 @@ class SessionController extends ChangeNotifier {
     } else {
       log('No token found in local storage');
     }
+  }
+
+  /// Save the token in local storage
+  Future<void> saveUser(UserModel user) async {
+    _user = user;
+    final userJson = jsonEncode(user.toJson());
+    await _localStorage.setValue('user', userJson);
+    log('User saved: $user');
+  }
+
+  Future<void> loadUser() async {
+    final userJson = await _localStorage.readValue('user');
+    if (userJson != null) {
+      _user = UserModel.fromJson(jsonDecode(userJson) as Map<String, dynamic>);
+      log('User Loaded: $_user');
+    } else {
+      log('No user found in local storage');
+    }
+  }
+
+  Future<void> setPartnerStatus({bool status = false}) async {
+    _isPartnerFetched = status;
   }
 
   /// Clear token on logout

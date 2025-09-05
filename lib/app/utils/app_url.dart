@@ -3,6 +3,7 @@ class AppUrl {
 
   // static String baseUrl = 'https://sage-backend-760q.onrender.com'; //development
   static String baseUrl = 'https://sage-backend-prod.onrender.com'; //production
+  // static String baseUrl = 'https://4znvw6hv-8081.inc1.devtunnels.ms'; //local
 
   static String login = '$baseUrl/api/auth/login';
   static String getMeUser = '$baseUrl/api/auth/me';
