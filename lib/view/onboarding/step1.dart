@@ -82,12 +82,19 @@ class _Step1ScreenState extends State<Step1Screen> {
     'Quality Time',
     'Physical Touch',
   ];
-  final List<String> apologyLanguages = [
-    'Expressing Regret',
-    'Accepting Responsibility',
-    'Making Restitution',
-    'Genuinely Repenting',
-    'Requesting Forgiveness',
+  // final List<String> apologyLanguages = [
+  //   'Expressing Regret',
+  //   'Accepting Responsibility',
+  //   'Making Restitution',
+  //   'Genuinely Repenting',
+  //   'Requesting Forgiveness',
+  // ];
+  static const apologyLanguages = [
+    "Saying I'm Sorry",
+    'Owing Up',
+    'Making It Right',
+    'Changing Behaviour',
+    'Asking to Be Forgiven',
   ];
   final List<String> communicationStyles = [
     'Assertive',
@@ -321,11 +328,22 @@ class _Step1ScreenState extends State<Step1Screen> {
                   ),
                 ),
               ),
+              Text(
+                textAlign: TextAlign.center,
+                '''These questions help Sage personalize suggestions and curate ideas that are timely and meaningful for your relationship!''',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12.sp,
+                  color: context.colors.textDarkGreen.withValues(
+                    alpha: 0.5,
+                  ),
+                ),
+              ),
               SizedBox(height: 24.h),
 
               // Love Language
               Text(
-                context.l10n.onboarding_step1_what_is_your_love_language,
+                'How do you like your partner to show you love?',
                 style: labelStyle,
               ),
               SizedBox(height: 10.h),
@@ -339,7 +357,8 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Apology Language
               Text(
-                context.l10n.onboarding_step1_what_is_your_apology_language,
+                // context.l10n.onboarding_step1_what_is_your_apology_language,
+                'How do you like your partner to apologize to you?',
                 style: labelStyle,
               ),
               SizedBox(height: 10.h),
@@ -353,7 +372,8 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Communication Style
               Text(
-                context.l10n.onboarding_step1_what_is_your_communication_style,
+                'onboarding_step1_what_is_your_communication_style',
+                // context.l10n.onboarding_step1_what_is_your_communication_style,
                 style: labelStyle,
               ),
               SizedBox(height: 10.h),

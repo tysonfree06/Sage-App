@@ -43,9 +43,11 @@ class _Step4ScreenState extends State<Step4Screen> {
     _pinController = TextEditingController(
       text: widget.initialPartnerId ?? '',
     )..addListener(() {
-        setState(() {
-          // rebuild to update button enabled state
-        });
+        if (mounted) {
+          setState(() {
+            // rebuild to update button enabled state
+          });
+        }
       });
   }
 

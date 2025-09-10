@@ -44,6 +44,7 @@ class SubscriptionService {
     String? receiptData,
     String? productId,
     String? transactionId,
+    String? purchaseStatus,
     //for android and others
     String? priceId,
     String? customerId,
@@ -69,8 +70,10 @@ class SubscriptionService {
               receiptData!, //receiptData
               productId!, //productId
               transactionId!, //transactionId
+              purchaseStatus ?? '',
             );
-      debugPrint('[$tag] ✅ Subscription Created Created');
+      debugPrint('[$tag] ✅ Subscription Created Sucessfully');
+      debugPrint('[$tag] SUBSCRIPTION CREATED RESPONSE: $response');
 
       if (context.mounted) {
         await SplashServices().fetchProfile(context);
@@ -106,7 +109,7 @@ class SubscriptionService {
       //   );
       // }
     } catch (e) {
-      debugPrint('[$tag] ❌ Error creating intent: $e');
+      debugPrint('[$tag] ❌ Error creating subscription: $e');
       debugPrint('❌ SUBSCRIPTION CREATION FAILED WITH ERROR: $e');
       if (context.mounted) {
         context.flushBarErrorMessage(
@@ -124,7 +127,7 @@ class SubscriptionService {
       debugPrint('[$tag] ✅ Subscription Details Fetched');
       return response;
     } catch (e) {
-      debugPrint('[$tag] ❌ Error creating intent: $e');
+      debugPrint('[$tag] ❌ Error getting susbcription details: $e');
     }
     return {};
   }

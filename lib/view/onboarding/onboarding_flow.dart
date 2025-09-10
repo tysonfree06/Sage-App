@@ -9,10 +9,10 @@ class OnboardingFlowScreen extends StatefulWidget {
   const OnboardingFlowScreen({super.key});
 
   @override
-  _OnboardingFlowScreenState createState() => _OnboardingFlowScreenState();
+  OnboardingFlowScreenState createState() => OnboardingFlowScreenState();
 }
 
-class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
+class OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   final _pageController = PageController();
   final sessionController = SessionController();
   int _currentStep = 0;

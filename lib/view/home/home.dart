@@ -5,11 +5,13 @@ import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/model/user/user_model.dart';
 import 'package:sage/repository/auth_repo.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/notifications_services.dart';
+import 'package:sage/services/views/signup_service.dart';
 import 'package:sage/services/views/splash_services.dart';
 import 'package:sage/view/home/widgets/countdown_timer.dart';
 import 'package:sage/view/home/widgets/user_content.dart';
@@ -113,17 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void loadProfile() {
-    // final user = sessionController.user;
-    // if (user == null)
-    SplashServices().fetchProfile(context);
-  }
-
   @override
   void initState() {
     super.initState();
     getRelationshipSuggestion();
-    loadProfile(); //fetch profile on home
     getPartner();
     fetchNotifications();
     // WidgetsBinding.instance.addPostFrameCallback((_) {

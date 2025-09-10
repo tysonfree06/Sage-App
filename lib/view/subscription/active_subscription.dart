@@ -110,79 +110,137 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
         ),
       ),
       body: isLoaded
-          ? errorFetchingSubscription
-              ? Center(
-                  child: Text(
-                    'Something went wrong!',
-                    style: TextStyle(fontSize: 16.sp),
-                  ),
-                )
-              : Padding(
-                  padding: EdgeInsets.all(16.w),
-                  child: ListView(
-                    children: [
-                      _subscriptionTile(context),
-                      SizedBox(height: 20.h),
-                      _planDetailsCard(
-                        context,
-                        isSubscriptionActive: isSubscriptionActive,
-                      ),
-                      SizedBox(height: 100.h),
-                      // const MyTextButton(label: 'Restore Subscription Plan'), //commented by #muttas
-                      MyButton(
-                        label: isSubscriptionActive
-                            ? 'Change Membership'
-                            : 'Subscribe',
-                        onPressed: () {
-                          if (isSubscriptionActive) {
-                            showDialog<void>(
-                              context: context,
-                              builder: (_) => MyDialog(
-                                titleFirst: 'Change ',
-                                titleSecond: 'Subscription?',
-                                subtitle:
-                                    '''Changing subscription will discard your current susbcription.''',
-                                confirmLabel: 'Continue',
-                                onConfirm: () {
-                                  SubscriptionService.goToChangeSubscription(
-                                    context,
-                                  );
-                                },
-                              ),
-                            );
-                          } else {
-                            SubscriptionService.goToChangeSubscription(context);
-                          }
-                        },
-                      ),
-                      SizedBox(height: 16.h),
-                      if (isSubscriptionActive)
-                        MyTextButton(
-                          label: 'Cancel Membership',
-                          onPressed: () async {
-                            setState(() {
-                              isLoaded = false;
-                            });
-                            await showDialog<void>(
-                              context: context,
-                              builder: (_) => MyDialog(
-                                titleFirst: 'Cancel ',
-                                titleSecond: 'Subscription?',
-                                subtitle: '''Your subscription will''',
-                                confirmLabel: 'Cancel',
-                                onConfirm: () {
-                                  SubscriptionService.goToChangeSubscription(
-                                    context,
-                                  );
-                                },
-                              ),
+          ?
+          // errorFetchingSubscription
+          //     ? Center(
+          //         child: Text(
+          //           'Something went wrong!',
+          //           style: TextStyle(fontSize: 16.sp),
+          //         ),
+          //       )
+          //     : Padding(
+          //         padding: EdgeInsets.all(16.w),
+          //         child: ListView(
+          //           children: [
+          //             _subscriptionTile(context),
+          //             SizedBox(height: 20.h),
+          //             _planDetailsCard(
+          //               context,
+          //               isSubscriptionActive: isSubscriptionActive,
+          //             ),
+          //             SizedBox(height: 100.h),
+          //             // const MyTextButton(label: 'Restore Subscription Plan'), //commented by #muttas
+          //             MyButton(
+          //               label: isSubscriptionActive
+          //                   ? 'Change Membership'
+          //                   : 'Subscribe',
+          //               onPressed: () {
+          //                 if (isSubscriptionActive) {
+          //                   showDialog<void>(
+          //                     context: context,
+          //                     builder: (_) => MyDialog(
+          //                       titleFirst: 'Change ',
+          //                       titleSecond: 'Subscription?',
+          //                       subtitle:
+          //                           '''Changing subscription will discard your current susbcription.''',
+          //                       confirmLabel: 'Continue',
+          //                       onConfirm: () {
+          //                         SubscriptionService.goToChangeSubscription(
+          //                           context,
+          //                         );
+          //                       },
+          //                     ),
+          //                   );
+          //                 } else {
+          //                   SubscriptionService.goToChangeSubscription(context);
+          //                 }
+          //               },
+          //             ),
+          //             SizedBox(height: 16.h),
+          //             if (isSubscriptionActive)
+          //               MyTextButton(
+          //                 label: 'Cancel Membership',
+          //                 onPressed: () async {
+          //                   setState(() {
+          //                     isLoaded = false;
+          //                   });
+          //                   await showDialog<void>(
+          //                     context: context,
+          //                     builder: (_) => MyDialog(
+          //                       titleFirst: 'Cancel ',
+          //                       titleSecond: 'Subscription?',
+          //                       subtitle: '''Your subscription will''',
+          //                       confirmLabel: 'Cancel',
+          //                       onConfirm: () {
+          //                         SubscriptionService.goToChangeSubscription(
+          //                           context,
+          //                         );
+          //                       },
+          //                     ),
+          //                   );
+          //                 },
+          //               ),
+          //             SizedBox(height: 24.h),
+          //           ],
+          //         ),
+          //       )
+          Column(
+              children: [
+                Text('DATA: $subscriptionDetails'),
+                SizedBox(
+                  height: 100.h,
+                ),
+                MyButton(
+                  label:
+                      isSubscriptionActive ? 'Change Membership' : 'Subscribe',
+                  onPressed: () {
+                    if (isSubscriptionActive) {
+                      showDialog<void>(
+                        context: context,
+                        builder: (_) => MyDialog(
+                          titleFirst: 'Change ',
+                          titleSecond: 'Subscription?',
+                          subtitle:
+                              '''Changing subscription will discard your current susbcription.''',
+                          confirmLabel: 'Continue',
+                          onConfirm: () {
+                            SubscriptionService.goToChangeSubscription(
+                              context,
                             );
                           },
                         ),
-                      SizedBox(height: 24.h),
-                    ],
+                      );
+                    } else {
+                      SubscriptionService.goToChangeSubscription(context);
+                    }
+                  },
+                ),
+                SizedBox(height: 16.h),
+                if (isSubscriptionActive)
+                  MyTextButton(
+                    label: 'Cancel Membership',
+                    onPressed: () async {
+                      setState(() {
+                        isLoaded = false;
+                      });
+                      await showDialog<void>(
+                        context: context,
+                        builder: (_) => MyDialog(
+                          titleFirst: 'Cancel ',
+                          titleSecond: 'Subscription?',
+                          subtitle:
+                              '''Your subscription will be Cancelled and will not renew automatcally...''',
+                          confirmLabel: 'Cancel',
+                          onConfirm: () {
+                            SubscriptionService().cancelSubcription(context);
+                          },
+                        ),
+                      );
+                    },
                   ),
-                )
+                SizedBox(height: 24.h),
+              ],
+            )
           : const Center(
               child: LoadingWidget(),
             ),

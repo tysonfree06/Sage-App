@@ -15,4 +15,7 @@ abstract class Env {
 
   @EnviedField(varName: 'STRIPE_PRICE_YEARLY', obfuscate: true)
   static String stripeYearly = _Env.stripeYearly;
+
+  @EnviedField(varName: 'PLACES_API_KEY')
+  static final String placesApiKey = _Env.placesApiKey;
 }

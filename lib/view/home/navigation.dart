@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
+import 'package:sage/model/user/user_model.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/signup_service.dart';
+import 'package:sage/services/views/splash_services.dart';
 import 'package:sage/view/home/home.dart';
 import 'package:sage/view/home/ideas.dart';
 import 'package:sage/view/home/settings.dart';
@@ -23,9 +27,26 @@ class NavigationScreen extends StatefulWidget {
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
+  void loadProfile() {
+    // final user = sessionController.user;
+    // if (user == null)
+    SplashServices().fetchProfile(context).then((_) {
+      // check if user has completed his profile, otherwise, navigate to onboarding
+      final UserModel user = SessionController().user!;
+      if (user.email.isNotEmpty) {
+        if (user.loveLanguage == null || user.loveLanguage == '') {
+          if (mounted) {
+            SignupService.goToOnBoarding(context);
+          }
+        }
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    loadProfile();
     // showInfoDialog();
   }
 

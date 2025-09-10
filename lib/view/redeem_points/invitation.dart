@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +8,7 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/settings_service.dart';
 
 class InvitationScreen extends StatefulWidget {
   const InvitationScreen({super.key});
@@ -281,9 +283,96 @@ class _InvitationScreenState extends State<InvitationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _TermRow(text: context.l10n.refer_terms_disclaimers_1),
+                    // _TermRow(text: context.l10n.refer_terms_disclaimers_1),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            SizedBox(height: 4.h),
+                            Assets.icons.shareArrow.svg(
+                              width: 15,
+                              height: 14,
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            context.l10n.refer_terms_disclaimers_1,
+                            style: context.typography.title.copyWith(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                              color: context.colors.textDarkGreen
+                                  .withValues(alpha: 0.60),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 20.h),
-                    _TermRow(text: context.l10n.refer_terms_disclaimers_2),
+                    // _TermRow(text: context.l10n.refer_terms_disclaimers_2),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            SizedBox(height: 4.h),
+                            Assets.icons.shareArrow.svg(
+                              width: 15,
+                              height: 14,
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 8.w),
+                        // Expanded(
+                        //   child: Text(
+                        //     'Referral rewards are subject to eligibility. See Terms & Conditions for full details.',
+                        //     style: context.typography.title.copyWith(
+                        //       fontSize: 13.sp,
+                        //       fontWeight: FontWeight.w500,
+                        //       color: context.colors.textDarkGreen
+                        //           .withValues(alpha: 0.60),
+                        //     ),
+                        //   ),
+                        // ),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              text:
+                                  'Referral rewards are subject to eligibility. See ',
+                              style: context.typography.title.copyWith(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                                color: context.colors.textDarkGreen
+                                    .withValues(alpha: 0.60),
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'Terms & Conditions',
+                                  style: context.typography.title.copyWith(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color:
+                                        context.colors.greenBg, // purple color
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      debugPrint('Terms & Conditions clicked');
+                                      SettingService().sageLaunchUrl(
+                                        'https://sage-frontend-eta.vercel.app/termsandconditions',
+                                      );
+                                    },
+                                ),
+                                const TextSpan(
+                                  text: ' for full details.',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -319,41 +408,6 @@ class _RewardLeaf extends StatelessWidget {
           secondFontSize: 16.sp,
           secondFontWeight: FontWeight.w500,
           secondColor: const Color(0xFF000000),
-        ),
-      ],
-    );
-  }
-}
-
-class _TermRow extends StatelessWidget {
-  const _TermRow({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            SizedBox(height: 4.h),
-            Assets.icons.shareArrow.svg(
-              width: 15,
-              height: 14,
-            ),
-          ],
-        ),
-        SizedBox(width: 8.w),
-        Expanded(
-          child: Text(
-            text,
-            style: context.typography.title.copyWith(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w500,
-              color: context.colors.textDarkGreen.withValues(alpha: 0.60),
-            ),
-          ),
         ),
       ],
     );

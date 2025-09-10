@@ -12,6 +12,7 @@ import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/constants/countries.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
+import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/repository/settings_repo.dart';
@@ -19,6 +20,7 @@ import 'package:sage/services/image_picker.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/services/views/signup_service.dart';
+import 'package:sage/view/onboarding/widgets/address_autocomplete.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -61,12 +63,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     'Quality Time',
     'Physical Touch',
   ];
+  // static const _apologyLanguages = [
+  //   'Expressing Regret',
+  //   'Accepting Responsibility',
+  //   'Making Restitution',
+  //   'Genuinely Repenting',
+  //   'Requesting Forgiveness',
+  // ];
   static const _apologyLanguages = [
-    'Expressing Regret',
-    'Accepting Responsibility',
-    'Making Restitution',
-    'Genuinely Repenting',
-    'Requesting Forgiveness',
+    "Saying I'm Sorry",
+    'Owing Up',
+    'Making It Right',
+    'Changing Behaviour',
+    'Asking to Be Forgiven',
   ];
   static const _communicationStyles = [
     'Assertive',
@@ -297,6 +306,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool showCitiesDropdown = true;
   bool showStatesDropdown = true;
 
+  final TextEditingController _locationController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final labelStyle = context.typography.title.copyWith(
@@ -332,7 +343,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SizedBox(height: 16.h),
               _buildDropdown(
-                label: context.l10n.onboarding_step1_what_is_your_love_language,
+                // label: context.l10n.onboarding_step1_what_is_your_love_language,
+                label: 'How do you like your partner to show you love?',
                 value: _loveLanguage,
                 items: _loveLanguages,
                 onChanged: (v) => setState(() => _loveLanguage = v!),
@@ -340,8 +352,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SizedBox(height: 16.h),
               _buildDropdown(
-                label:
-                    context.l10n.onboarding_step1_what_is_your_apology_language,
+                // label:
+                //     context.l10n.onboarding_step1_what_is_your_apology_language,
+                label: 'How do you like your partner to apologize to you?',
                 value: _apologyLanguage,
                 items: _apologyLanguages,
                 onChanged: (v) => setState(() => _apologyLanguage = v!),
@@ -349,8 +362,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SizedBox(height: 16.h),
               _buildDropdown(
-                label: context
-                    .l10n.onboarding_step1_what_is_your_communication_style,
+                label: 'How do you communicate with your partner?',
+                // label: context
+                //     .l10n.onboarding_step1_what_is_your_communication_style,
                 value: _communicationStyle,
                 items: _communicationStyles,
                 hint: 'Select your communication style',
@@ -505,6 +519,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   },
                   hint: 'Select City',
                 ),
+              SizedBox(height: 24.h),
+              //Places api
+              AddressAutocompleteTextField(
+                controller: _locationController,
+                apiKey: Env.placesApiKey,
+                hint: 'Enter Your Location',
+                readOnly: isLoading,
+                onAddressSelected: (AddressResult result) {
+                  _locationController.text = result.address;
+                  // _lat = result.latitude;
+                  // _lng = result.longitude;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return context.l10n.error_address_required;
+                  }
+                  if (value.isNotEmpty
+                      //  && _lat == 0 && _lng == 0
+                      ) {
+                    return context.l10n.error_address_invalid;
+                  }
+                  return null;
+                },
+              ),
+              //END Places api
               SizedBox(height: 24.h),
               MyButton(
                 isLoading: isLoading,

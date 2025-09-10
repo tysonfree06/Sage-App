@@ -42,6 +42,7 @@ class SubscriptionRepository {
     String receiptData,
     String productId,
     String transactionId,
+    String purchaseStatus,
   ) async {
     debugPrint('->WE ARE IN CREATE APPLE SUBSCRIPTION');
     final userId = _sessionController.user!.id;
@@ -53,6 +54,7 @@ class SubscriptionRepository {
         'productId': productId,
         'transactionId': transactionId,
         'originalTransactionId': null,
+        'purchaseStatus': purchaseStatus,
         /*initially it's null, but once the
         subscription is created, it will be returned from Apple */
         'environment': 'Sandbox',

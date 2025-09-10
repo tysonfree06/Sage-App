@@ -9,6 +9,7 @@ import 'package:sage/services/points_services.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/storage/local_storage.dart';
 import 'package:sage/services/views/login_service.dart';
+import 'package:sage/services/views/signup_service.dart';
 
 class SplashServices {
   final LocalStorage _localStorage = LocalStorage();
@@ -75,7 +76,6 @@ class SplashServices {
     await _sessionController.loadToken();
     await _sessionController.loadUser();
     debugPrint('[$tag] Auth Token: $authToken');
-    // if (_session.isLoggedIn) {
     if (authToken.isNotEmpty) {
       debugPrint('[$tag] Active session found, fetching profile');
       if (context.mounted) await fetchPartner(context);
