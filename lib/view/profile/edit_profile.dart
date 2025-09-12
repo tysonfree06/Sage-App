@@ -15,7 +15,6 @@ import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/repository/settings_repo.dart';
 import 'package:sage/services/image_picker.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/settings_service.dart';
@@ -99,6 +98,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // List<dynamic> countries = [];
   List<dynamic> countries = Countires.allCountries;
 
+  final TextEditingController _locationController = TextEditingController();
+  double _lat = 0;
+  double _lng = 0;
+
   @override
   void initState() {
     super.initState();
@@ -121,17 +124,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void setLocations() {
+    //old
+    // final user = _session.user;
+    // if (user?.location?.city != null && user?.location?.city != '') {
+    //   cities.add({'code': '', 'name': user?.location?.city});
+    //   _city = user?.location?.city;
+    // }
+
+    // if (user?.location?.state != null && user?.location?.state != '') {
+    //   states.add({'code': '', 'name': user?.location?.state});
+    //   _state = user?.location?.state;
+    // }
+    // _country = user?.location?.country;
+    //end: old
+
     final user = _session.user;
+    String address = '';
     if (user?.location?.city != null && user?.location?.city != '') {
       cities.add({'code': '', 'name': user?.location?.city});
-      _city = user?.location?.city;
+      // _city = user?.location?.city;
+      address = '$address ${user?.location?.city},';
     }
 
     if (user?.location?.state != null && user?.location?.state != '') {
       states.add({'code': '', 'name': user?.location?.state});
-      _state = user?.location?.state;
+      // _state = user?.location?.state;
+      address = '$address ${user?.location?.state},';
     }
-    _country = user?.location?.country;
+    // _country = user?.location?.country;
+    address = '$address ${user?.location?.country}';
+
+    _locationController.text = address;
   }
 
   Future<void> _pickAndUploadImage() async {
@@ -243,7 +266,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   //get locations from api
-  final _settingsRepo = SettingsRepository();
+  // final _settingsRepo = SettingsRepository();
   // Future<void> getCountries() async {
   //   final countriesResponse = await _settingsRepo.getCountries();
   //   final countriesList = countriesResponse['data'] as List<dynamic>;
@@ -255,58 +278,56 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   //   }
   // }
 
-  Future<void> getStates(String countryCode) async {
-    try {
-      setState(() {
-        states = [];
-        cities = [];
-      });
-      _state = null;
-      _city = null;
-      final statesResponse = await _settingsRepo.getStates(
-        countryCode,
-      );
-      final statesList = statesResponse['data'] as List<dynamic>;
-      if (mounted) {
-        setState(() {
-          states = statesList;
-        });
-      }
-    } catch (e) {
-      debugPrint('Failed to fetch states Error: $e');
-      setState(() {});
-    }
-  }
+  // Future<void> getStates(String countryCode) async {
+  //   try {
+  //     setState(() {
+  //       states = [];
+  //       cities = [];
+  //     });
+  //     _state = null;
+  //     _city = null;
+  //     final statesResponse = await _settingsRepo.getStates(
+  //       countryCode,
+  //     );
+  //     final statesList = statesResponse['data'] as List<dynamic>;
+  //     if (mounted) {
+  //       setState(() {
+  //         states = statesList;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Failed to fetch states Error: $e');
+  //     setState(() {});
+  //   }
+  // }
 
-  Future<void> getCities(String countryCode, String stateCode) async {
-    if (stateCode.isEmpty) return;
-    try {
-      setState(() {
-        cities = [];
-      });
-      _city = null;
-      final citiesResponse = await _settingsRepo.getCities(
-        countryCode,
-        stateCode,
-      );
+  // Future<void> getCities(String countryCode, String stateCode) async {
+  //   if (stateCode.isEmpty) return;
+  //   try {
+  //     setState(() {
+  //       cities = [];
+  //     });
+  //     _city = null;
+  //     final citiesResponse = await _settingsRepo.getCities(
+  //       countryCode,
+  //       stateCode,
+  //     );
 
-      final citiesList = citiesResponse['data'] as List<dynamic>;
-      if (mounted) {
-        setState(() {
-          cities = citiesList;
-        });
-      }
-    } catch (e) {
-      debugPrint('Failed to fetch cities Error: $e');
-    }
-  }
+  //     final citiesList = citiesResponse['data'] as List<dynamic>;
+  //     if (mounted) {
+  //       setState(() {
+  //         cities = citiesList;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Failed to fetch cities Error: $e');
+  //   }
+  // }
 
   //END: get locations from api
 
-  bool showCitiesDropdown = true;
-  bool showStatesDropdown = true;
-
-  final TextEditingController _locationController = TextEditingController();
+  // bool showCitiesDropdown = true;
+  // bool showStatesDropdown = true;
 
   @override
   Widget build(BuildContext context) {
@@ -426,100 +447,100 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(height: 16.h),
               Text(context.l10n.onboarding_step1_location, style: labelStyle),
               SizedBox(height: 10.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildDropdown(
-                      value: _country,
-                      // items: countries,
-                      items: countries.map((country) {
-                        return country['name'].toString();
-                      }).toList(),
-                      onChanged: (v) {
-                        setState(() {
-                          showStatesDropdown = true;
-                          _country = v;
-                        });
-                        final String countryCode =
-                            _service.getCodeByName(countries, v!);
-                        getStates(countryCode).then((_) {
-                          if (states.isEmpty) {
-                            setState(() {
-                              showStatesDropdown = false;
-                            });
-                            if (context.mounted) {
-                              context.flushBarErrorMessage(
-                                message: 'No States found for this country.',
-                              );
-                            }
-                          }
-                        });
-                      },
-                      hint: 'Select Country',
-                    ),
-                  ),
-                  if (showStatesDropdown) ...[
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: _buildDropdown(
-                        itemType: 'state',
-                        ctx: context,
-                        value: _state,
-                        // items: states,
-                        items: states.map((state) {
-                          return state['name'].toString();
-                        }).toList(),
-                        onChanged: (v) {
-                          if (mounted) {
-                            showCitiesDropdown = true;
-                            setState(() => _state = v);
-                          }
-                          if (_country != null) {
-                            final String countryCode = _service.getCodeByName(
-                              countries,
-                              _country!,
-                            );
-                            final String stateCode =
-                                _service.getCodeByName(states, v!);
-                            getCities(countryCode, stateCode).then((_) {
-                              if (cities.isEmpty) {
-                                setState(() {
-                                  showCitiesDropdown = false;
-                                });
-                                if (context.mounted) {
-                                  context.flushBarErrorMessage(
-                                    message: 'No Cities found for this state.',
-                                  );
-                                }
-                              }
-                            });
-                          }
-                        },
-                        // hint: _state,
-                        hint: 'Select State',
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-              SizedBox(height: 10.h),
-              if (showCitiesDropdown)
-                _buildDropdown(
-                  itemType: 'city',
-                  ctx: context,
-                  value: _city,
-                  // items: cities,
-                  items: cities.map((city) {
-                    return city['name'].toString();
-                  }).toList(),
-                  onChanged: (v) {
-                    if (mounted) {
-                      setState(() => _city = v);
-                    }
-                  },
-                  hint: 'Select City',
-                ),
-              SizedBox(height: 24.h),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: _buildDropdown(
+              //         value: _country,
+              //         // items: countries,
+              //         items: countries.map((country) {
+              //           return country['name'].toString();
+              //         }).toList(),
+              //         onChanged: (v) {
+              //           setState(() {
+              //             showStatesDropdown = true;
+              //             _country = v;
+              //           });
+              //           final String countryCode =
+              //               _service.getCodeByName(countries, v!);
+              //           getStates(countryCode).then((_) {
+              //             if (states.isEmpty) {
+              //               setState(() {
+              //                 showStatesDropdown = false;
+              //               });
+              //               if (context.mounted) {
+              //                 context.flushBarErrorMessage(
+              //                   message: 'No States found for this country.',
+              //                 );
+              //               }
+              //             }
+              //           });
+              //         },
+              //         hint: 'Select Country',
+              //       ),
+              //     ),
+              //     if (showStatesDropdown) ...[
+              //       SizedBox(width: 16.w),
+              //       Expanded(
+              //         child: _buildDropdown(
+              //           itemType: 'state',
+              //           ctx: context,
+              //           value: _state,
+              //           // items: states,
+              //           items: states.map((state) {
+              //             return state['name'].toString();
+              //           }).toList(),
+              //           onChanged: (v) {
+              //             if (mounted) {
+              //               showCitiesDropdown = true;
+              //               setState(() => _state = v);
+              //             }
+              //             if (_country != null) {
+              //               final String countryCode = _service.getCodeByName(
+              //                 countries,
+              //                 _country!,
+              //               );
+              //               final String stateCode =
+              //                   _service.getCodeByName(states, v!);
+              //               getCities(countryCode, stateCode).then((_) {
+              //                 if (cities.isEmpty) {
+              //                   setState(() {
+              //                     showCitiesDropdown = false;
+              //                   });
+              //                   if (context.mounted) {
+              //                     context.flushBarErrorMessage(
+              //                       message: 'No Cities found for this state.',
+              //                     );
+              //                   }
+              //                 }
+              //               });
+              //             }
+              //           },
+              //           // hint: _state,
+              //           hint: 'Select State',
+              //         ),
+              //       ),
+              //     ],
+              //   ],
+              // ),
+              // SizedBox(height: 10.h),
+              // if (showCitiesDropdown)
+              //   _buildDropdown(
+              //     itemType: 'city',
+              //     ctx: context,
+              //     value: _city,
+              //     // items: cities,
+              //     items: cities.map((city) {
+              //       return city['name'].toString();
+              //     }).toList(),
+              //     onChanged: (v) {
+              //       if (mounted) {
+              //         setState(() => _city = v);
+              //       }
+              //     },
+              //     hint: 'Select City',
+              //   ),
+              // SizedBox(height: 24.h),
               //Places api
               AddressAutocompleteTextField(
                 controller: _locationController,
@@ -528,20 +549,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 readOnly: isLoading,
                 onAddressSelected: (AddressResult result) {
                   _locationController.text = result.address;
-                  // _lat = result.latitude;
-                  // _lng = result.longitude;
+                  debugPrint('Address: ${result.address}');
+                  debugPrint('City: ${result.city}');
+                  _city = result.city;
+                  debugPrint('State: ${result.state}');
+                  _state = result.state;
+                  debugPrint('Country: ${result.country}');
+                  _country = result.country;
                 },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return context.l10n.error_address_required;
-                  }
-                  if (value.isNotEmpty
-                      //  && _lat == 0 && _lng == 0
-                      ) {
-                    return context.l10n.error_address_invalid;
-                  }
-                  return null;
-                },
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return context.l10n.error_address_required;
+                //   }
+                //   if (value.isNotEmpty && _lat == 0 && _lng == 0) {
+                //     return context.l10n.error_address_invalid;
+                //   }
+                //   return null;
+                // },
               ),
               //END Places api
               SizedBox(height: 24.h),

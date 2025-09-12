@@ -9,11 +9,13 @@ import 'package:sage/app/constants/countries.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
+import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/repository/settings_repo.dart';
 import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/services/views/signup_service.dart';
+import 'package:sage/view/onboarding/widgets/address_autocomplete.dart';
 
 class Step1Screen extends StatefulWidget {
   const Step1Screen({
@@ -74,6 +76,10 @@ class _Step1ScreenState extends State<Step1Screen> {
   String? selectedCountry;
   final _service = SettingService();
 
+  final TextEditingController _locationController = TextEditingController();
+  double _lat = 0;
+  double _lng = 0;
+
   // dropdown options
   final List<String> loveLanguages = [
     'Words of Affirmation',
@@ -113,9 +119,9 @@ class _Step1ScreenState extends State<Step1Screen> {
     'Engaged',
     'Married',
   ];
-  List<dynamic> cities = [];
-  List<dynamic> states = [];
-  List<dynamic> countries = Countires.allCountries;
+  // List<dynamic> cities = [];
+  // List<dynamic> states = [];
+  // List<dynamic> countries = Countires.allCountries;
 
   @override
   void initState() {
@@ -145,57 +151,57 @@ class _Step1ScreenState extends State<Step1Screen> {
   }
 
   //get locations from api
-  final _settingsRepo = SettingsRepository();
+  // final _settingsRepo = SettingsRepository();
 
-  Future<void> getStates(String countryCode) async {
-    try {
-      setState(() {
-        states = [];
-        cities = [];
-      });
-      selectedState = null;
-      selectedCity = null;
-      final statesResponse = await _settingsRepo.getStates(
-        countryCode,
-      );
-      final statesList = statesResponse['data'] as List<dynamic>;
-      if (mounted) {
-        setState(() {
-          states = statesList;
-        });
-      }
-    } catch (e) {
-      debugPrint('Failed to fetch states Error: $e');
-      setState(() {});
-    }
-  }
+  // Future<void> getStates(String countryCode) async {
+  //   try {
+  //     setState(() {
+  //       states = [];
+  //       cities = [];
+  //     });
+  //     selectedState = null;
+  //     selectedCity = null;
+  //     final statesResponse = await _settingsRepo.getStates(
+  //       countryCode,
+  //     );
+  //     final statesList = statesResponse['data'] as List<dynamic>;
+  //     if (mounted) {
+  //       setState(() {
+  //         states = statesList;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Failed to fetch states Error: $e');
+  //     setState(() {});
+  //   }
+  // }
 
-  Future<void> getCities(String countryCode, String stateCode) async {
-    debugPrint(
-      'HERE, MY ARGUMENTS: CONCODE: $countryCode, STATE CODE: $stateCode',
-    );
-    if (stateCode.isEmpty) return;
-    try {
-      setState(() {
-        cities = [];
-      });
-      selectedCity = null;
-      final citiesResponse = await _settingsRepo.getCities(
-        countryCode,
-        stateCode,
-      );
+  // Future<void> getCities(String countryCode, String stateCode) async {
+  //   debugPrint(
+  //     'HERE, MY ARGUMENTS: CONCODE: $countryCode, STATE CODE: $stateCode',
+  //   );
+  //   if (stateCode.isEmpty) return;
+  //   try {
+  //     setState(() {
+  //       cities = [];
+  //     });
+  //     selectedCity = null;
+  //     final citiesResponse = await _settingsRepo.getCities(
+  //       countryCode,
+  //       stateCode,
+  //     );
 
-      final citiesList = citiesResponse['data'] as List<dynamic>;
+  //     final citiesList = citiesResponse['data'] as List<dynamic>;
 
-      if (mounted) {
-        setState(() {
-          cities = citiesList;
-        });
-      }
-    } catch (e) {
-      debugPrint('Failed to fetch cities Error: $e');
-    }
-  }
+  //     if (mounted) {
+  //       setState(() {
+  //         cities = citiesList;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Failed to fetch cities Error: $e');
+  //   }
+  // }
 
   //END: get locations from api
 
@@ -456,103 +462,129 @@ class _Step1ScreenState extends State<Step1Screen> {
               // Location: City / State / Country
               Text(context.l10n.onboarding_step1_location, style: labelStyle),
               SizedBox(height: 10.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: MyDropdown(
-                      // items: countries,
-                      items: countries.map((country) {
-                        return country['name'].toString();
-                      }).toList(),
-                      value: selectedCountry,
-                      hint: 'Select Country',
-                      // onChanged: (v) => setState(() => selectedCountry = v!),
-                      onChanged: (v) {
-                        setState(() {
-                          showStatesDropdown = true;
-                          selectedCountry = v;
-                        });
-                        final String countryCode =
-                            _service.getCodeByName(countries, v!);
-                        getStates(countryCode).then((_) {
-                          if (states.isEmpty) {
-                            setState(() {
-                              showStatesDropdown = false;
-                            });
-                            if (context.mounted) {
-                              context.flushBarErrorMessage(
-                                message: 'No States found for this Country.',
-                              );
-                            }
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                  if (showStatesDropdown) ...[
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: MyDropdown(
-                        //itemType and ctx are used to show error messages
-                        itemType: 'state',
-                        ctx: context,
-                        // items: states,
-                        value: selectedState,
-                        hint: 'Select State',
-                        // onChanged: (v) => setState(() => selectedState = v!),
-                        items: states.map((state) {
-                          return state['name'].toString();
-                        }).toList(),
-                        onChanged: (v) {
-                          if (mounted) {
-                            showCitiesDropdown = true;
-                            setState(() => selectedState = v);
-                          }
-                          if (selectedCountry != null) {
-                            final String countryCode = _service.getCodeByName(
-                              countries,
-                              selectedCountry!,
-                            );
-                            final String stateCode =
-                                _service.getCodeByName(states, v!);
-                            getCities(countryCode, stateCode).then((_) {
-                              if (cities.isEmpty) {
-                                setState(() {
-                                  showCitiesDropdown = false;
-                                });
-                                if (context.mounted) {
-                                  context.flushBarErrorMessage(
-                                    message: 'No Cities found for this State.',
-                                  );
-                                }
-                              }
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ],
+              //Places api
+              AddressAutocompleteTextField(
+                controller: _locationController,
+                apiKey: Env.placesApiKey,
+                hint: 'Enter Your Location',
+                onAddressSelected: (AddressResult result) {
+                  _locationController.text = result.address;
+                  debugPrint('Address: ${result.address}');
+                  debugPrint('City: ${result.city}');
+                  selectedCity = result.city;
+                  debugPrint('State: ${result.state}');
+                  selectedState = result.state;
+                  debugPrint('Country: ${result.country}');
+                  selectedCountry = result.country;
+                },
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return context.l10n.error_address_required;
+                //   }
+                //   if (value.isNotEmpty && _lat == 0 && _lng == 0) {
+                //     return context.l10n.error_address_invalid;
+                //   }
+                //   return null;
+                // },
               ),
-              SizedBox(height: 10.h),
-              if (showCitiesDropdown)
-                MyDropdown(
-                  //itemType and ctx are used to show error messages
-                  itemType: 'city',
-                  ctx: context,
-                  // items: cities,
-                  value: selectedCity,
-                  hint: 'Select City',
-                  // onChanged: (v) => setState(() => selectedCity = v!),
-                  items: cities.map((city) {
-                    return city['name'].toString();
-                  }).toList(),
-                  onChanged: (v) {
-                    if (mounted) {
-                      setState(() => selectedCity = v);
-                    }
-                  },
-                ),
+              //END Places api
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: MyDropdown(
+              //         // items: countries,
+              //         items: countries.map((country) {
+              //           return country['name'].toString();
+              //         }).toList(),
+              //         value: selectedCountry,
+              //         hint: 'Select Country',
+              //         // onChanged: (v) => setState(() => selectedCountry = v!),
+              //         onChanged: (v) {
+              //           setState(() {
+              //             showStatesDropdown = true;
+              //             selectedCountry = v;
+              //           });
+              //           final String countryCode =
+              //               _service.getCodeByName(countries, v!);
+              //           getStates(countryCode).then((_) {
+              //             if (states.isEmpty) {
+              //               setState(() {
+              //                 showStatesDropdown = false;
+              //               });
+              //               if (context.mounted) {
+              //                 context.flushBarErrorMessage(
+              //                   message: 'No States found for this Country.',
+              //                 );
+              //               }
+              //             }
+              //           });
+              //         },
+              //       ),
+              //     ),
+              //     if (showStatesDropdown) ...[
+              //       SizedBox(width: 16.w),
+              //       Expanded(
+              //         child: MyDropdown(
+              //           //itemType and ctx are used to show error messages
+              //           itemType: 'state',
+              //           ctx: context,
+              //           // items: states,
+              //           value: selectedState,
+              //           hint: 'Select State',
+              //           // onChanged: (v) => setState(() => selectedState = v!),
+              //           items: states.map((state) {
+              //             return state['name'].toString();
+              //           }).toList(),
+              //           onChanged: (v) {
+              //             if (mounted) {
+              //               showCitiesDropdown = true;
+              //               setState(() => selectedState = v);
+              //             }
+              //             if (selectedCountry != null) {
+              //               final String countryCode = _service.getCodeByName(
+              //                 countries,
+              //                 selectedCountry!,
+              //               );
+              //               final String stateCode =
+              //                   _service.getCodeByName(states, v!);
+              //               getCities(countryCode, stateCode).then((_) {
+              //                 if (cities.isEmpty) {
+              //                   setState(() {
+              //                     showCitiesDropdown = false;
+              //                   });
+              //                   if (context.mounted) {
+              //                     context.flushBarErrorMessage(
+              //                       message: 'No Cities found for this State.',
+              //                     );
+              //                   }
+              //                 }
+              //               });
+              //             }
+              //           },
+              //         ),
+              //       ),
+              //     ],
+              //   ],
+              // ),
+              // SizedBox(height: 10.h),
+              // if (showCitiesDropdown)
+              //   MyDropdown(
+              //     //itemType and ctx are used to show error messages
+              //     itemType: 'city',
+              //     ctx: context,
+              //     // items: cities,
+              //     value: selectedCity,
+              //     hint: 'Select City',
+              //     // onChanged: (v) => setState(() => selectedCity = v!),
+              //     items: cities.map((city) {
+              //       return city['name'].toString();
+              //     }).toList(),
+              //     onChanged: (v) {
+              //       if (mounted) {
+              //         setState(() => selectedCity = v);
+              //       }
+              //     },
+              //   ),
 
               SizedBox(height: 24.h),
               // NEXT button

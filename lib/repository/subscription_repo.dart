@@ -46,20 +46,22 @@ class SubscriptionRepository {
   ) async {
     debugPrint('->WE ARE IN CREATE APPLE SUBSCRIPTION');
     final userId = _sessionController.user!.id;
+    final Map<String, dynamic> data = {
+      'userId': userId,
+      'receiptData': receiptData,
+      'productId': productId,
+      'transactionId': transactionId,
+      'originalTransactionId': null,
+      'purchaseStatus': purchaseStatus,
+      /*initially it's null, but once the
+        subscription is created, it will be returned from Apple */
+      'environment': 'Sandbox', //Sandbox / TestFlight / Production
+      'platform': 'ios',
+    };
+    debugPrint('SENDING FOLLOWING TRANSACTION DATA TO BACKEND IS: $data');
     return _apiServices.post(
       url: AppUrl.createSubscription,
-      data: {
-        'userId': userId,
-        'receiptData': receiptData,
-        'productId': productId,
-        'transactionId': transactionId,
-        'originalTransactionId': null,
-        'purchaseStatus': purchaseStatus,
-        /*initially it's null, but once the
-        subscription is created, it will be returned from Apple */
-        'environment': 'Sandbox',
-        'platform': 'ios',
-      },
+      data: data,
     );
   }
 

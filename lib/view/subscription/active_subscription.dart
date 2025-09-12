@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/loading_widget.dart';
@@ -22,17 +23,21 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
 
   final _subscriptionService = SubscriptionService();
   Map<String, dynamic> subscriptionDetails = {};
+  String?
+      subscriptionPlatform; //the platform where subscription was created (stripe / apple)
 
   bool isSubscriptionActive = true;
 
   bool errorFetchingSubscription =
-      false; //this happens when isPremium in the user is true but actually there is no subscription in the server
+      false; // happens when isPremium = true but no subscription in server
 
   Future<void> fetchSubscription() async {
     debugPrint('Fetching Subscription...');
     try {
       final response = await _subscriptionService.getSubscriptionDetails();
-      if (response['subscription'] == null) {
+      final sub = response['subscription'];
+
+      if (sub == null || sub is! Map<String, dynamic>) {
         debugPrint('No active subscription found.');
         setState(() {
           isLoaded = true;
@@ -41,12 +46,13 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
         return;
       }
 
-      subscriptionDetails = response['subscription'] as Map<String, dynamic>;
+      subscriptionDetails = sub;
 
-      if (subscriptionDetails['cancel_at_period_end'] as bool) {
+      subscriptionPlatform = subscriptionDetails['platform'] as String?;
+
+      if (subscriptionDetails['cancel_at_period_end'] == true) {
         setState(() {
           isSubscriptionActive = false;
-          debugPrint('SET STATE IS CALLED!!!!');
         });
       }
 
@@ -55,14 +61,16 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
       );
     } on Exception catch (e) {
       if (mounted) {
-        debugPrint('Error fetching subscripion details: $e');
+        debugPrint('Error fetching subscription details: $e');
         context.flushBarErrorMessage(message: 'Something went wrong..');
       }
     }
 
-    setState(() {
-      isLoaded = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoaded = true;
+      });
+    }
   }
 
   @override
@@ -71,24 +79,23 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
     fetchSubscription();
   }
 
-  // String toCamelCaseWithLy(String input) {
-  //   if (input.isEmpty) return '';
-  //   String camel = input[0].toUpperCase();
-  //   return '${camel}ly';
-  // }
-
-  String toCamelCaseWithLy(String input) {
-    if (input.isEmpty) return '';
+  String toCamelCaseWithLy(String? input) {
+    if (input == null || input.isEmpty) return 'No';
     final camelCase = input[0].toUpperCase() + input.substring(1).toLowerCase();
     return '${camelCase}ly';
   }
 
-  String _formatSubscriptionEndDate(String isoDate) {
-    final dateTime = DateTime.parse(isoDate);
-    final day = dateTime.day.toString().padLeft(2, '0');
-    final month = dateTime.month.toString().padLeft(2, '0');
-    final year = dateTime.year.toString();
-    return '$day/$month/$year';
+  String _formatSubscriptionEndDate(String? isoDate) {
+    if (isoDate == null || isoDate.isEmpty) return 'Unknown';
+    try {
+      final dateTime = DateTime.parse(isoDate);
+      final day = dateTime.day.toString().padLeft(2, '0');
+      final month = dateTime.month.toString().padLeft(2, '0');
+      final year = dateTime.year.toString();
+      return '$day/$month/$year';
+    } catch (_) {
+      return 'Unknown';
+    }
   }
 
   @override
@@ -110,152 +117,130 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
         ),
       ),
       body: isLoaded
-          ?
-          // errorFetchingSubscription
-          //     ? Center(
-          //         child: Text(
-          //           'Something went wrong!',
-          //           style: TextStyle(fontSize: 16.sp),
-          //         ),
-          //       )
-          //     : Padding(
-          //         padding: EdgeInsets.all(16.w),
-          //         child: ListView(
-          //           children: [
-          //             _subscriptionTile(context),
-          //             SizedBox(height: 20.h),
-          //             _planDetailsCard(
-          //               context,
-          //               isSubscriptionActive: isSubscriptionActive,
-          //             ),
-          //             SizedBox(height: 100.h),
-          //             // const MyTextButton(label: 'Restore Subscription Plan'), //commented by #muttas
-          //             MyButton(
-          //               label: isSubscriptionActive
-          //                   ? 'Change Membership'
-          //                   : 'Subscribe',
-          //               onPressed: () {
-          //                 if (isSubscriptionActive) {
-          //                   showDialog<void>(
-          //                     context: context,
-          //                     builder: (_) => MyDialog(
-          //                       titleFirst: 'Change ',
-          //                       titleSecond: 'Subscription?',
-          //                       subtitle:
-          //                           '''Changing subscription will discard your current susbcription.''',
-          //                       confirmLabel: 'Continue',
-          //                       onConfirm: () {
-          //                         SubscriptionService.goToChangeSubscription(
-          //                           context,
-          //                         );
-          //                       },
-          //                     ),
-          //                   );
-          //                 } else {
-          //                   SubscriptionService.goToChangeSubscription(context);
-          //                 }
-          //               },
-          //             ),
-          //             SizedBox(height: 16.h),
-          //             if (isSubscriptionActive)
-          //               MyTextButton(
-          //                 label: 'Cancel Membership',
-          //                 onPressed: () async {
-          //                   setState(() {
-          //                     isLoaded = false;
-          //                   });
-          //                   await showDialog<void>(
-          //                     context: context,
-          //                     builder: (_) => MyDialog(
-          //                       titleFirst: 'Cancel ',
-          //                       titleSecond: 'Subscription?',
-          //                       subtitle: '''Your subscription will''',
-          //                       confirmLabel: 'Cancel',
-          //                       onConfirm: () {
-          //                         SubscriptionService.goToChangeSubscription(
-          //                           context,
-          //                         );
-          //                       },
-          //                     ),
-          //                   );
-          //                 },
-          //               ),
-          //             SizedBox(height: 24.h),
-          //           ],
-          //         ),
-          //       )
-          Column(
-              children: [
-                Text('DATA: $subscriptionDetails'),
-                SizedBox(
-                  height: 100.h,
-                ),
-                MyButton(
-                  label:
-                      isSubscriptionActive ? 'Change Membership' : 'Subscribe',
-                  onPressed: () {
-                    if (isSubscriptionActive) {
-                      showDialog<void>(
-                        context: context,
-                        builder: (_) => MyDialog(
-                          titleFirst: 'Change ',
-                          titleSecond: 'Subscription?',
-                          subtitle:
-                              '''Changing subscription will discard your current susbcription.''',
-                          confirmLabel: 'Continue',
-                          onConfirm: () {
-                            SubscriptionService.goToChangeSubscription(
-                              context,
-                            );
-                          },
-                        ),
-                      );
-                    } else {
-                      SubscriptionService.goToChangeSubscription(context);
-                    }
-                  },
-                ),
-                SizedBox(height: 16.h),
-                if (isSubscriptionActive)
-                  MyTextButton(
-                    label: 'Cancel Membership',
-                    onPressed: () async {
-                      setState(() {
-                        isLoaded = false;
-                      });
-                      await showDialog<void>(
-                        context: context,
-                        builder: (_) => MyDialog(
-                          titleFirst: 'Cancel ',
-                          titleSecond: 'Subscription?',
-                          subtitle:
-                              '''Your subscription will be Cancelled and will not renew automatcally...''',
-                          confirmLabel: 'Cancel',
-                          onConfirm: () {
-                            SubscriptionService().cancelSubcription(context);
-                          },
-                        ),
-                      );
-                    },
+          ? errorFetchingSubscription
+              ? Center(
+                  child: Text(
+                    'Something went wrong!',
+                    style: TextStyle(fontSize: 16.sp),
                   ),
-                SizedBox(height: 24.h),
-              ],
-            )
+                )
+              : Padding(
+                  padding: EdgeInsets.all(16.w),
+                  child: Column(
+                    children: [
+                      _subscriptionTile(context),
+                      SizedBox(height: 20.h),
+                      _planDetailsCard(
+                        context,
+                        isSubscriptionActive: isSubscriptionActive,
+                      ),
+                      // SizedBox(height: 100.h),
+                      const Spacer(),
+
+                      ///CHANGE
+                      ///Show if:
+                      ///-> Android && Stripe
+                      ///-> Iphone && IAP
+                      if (Platform.isAndroid &&
+                              subscriptionPlatform == 'stripe' ||
+                          Platform.isIOS && subscriptionPlatform == 'apple')
+                        // Change Membership / Subscribe Button
+                        _buildChangeButton(context),
+
+                      ///CANCEL
+                      /// Show if:
+                      /// -> Android && Stripe
+                      /// -> Iphone && Stripe
+                      if ((Platform.isAndroid &&
+                                  subscriptionPlatform == 'stripe' ||
+                              Platform.isIOS &&
+                                  subscriptionPlatform == 'stripe') &&
+                          isSubscriptionActive) ...[
+                        SizedBox(height: 16.h),
+                        // Cancel Membership TextButton
+                        _buildCancelTextButton(context),
+                      ],
+                      SizedBox(height: 36.h),
+                    ],
+                  ),
+                )
           : const Center(
               child: LoadingWidget(),
             ),
     );
   }
 
-  String formatToDecimal(int amount) {
-    final str = amount.toString().padLeft(3, '0');
-    final result =
-        '${str.substring(0, str.length - 2)}.${str.substring(str.length - 2)}';
-    return result;
+  MyButton _buildChangeButton(BuildContext context) {
+    return MyButton(
+      label: isSubscriptionActive ? 'Change Membership' : 'Subscribe',
+      onPressed: () {
+        if (isSubscriptionActive && !Platform.isIOS) {
+          showDialog<void>(
+            context: context,
+            builder: (_) => MyDialog(
+              titleFirst: 'Change ',
+              titleSecond: 'Subscription?',
+              subtitle:
+                  '''Changing subscription will discard your current subscription.''',
+              confirmLabel: 'Continue',
+              onConfirm: () {
+                SubscriptionService.goToChangeSubscription(
+                  context,
+                );
+              },
+            ),
+          );
+        } else {
+          SubscriptionService.goToChangeSubscription(context);
+        }
+      },
+    );
+  }
+
+  MyTextButton _buildCancelTextButton(BuildContext context) {
+    return MyTextButton(
+      label: 'Cancel Membership',
+      onPressed: () async {
+        await showDialog<void>(
+          context: context,
+          builder: (_) => MyDialog(
+            titleFirst: 'Cancel ',
+            titleSecond: 'Subscription?',
+            subtitle:
+                '''Your subscription will be cancelled and will not renew automatcially''',
+            confirmLabel: 'Cancel',
+            onConfirm: () async {
+              await SubscriptionService()
+                  .cancelSubcription(context)
+                  .then((_) async {
+                setState(() {
+                  isLoaded = false;
+                });
+                await fetchSubscription();
+                setState(() {
+                  isLoaded = true;
+                });
+              });
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  /// Amount is returned as double (e.g. 67.99), so we handle both int/double.
+  String formatToDecimal(num? amount) {
+    if (amount == null) return '0.00';
+
+    if (amount > 175) {
+      return (amount / 100).toStringAsFixed(2);
+    }
+
+    return amount.toStringAsFixed(2);
   }
 
   Widget _subscriptionTile(BuildContext context) {
-    final amount = formatToDecimal(subscriptionDetails['amount'] as int);
+    final amount = formatToDecimal(subscriptionDetails['amount'] as num?);
     return Container(
       decoration: BoxDecoration(
         color: context.colors.greenBg,
@@ -287,9 +272,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  '${toCamelCaseWithLy(
-                    subscriptionDetails['interval'] as String,
-                  )} Subscription',
+                  '${toCamelCaseWithLy(subscriptionDetails['interval']?.toString())} Subscription',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 14.sp,
@@ -317,11 +300,19 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
     required bool isSubscriptionActive,
   }) {
     final String activeSubscriptionText =
-        // ignore: lines_longer_than_80_chars
-        '''Your plan will automatically renew on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end'] as String)}. you can change your\nsubscription plan after this or renew this plan''';
-    // ignore: lines_longer_than_80_chars
+        '''Your plan will automatically renew on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end']?.toString())}. You can change your subscription plan after this or renew this plan.''';
+
     final String canceledSubscriptionText =
-        '''Your subscription is ending on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end'] as String)} and will not be renewed. If you want to subscribe again, please press the "Subscribe" button below.''';
+        '''Your subscription is ending on ${_formatSubscriptionEndDate(subscriptionDetails['current_period_end']?.toString())} and will not be renewed.''';
+
+    //In case when device is iphone and subscription is 'stripe (cancelled)'
+    //Because, cancelled plan will last to the expiry date and if a subscription
+    //is purchased whilst, it will override the old one.
+    //in a specific case, the cancelled subscription will also remain on stripe
+    //and a new subscription will be created on iap too...
+    const String cannotSubscribeUntilExpiry =
+        '''You cannot subscribe to a new plan until the cancelled subscription is expired.''';
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -360,6 +351,24 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                 : canceledSubscriptionText,
             style: TextStyle(fontSize: 15.sp, color: Colors.black54),
           ),
+          SizedBox(height: 10.h),
+          if (Platform.isIOS &&
+              subscriptionPlatform == 'stripe' &&
+              !isSubscriptionActive)
+            Container(
+              padding: EdgeInsets.all(10.w),
+              decoration: BoxDecoration(
+                color: context.colors.greenBg.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(15.r),
+              ),
+              child: Text(
+                cannotSubscribeUntilExpiry,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           SizedBox(height: 20.h),
           Text(
             'Plan Includes',

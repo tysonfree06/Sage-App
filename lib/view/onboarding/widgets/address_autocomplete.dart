@@ -9,11 +9,18 @@ class AddressResult {
     required this.latitude,
     required this.longitude,
     required this.placeId,
+    this.city,
+    this.state,
+    this.country,
   });
+
   final String address;
   final double latitude;
   final double longitude;
   final String placeId;
+  final String? city;
+  final String? state;
+  final String? country;
 }
 
 class AddressAutocompleteTextField extends StatefulWidget {
@@ -240,17 +247,44 @@ class _AddressAutocompleteTextFieldState
     try {
       final place = await _places.fetchPlace(
         prediction.placeId,
-        fields: [PlaceField.Location, PlaceField.Address],
+        fields: [
+          PlaceField.Location,
+          PlaceField.Address,
+          PlaceField
+              .AddressComponents, // 👈 to get structured city/state/country
+        ],
       );
 
       if (place.place?.latLng != null) {
         log('[AddressAutocomplete] Place details fetched: ${place.place!.address}');
+
+        String? city;
+        String? state;
+        String? country;
+
+        if (place.place?.addressComponents != null) {
+          for (final component in place.place!.addressComponents!) {
+            if (component.types.contains('locality')) {
+              city = component.name;
+            } else if (component.types
+                .contains('administrative_area_level_1')) {
+              state = component.name;
+            } else if (component.types.contains('country')) {
+              country = component.name;
+            }
+          }
+        }
+
         final result = AddressResult(
           address: place.place!.address ?? prediction.fullText,
           latitude: place.place!.latLng!.lat,
           longitude: place.place!.latLng!.lng,
           placeId: prediction.placeId,
+          city: city,
+          state: state,
+          country: country,
         );
+
         widget.onAddressSelected?.call(result);
       } else {
         log('[AddressAutocomplete] Place details missing location');

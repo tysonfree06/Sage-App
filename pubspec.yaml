@@ -1,6 +1,6 @@
 name: sage
 description: A Very Good Project created by Very Good CLI.
-version: 1.0.0+4
+version: 1.0.0+5
 publish_to: none
 
 environment:
@@ -14,19 +14,20 @@ dependencies:
   dotted_border: 3.1.0
   envied: 1.1.1
   envied_generator: 1.1.1
+  flutter_google_places_sdk: 0.3.8
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   flutter_screenutil: 5.9.3
   flutter_secure_storage: 9.2.3
-  flutter_google_places_sdk: 0.3.8
   flutter_stripe: 11.5.0
   flutter_svg: 2.1.0
   # google_fonts: ^6.2.0
   http: 1.2.2
   image_picker: 1.1.2
-  in_app_purchase: ^3.2.3
+  in_app_purchase: 3.2.2
+  in_app_purchase_storekit: 0.3.21
   intl: any
   json_annotation: 4.9.0
   logger: 2.6.0

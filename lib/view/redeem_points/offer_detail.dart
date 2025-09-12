@@ -1,4 +1,3 @@
-//FIXME: Remove this comment after generated files fix #muttas
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -64,31 +63,32 @@ class _OfferDetailScreenState extends State<OfferDetailScreen> {
               ),
               SizedBox(height: 15.h),
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.colors.chipBg,
-                      borderRadius: BorderRadius.circular(80),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          widget.offer.id,
-                          style: context.typography.title.copyWith(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: context.colors.textLightGreen,
-                          ),
-                        ),
-                        SizedBox(width: 10.w),
-                        Assets.icons.copyGreen.svg(),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //     color: context.colors.chipBg,
+                  //     borderRadius: BorderRadius.circular(80),
+                  //   ),
+                  //   padding:
+                  //       EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                  //   child: Row(
+                  //     mainAxisSize: MainAxisSize.min,
+                  //     children: [
+                  //       Text(
+                  //         widget.offer.id,
+                  //         style: context.typography.title.copyWith(
+                  //           fontSize: 14.sp,
+                  //           fontWeight: FontWeight.w500,
+                  //           color: context.colors.textLightGreen,
+                  //         ),
+                  //       ),
+                  //       SizedBox(width: 10.w),
+                  //       Assets.icons.copyGreen.svg(),
+                  //     ],
+                  //   ),
+                  // ),
+                  // SizedBox(width: 10.w),
                   if (!widget.offer.isActive)
                     Container(
                       decoration: BoxDecoration(

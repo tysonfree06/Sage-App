@@ -80,7 +80,6 @@ class SplashServices {
       debugPrint('[$tag] Active session found, fetching profile');
       if (context.mounted) await fetchPartner(context);
       try {
-        // if (context.mounted) await fetchProfile(context); //moved to home
         if (context.mounted) LoginService.goToHome(context);
       } catch (_) {
         debugPrint('[$tag] Error fetching profile, clearing session');
