@@ -8,11 +8,12 @@ import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
+import 'package:sage/services/points_services.dart';
 import 'package:sage/services/views/subscription_services.dart';
 
 class ActiveSubscriptionScreen extends StatefulWidget {
-  const ActiveSubscriptionScreen({super.key});
-
+  const ActiveSubscriptionScreen({required this.pointsEarned, super.key});
+  final int pointsEarned;
   @override
   State<ActiveSubscriptionScreen> createState() =>
       _ActiveSubscriptionScreenState();
@@ -73,9 +74,22 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
     }
   }
 
+  void showPointsDialog() {
+    if (context.mounted) {
+      if (widget.pointsEarned > 0) {
+        PointsServices.showPointsEarnedDialog(
+          context,
+          'Subscribing to Sage!',
+          points: widget.pointsEarned,
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    showPointsDialog();
     fetchSubscription();
   }
 

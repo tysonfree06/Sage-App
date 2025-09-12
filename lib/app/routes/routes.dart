@@ -31,7 +31,6 @@ class Routes {
     RoutesName.exploreIdeas: (_) => const ExploreIdeasScreen(),
     // RoutesName.savedIdeas: (_) => const SavedIdeasScreen(),
     RoutesName.myAddedIdeas: (_) => const MyAddedIdeasScreen(),
-    RoutesName.activeSubscription: (_) => const ActiveSubscriptionScreen(),
     RoutesName.notifications: (_) => const NotificationsScreen(),
   };
 
@@ -96,7 +95,16 @@ class Routes {
           ),
           settings: settings,
         );
-
+      //RoutesName.activeSubscription: (_) => const ActiveSubscriptionScreen(),
+      case RoutesName.activeSubscription:
+        final args = settings.arguments! as Map<String, dynamic>;
+        final pointsEarned = args['pointsEarned'];
+        return MaterialPageRoute(
+          builder: (_) => ActiveSubscriptionScreen(
+            pointsEarned: pointsEarned as int,
+          ),
+          settings: settings,
+        );
       default:
         final builder = _routes[settings.name];
         if (builder != null) {

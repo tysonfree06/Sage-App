@@ -33,11 +33,14 @@ class SubscriptionService {
 
   static Future<void> goToActiveSubscription(
     BuildContext context,
+    int pointsEarned,
   ) async {
     await Navigator.pushReplacementNamed(
       context,
       RoutesName.activeSubscription,
-      arguments: false, //show skip button
+      arguments: {
+        'pointsEarned': pointsEarned,
+      },
     );
   }
 
@@ -85,8 +88,8 @@ class SubscriptionService {
       if (context.mounted) {
         await SplashServices().fetchProfile(context);
       }
+      final int pointEarned = response['points_earned'] as int;
       if (context.mounted) {
-        // final int pointEarned = response['points_earned'] as int;
         // if (context.mounted) {
         //   if (pointEarned > 0) {
         //     PointsServices.showPointsEarnedDialog(
@@ -105,7 +108,7 @@ class SubscriptionService {
             (route) => false,
           );
         } else {
-          await goToActiveSubscription(context);
+          await goToActiveSubscription(context, pointEarned);
         }
       }
 

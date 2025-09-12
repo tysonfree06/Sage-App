@@ -7,6 +7,7 @@ import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
@@ -206,10 +207,20 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 //       isSignupFlow: widget.showSkip));
                 // },
                 onPressed: () async {
-                  if (Platform.isIOS && subscriptions.isNotEmpty) {
+                  if (Platform.isIOS) {
+                    if (subscriptions.isEmpty) {
+                      debugPrint('No Subscription loaded from Apple');
+                      debugPrint(
+                        '''\n\nHey, In App Purchase only works on real ios device in "Release mode!"\n\n''',
+                      );
+                      context.flushBarErrorMessage(
+                        message: 'Something went wrong, please try again...',
+                      );
+                      return;
+                    }
                     setState(() => isLoading = true);
                     debugPrint(
-                      'selectedSubscription on Button Pressed: $selectedSubscription',
+                      '''selectedSubscription on Button Pressed: $selectedSubscription''',
                     );
                     // final product = _subscriptions[selectedSubscription]; //previously used
 

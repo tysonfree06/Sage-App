@@ -74,7 +74,11 @@ class SettingService {
     await Navigator.pushNamed(
       context,
       isPremium ? RoutesName.activeSubscription : RoutesName.subscription,
-      arguments: false, //show skip button
+      arguments: isPremium
+          ? {
+              'pointsEarned': 0,
+            }
+          : false, //show skip button
     );
   }
 
