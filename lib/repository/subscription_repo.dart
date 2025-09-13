@@ -55,7 +55,7 @@ class SubscriptionRepository {
       'purchaseStatus': purchaseStatus,
       /*initially it's null, but once the
         subscription is created, it will be returned from Apple */
-      'environment': 'Production', //Sandbox / TestFlight / Production
+      'environment': 'Sandbox', //Sandbox / TestFlight / Production
       'platform': 'ios',
     };
     debugPrint('SENDING FOLLOWING TRANSACTION DATA TO BACKEND IS: $data');

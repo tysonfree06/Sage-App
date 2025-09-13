@@ -12,6 +12,8 @@ import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/subscription.dart';
+import 'package:sage/services/payment/iap_services.dart';
+import 'package:sage/services/payment/stripe_services.dart';
 import 'package:sage/services/views/subscription_services.dart';
 import 'package:sage/view/subscription/widget/my_scaffold.dart';
 import 'package:sage/view/subscription/widget/subscription_tile.dart';
@@ -28,6 +30,9 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
+  final _stripeServices = StripeServices();
+  final _iapServices = InAppPurchaseServices();
+
   bool isLoading = false;
   //initial payment id
   String priceId = Env.stripeYearly;
@@ -35,13 +40,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   void initState() {
     super.initState();
-    loadSubscriptions(); //load Subscripions for in app purchase
-    startListeningToPurchaseUpdates(context, isSignupFlow: widget.showSkip);
+    _iapServices
+      ..loadSubscriptions() //load Subscripions for in app purchase
+      ..startListeningToPurchaseUpdates(
+        context,
+        isSignupFlow: widget.showSkip,
+      );
   }
 
   @override
   void dispose() {
-    purchaseSubscription?.cancel(); //new
+    _iapServices.purchaseSubscription?.cancel(); //new
     super.dispose();
   }
 
@@ -107,25 +116,28 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   switch (index) {
                     case 0:
                       setState(() {
-                        selectedSubscription = 0;
+                        _iapServices.selectedSubscription = 0;
                         debugPrint(
-                            'SELECTED SUBSCRIPTION ID: $selectedSubscription : YEARLY');
+                          '''SELECTED SUBSCRIPTION ID: ${_iapServices.selectedSubscription} : YEARLY''',
+                        );
                         priceId = Env.stripeYearly;
                       });
                       break;
                     case 1:
                       setState(() {
-                        selectedSubscription = 1;
+                        _iapServices.selectedSubscription = 1;
                         debugPrint(
-                            'SELECTED SUBSCRIPTION ID: $selectedSubscription : MONTHLY');
+                          '''SELECTED SUBSCRIPTION ID: ${_iapServices.selectedSubscription} : MONTHLY''',
+                        );
                         priceId = Env.stripeMonthly;
                       });
                       break;
                     case 2:
                       setState(() {
-                        selectedSubscription = 2;
+                        _iapServices.selectedSubscription = 2;
                         debugPrint(
-                            'SELECTED SUBSCRIPTION ID: $selectedSubscription : WEEKLY');
+                          '''SELECTED SUBSCRIPTION ID: $_iapServices.selectedSubscription : WEEKLY''',
+                        );
                         priceId = Env.stripeWeekly;
                       });
                       break;
@@ -208,7 +220,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 // },
                 onPressed: () async {
                   if (Platform.isIOS) {
-                    if (subscriptions.isEmpty) {
+                    if (_iapServices.subscriptions.isEmpty) {
                       debugPrint('No Subscription loaded from Apple');
                       debugPrint(
                         '''\n\nHey, In App Purchase only works on real ios device in "Release mode!"\n\n''',
@@ -220,7 +232,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     }
                     setState(() => isLoading = true);
                     debugPrint(
-                      '''selectedSubscription on Button Pressed: $selectedSubscription''',
+                      '''selectedSubscription on Button Pressed: ${_iapServices.selectedSubscription}''',
                     );
                     // final product = _subscriptions[selectedSubscription]; //previously used
 
@@ -232,7 +244,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       2: 'Week',
                     };
 
-                    ProductDetails product = subscriptions.firstWhere(
+                    ProductDetails product =
+                        _iapServices.subscriptions.firstWhere(
                       (product) => product.title.contains('Year'),
                       orElse: () => throw Exception(
                         'Yearly Subscription not found',
@@ -240,9 +253,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     );
 
                     setState(() {
-                      final keyword = keywords[selectedSubscription];
+                      final keyword =
+                          keywords[_iapServices.selectedSubscription];
 
-                      product = subscriptions.firstWhere(
+                      product = _iapServices.subscriptions.firstWhere(
                         (product) => product.title.contains(keyword ?? 'Year'),
                         orElse: () => throw Exception(
                           '$keyword Subscription not found',
@@ -250,7 +264,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       );
                     });
                     // buySubscription(product);
-                    await buySubscription(product).then(
+                    await _iapServices.buySubscription(product).then(
                       (_) {
                         setState(() {
                           isLoading = false;
@@ -259,7 +273,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     );
                   } else {
                     //for android (the stripe way)
-                    await getPaymentIntent(
+                    await _stripeServices.getPaymentIntent(
                       context,
                       priceId,
                       isSignupFlow: widget.showSkip,
