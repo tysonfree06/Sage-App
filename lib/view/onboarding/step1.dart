@@ -5,15 +5,12 @@ import 'package:sage/app/components/custom_radio_group.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_datepicker_button.dart';
 import 'package:sage/app/components/my_dropdown.dart';
-import 'package:sage/app/constants/countries.dart';
 import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
-import 'package:sage/repository/settings_repo.dart';
-import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/services/views/signup_service.dart';
 import 'package:sage/view/onboarding/widgets/address_autocomplete.dart';
 
@@ -74,11 +71,8 @@ class _Step1ScreenState extends State<Step1Screen> {
   String? selectedCity;
   String? selectedState;
   String? selectedCountry;
-  final _service = SettingService();
 
   final TextEditingController _locationController = TextEditingController();
-  double _lat = 0;
-  double _lng = 0;
 
   // dropdown options
   final List<String> loveLanguages = [
@@ -274,24 +268,18 @@ class _Step1ScreenState extends State<Step1Screen> {
     );
   }
 
-  bool get _isFormComplete =>
-      selectedLoveLanguage != null &&
-      selectedLoveLanguage!.isNotEmpty &&
-      selectedApologyLanguage != null &&
-      selectedApologyLanguage!.isNotEmpty &&
-      selectedCommunicationStyle != null &&
-      selectedCommunicationStyle!.isNotEmpty &&
-      selectedBudgetLevel != null &&
-      selectedBudgetLevel!.isNotEmpty &&
-      selectedRelationshipStatus.isNotEmpty &&
-      anniversaryDate != null &&
-      dob != null &&
-      // selectedCity != null &&
-      // selectedCity!.isNotEmpty &&
-      // selectedState != null &&
-      // selectedState!.isNotEmpty &&
-      selectedCountry != null &&
-      selectedCountry!.isNotEmpty;
+  // bool get _isFormComplete =>
+  //     selectedLoveLanguage != null &&
+  //     selectedLoveLanguage!.isNotEmpty &&
+  //     selectedApologyLanguage != null &&
+  //     selectedApologyLanguage!.isNotEmpty &&
+  //     selectedCommunicationStyle != null &&
+  //     selectedCommunicationStyle!.isNotEmpty &&
+  //     selectedBudgetLevel != null &&
+  //     selectedBudgetLevel!.isNotEmpty &&
+  //     anniversaryDate != null &&
+  //     dob != null &&
+  //     selectedCountry != null;
 
   //Show/Hide Cities/States dropdown
   bool showCitiesDropdown = true;
@@ -378,7 +366,7 @@ class _Step1ScreenState extends State<Step1Screen> {
 
               // Communication Style
               Text(
-                'onboarding_step1_what_is_your_communication_style',
+                'How do you communicate with your partner?',
                 // context.l10n.onboarding_step1_what_is_your_communication_style,
                 style: labelStyle,
               ),
@@ -590,18 +578,20 @@ class _Step1ScreenState extends State<Step1Screen> {
               // NEXT button
               MyButton(
                 label: context.l10n.onboarding_step1_next,
-                onPressed: _isFormComplete
-                    ? () {
-                        if (!SignupService()
-                            .isAtLeast18YearsOld(dob ?? DateTime.now())) {
-                          context.flushBarErrorMessage(
-                            message: 'You should be at least 18 years old!',
-                          );
-                          return;
-                        }
-                        _validateAndProceed();
-                      }
-                    : null,
+                onPressed:
+                    // _isFormComplete
+                    //     ?
+                    () {
+                  if (!SignupService()
+                      .isAtLeast18YearsOld(dob ?? DateTime.now())) {
+                    context.flushBarErrorMessage(
+                      message: 'You should be at least 18 years old!',
+                    );
+                    return;
+                  }
+                  _validateAndProceed();
+                },
+                // : null,
               ),
               SizedBox(height: 30.h),
             ],

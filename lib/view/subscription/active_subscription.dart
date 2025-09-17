@@ -155,11 +155,20 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                       ///Show if:
                       ///-> Android && Stripe
                       ///-> Iphone && IAP
-                      if (Platform.isAndroid &&
-                              subscriptionPlatform == 'stripe' ||
-                          Platform.isIOS && subscriptionPlatform == 'apple')
+                      if (Platform.isAndroid && subscriptionPlatform == 'stripe'
+                          // || Platform.isIOS && subscriptionPlatform == 'apple'
+                          )
                         // Change Membership / Subscribe Button
                         _buildChangeButton(context),
+                      if (Platform.isIOS && subscriptionPlatform == 'apple')
+                        Text(
+                          textAlign: TextAlign.center,
+                          '''You can change or cancel subscription from you Apple Account''',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            color: Colors.black54,
+                          ),
+                        ),
 
                       ///CANCEL
                       /// Show if:

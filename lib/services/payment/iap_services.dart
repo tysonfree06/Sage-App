@@ -1,20 +1,15 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/services/views/subscription_services.dart';
 
+List<ProductDetails> iapSubscriptions = [];
+
 class InAppPurchaseServices {
-  //
-//
-//
   ///
   ///IN-APP-PURCHASE (SUBSCRIPTION) SERVICES
   ///
-//
-//
-//
 
 //Define Subscription Product IDs
   static const Set<String> _subscriptionIds = {
@@ -25,15 +20,20 @@ class InAppPurchaseServices {
 
 //Fetch Subscription Products
 
-  int selectedSubscription = 2; //Yearly
-  List<ProductDetails> subscriptions = [];
+  int selectedSubscription = 2;
 
 //Load subscriptions
-  Future<void> loadSubscriptions() async {
+  Future<void> loadSubscriptions(
+    // ignore: avoid_positional_boolean_parameters
+    void Function(bool loadingStatus)? updateLoading,
+  ) async {
+    debugPrint('LOADING SUBSCRIPTIONS....');
+    updateLoading?.call(false);
     try {
       final bool available = await InAppPurchase.instance.isAvailable();
       if (!available) {
         debugPrint('In App Purchase not available');
+        updateLoading?.call(true);
         return;
       }
 
@@ -43,15 +43,20 @@ class InAppPurchaseServices {
         debugPrint('Products not found: ${response.notFoundIDs}');
       }
 
-      subscriptions = response.productDetails;
+      iapSubscriptions = response.productDetails;
+      debugPrint('FOUND SUBSCRIPTIONS ARE: $iapSubscriptions....');
     } catch (e) {
       debugPrint('Failed to load subscriptions Error: $e');
     }
+    updateLoading?.call(true);
   }
 //END: Load subscriptions
 
 //Buy Subscription
-  Future<void> buySubscription(ProductDetails product) async {
+  Future<void> buySubscription(
+    ProductDetails product,
+    BuildContext context,
+  ) async {
     final purchaseParam = PurchaseParam(productDetails: product);
     await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
   }
@@ -67,6 +72,7 @@ class InAppPurchaseServices {
     bool isSignupFlow = true,
   }) {
     // cancel old subscription if already listening
+    //this is also called on subscription.dart dispose
     purchaseSubscription?.cancel(); //TODO: #muttas review this line..
 
     // purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(
@@ -194,7 +200,11 @@ class InAppPurchaseServices {
   }
 //END: Verify and Unlock
 
-  ///
-  ///END: IN-APP-PURCHASE (SUBSCRIPTION) SERVICES
-  ///
+//Close Subscription Stream
+//This will any stream which was already opened
+  void closeSubscriptionStream() {
+    purchaseSubscription?.cancel();
+  }
+
+  //END: IN-APP-PURCHASE (SUBSCRIPTION) SERVICES
 }

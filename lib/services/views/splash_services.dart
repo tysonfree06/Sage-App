@@ -9,7 +9,6 @@ import 'package:sage/services/points_services.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/storage/local_storage.dart';
 import 'package:sage/services/views/login_service.dart';
-import 'package:sage/services/views/signup_service.dart';
 
 class SplashServices {
   final LocalStorage _localStorage = LocalStorage();

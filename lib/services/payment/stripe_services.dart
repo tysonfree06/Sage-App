@@ -4,17 +4,9 @@ import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/services/views/subscription_services.dart';
 
 class StripeServices {
-  //
-//
-//
-  ///
   ///
   ///STRIPE (WITH APPLE PAY) SERVICES
   ///
-  ///
-//
-//
-//
 
 //Step 3: Create subscription
   Future<void> createSubscription(
@@ -46,24 +38,12 @@ class StripeServices {
     updateLoading?.call(); //call setstate in subscription.dart
     final clientSecret = intent['clientSecret'] as String?;
 
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        // paymentIntentClientSecret: clientSecret as String, //this line is commented and replaced by "setupItnent Client Secret" for testing... #muttas
-        setupIntentClientSecret: clientSecret,
-        merchantDisplayName: 'Sage',
-        style: ThemeMode.light,
-        //add Apple Pay
-        applePay: const PaymentSheetApplePay(
-          buttonType: PlatformButtonType.subscribe,
-          merchantCountryCode: 'US',
-        ),
-      ),
-    );
+    await initStripePaymentSheet(clientSecret);
 
     try {
       await Stripe.instance.presentPaymentSheet();
-      //Create Subscripion here
 
+      //Create Subscripion here
       await createSubscription(
         // ignore: use_build_context_synchronously
         context,
@@ -87,6 +67,24 @@ class StripeServices {
     //   });
     // }
     updateLoading?.call(); //call setstate in subscription.dart
+  }
+
+  Future<PaymentSheetPaymentOption?> initStripePaymentSheet(
+    String? clientSecret,
+  ) {
+    return Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        // paymentIntentClientSecret: clientSecret as String, //this line is commented and replaced by "setupItnent Client Secret" for testing... #muttas
+        setupIntentClientSecret: clientSecret,
+        merchantDisplayName: 'Sage',
+        style: ThemeMode.light,
+        //add Apple Pay
+        applePay: const PaymentSheetApplePay(
+          buttonType: PlatformButtonType.subscribe,
+          merchantCountryCode: 'US',
+        ),
+      ),
+    );
   }
 //END: Pay
 
@@ -124,9 +122,5 @@ class StripeServices {
     }
   }
 
-  ///
-  ///
-  ///END: STRIPE (WITH APPLE PAY) SERVICES
-  ///
-  ///
+  //END: STRIPE (WITH APPLE PAY) SERVICES
 }

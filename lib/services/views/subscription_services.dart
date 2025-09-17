@@ -5,12 +5,14 @@ import 'package:sage/app/components/my_dialog.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
+import 'package:sage/repository/iap_repo.dart';
 import 'package:sage/repository/subscription_repo.dart';
 import 'package:sage/services/views/splash_services.dart';
 
 class SubscriptionService {
   final String tag = 'SubscriptionService';
   final _subscriptionRepo = SubscriptionRepository();
+  final _iapRepo = InAppPurchaseRepository();
   // ignore: strict_raw_type
   Future<Map> createPaymentIntent(
     BuildContext context,
@@ -66,12 +68,12 @@ class SubscriptionService {
     try {
       debugPrint('NOW TYRING TO CREATE SUBSCRIPTION');
       final response = isAndroid
-          ? await _subscriptionRepo.createSubscription(
+          ? await _subscriptionRepo.createStripeSubscription(
               priceId!,
               customerId!,
               setupIntentId!,
             )
-          : await _subscriptionRepo.createAppleSubscription(
+          : await _iapRepo.createAppleSubscription(
               receiptData!, //receiptData
               productId!, //productId
               transactionId!, //transactionId

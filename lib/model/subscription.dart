@@ -15,7 +15,8 @@ class Subscription {
 
 class SubscriptionModel {
   SubscriptionModel({this.selectedIndex}) {
-    // If selectedIndex is null and the list is not empty, assign the first item by default
+    // If selectedIndex is null and the list is not empty, assign the first item
+    //by default
     if (selectedIndex == null && subscriptions.isNotEmpty) {
       selectedIndex = 0;
     }
