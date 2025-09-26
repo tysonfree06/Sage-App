@@ -42,6 +42,7 @@ class SubscriptionOptionState extends State<SubscriptionOption> {
                 setState(() => sub.selectedIndex = index);
                 widget.onIndexChanged(index);
               },
+              duration: option.duration,
             ),
             if (index != widget.subscriptionOptions.length - 1)
               SizedBox(height: 10.h),
@@ -59,12 +60,14 @@ class SubscriptionTile extends StatelessWidget {
     required this.index,
     required this.selectedIndex,
     required this.onSelect,
+    required this.duration,
     this.discount,
     this.discountComparedTo,
     super.key,
   });
 
   final String label;
+  final String duration;
   final String price;
   final int? discount;
   final String? discountComparedTo;
@@ -85,93 +88,117 @@ class SubscriptionTile extends StatelessWidget {
             sigmaY: 34,
             tileMode: TileMode.decal,
           ),
-          child: Container(
-            alignment: Alignment.center,
-            height: 75.h,
-            decoration: BoxDecoration(
-              color: context.colors.white.withValues(alpha: .1),
-              borderRadius: BorderRadius.circular(AppRadiuses.largeRadius),
-              border: Border.all(
-                color: selectedIndex == index
-                    ? context.colors.mainGreenLight
-                    : context.colors.white.withValues(alpha: .1),
-              ),
-            ),
-            child: Row(
-              children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Radio<int>(
-                    value: index,
-                    groupValue: selectedIndex,
-                    onChanged: (value) {
-                      onSelect(value!);
-                    },
+          child: Stack(
+            children: [
+              Container(
+                alignment: Alignment.center,
+                height: 75.h,
+                decoration: BoxDecoration(
+                  color: context.colors.white.withValues(alpha: .1),
+                  borderRadius: BorderRadius.circular(AppRadiuses.largeRadius),
+                  border: Border.all(
+                    color: selectedIndex == index
+                        ? context.colors.mainGreenLight
+                        : context.colors.white.withValues(alpha: .1),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 11.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        label,
-                        style: context.typography.subtitle.copyWith(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.white.withValues(alpha: .5),
-                        ),
-                      ),
-                      Text(
-                        price,
-                        style: context.typography.title.copyWith(
-                          fontSize: 22.sp,
-                          fontWeight: FontWeight.w600,
-                          color: context.colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                child: Row(
                   children: [
-                    if (discount != null)
-                      Stack(
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Radio<int>(
+                        value: index,
+                        groupValue: selectedIndex,
+                        onChanged: (value) {
+                          onSelect(value!);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 11.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Assets.images.riban.svg(),
-                          Positioned(
-                            top: 0,
-                            bottom: 10,
-                            right: 0,
-                            left: 0,
-                            child: Align(
-                              child: Text(
-                                '${discount!}%',
-                                style: context.typography.label.copyWith(
-                                  fontSize: 13.sp,
+                          Row(
+                            children: [
+                              Text(
+                                label,
+                                style: context.typography.subtitle.copyWith(
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w500,
-                                  color: context.colors.white,
+                                  color: context.colors.white
+                                      .withValues(alpha: .5),
                                 ),
                               ),
+                              Text(
+                                ' ($duration)',
+                                style: context.typography.subtitle.copyWith(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: context.colors.white
+                                      .withValues(alpha: .5),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            price,
+                            style: context.typography.title.copyWith(
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.w600,
+                              color: context.colors.white,
                             ),
                           ),
                         ],
                       ),
-                    if (discountComparedTo != null)
-                      Text(
-                        discountComparedTo!,
-                        style: context.typography.subtitle.copyWith(
-                          fontSize: 11.sp,
-                          color: context.colors.white.withValues(alpha: .6),
-                        ),
-                      ),
+                    ),
                   ],
                 ),
-                SizedBox(width: 12.w),
-              ],
-            ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (discount != null)
+                        Stack(
+                          children: [
+                            Assets.images.riban.svg(),
+                            Positioned(
+                              top: 0,
+                              bottom: 10,
+                              right: 0,
+                              left: 0,
+                              child: Align(
+                                child: Text(
+                                  '${discount!}%',
+                                  style: context.typography.label.copyWith(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: context.colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      SizedBox(height: 4.h),
+                      if (discountComparedTo != null)
+                        Text(
+                          discountComparedTo!,
+                          style: context.typography.subtitle.copyWith(
+                            fontSize: 11.sp,
+                            color: context.colors.white.withValues(alpha: .6),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(width: 8.w),
+                ],
+              ),
+              SizedBox(width: 12.w),
+            ],
           ),
         ),
       ),

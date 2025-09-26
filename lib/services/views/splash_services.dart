@@ -45,7 +45,9 @@ class SplashServices {
 
       debugPrint('[$tag] ✅ Profile fetched');
     } catch (e) {
-      if (context.mounted) ErrorHandler.handle(context, e, serviceName: tag);
+      if (context.mounted) {
+        await ErrorHandler.handle(context, e, serviceName: tag);
+      }
       // rethrow;
     }
   }
@@ -75,7 +77,7 @@ class SplashServices {
     await _sessionController.loadToken();
     await _sessionController.loadUser();
     debugPrint('[$tag] Auth Token: $authToken');
-    if (authToken.isNotEmpty) {
+    if (authToken.isNotEmpty && _sessionController.user != null) {
       debugPrint('[$tag] Active session found, fetching profile');
       if (context.mounted) await fetchPartner(context);
       try {

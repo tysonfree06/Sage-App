@@ -11,6 +11,7 @@ import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/subscription.dart';
 import 'package:sage/services/payment/iap_services.dart';
 import 'package:sage/services/payment/subscription_services.dart';
+import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/services/views/subscription_services.dart';
 import 'package:sage/view/subscription/widget/my_scaffold.dart';
 import 'package:sage/view/subscription/widget/subscription_tile.dart';
@@ -207,6 +208,39 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             secondFontWeight: FontWeight.w500,
                             textAlign: TextAlign.start,
                           ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyTextButton(
+                          isDark: false,
+                          label: 'Terms of Service',
+                          onPressed: () {
+                            SettingService().sageLaunchUrl(
+                              'https://www.apple.com/legal/internet-services/itunes/dev/stdeula',
+                            );
+                          },
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          'and',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        MyTextButton(
+                          isDark: false,
+                          label: 'Privacy Policy',
+                          onPressed: () {
+                            SettingService().sageLaunchUrl(
+                              'https://sage-frontend-eta.vercel.app/privacy_policies',
+                            );
+                          },
                         ),
                       ],
                     ),

@@ -1,12 +1,14 @@
 class Subscription {
   Subscription({
     required this.label,
+    required this.duration,
     required this.priceString,
     required this.price,
     this.discount,
     this.discountComparedTo,
   });
   final String label;
+  final String duration;
   final String priceString;
   final int? discount;
   final double price;
@@ -26,6 +28,7 @@ class SubscriptionModel {
   static final List<Subscription> subscriptions = [
     Subscription(
       label: 'Yearly',
+      duration: '12 Months auto-renewing',
       priceString: r'$67.99',
       discount: 60,
       discountComparedTo: 'Less Compared To Weekly',
@@ -33,6 +36,7 @@ class SubscriptionModel {
     ),
     Subscription(
       label: 'Monthly',
+      duration: '30 days auto-renewing',
       priceString: r'$6.99',
       discount: 50,
       discountComparedTo: 'Less Compared To Weekly',
@@ -40,6 +44,7 @@ class SubscriptionModel {
     ),
     Subscription(
       label: 'Weekly',
+      duration: '7 days auto-renewing',
       priceString: r'$2.99',
       price: 2.99,
     ),

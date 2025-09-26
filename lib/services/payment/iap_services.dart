@@ -45,6 +45,12 @@ class InAppPurchaseServices {
 
       iapSubscriptions = response.productDetails;
       debugPrint('FOUND SUBSCRIPTIONS ARE: $iapSubscriptions....');
+      // debugPrint('PRICE: ${iapSubscriptions.first.price}');
+      debugPrint('Raw Price: ${iapSubscriptions.first.rawPrice}');
+      // debugPrint('Currency Code: ${iapSubscriptions.first.currencyCode}');
+      debugPrint('Currency Symbol: ${iapSubscriptions.first.currencySymbol}');
+      //raw price
+      //currency symbol
     } catch (e) {
       debugPrint('Failed to load subscriptions Error: $e');
     }
@@ -73,7 +79,7 @@ class InAppPurchaseServices {
   }) {
     // cancel old subscription if already listening
     //this is also called on subscription.dart dispose
-    purchaseSubscription?.cancel(); //TODO: #muttas review this line..
+    purchaseSubscription?.cancel();
 
     // purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(
     //   handlePurchaseUpdates(context, purchaseSubscription,
