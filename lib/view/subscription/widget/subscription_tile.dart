@@ -5,6 +5,7 @@ import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/model/subscription.dart';
+import 'package:sage/view/subscription/subscription.dart';
 
 class SubscriptionOption extends StatefulWidget {
   const SubscriptionOption({

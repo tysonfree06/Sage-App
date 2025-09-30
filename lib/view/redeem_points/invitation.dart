@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
+import 'package:sage/app/constants/external_links.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
@@ -360,7 +361,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                     ..onTap = () {
                                       debugPrint('Terms & Conditions clicked');
                                       SettingService().sageLaunchUrl(
-                                        'https://sage-frontend-eta.vercel.app/termsandconditions',
+                                        ExternalLinks.sagetermsAndCondition,
                                       );
                                     },
                                 ),

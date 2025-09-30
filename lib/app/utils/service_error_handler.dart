@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sage/app/data/exception/app_exceptions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
-import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/splash_services.dart';
 
 class ErrorHandler {

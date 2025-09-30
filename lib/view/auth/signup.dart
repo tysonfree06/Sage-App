@@ -4,6 +4,7 @@ import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_text_button.dart';
+import 'package:sage/app/constants/external_links.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/validations_exception.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
@@ -338,7 +339,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ? null
                                     : () {
                                         SettingService().sageLaunchUrl(
-                                          'https://sage-frontend-eta.vercel.app/termsandconditions',
+                                          ExternalLinks.sagetermsAndCondition,
                                         );
                                       },
                               ),
@@ -356,7 +357,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ? null
                                     : () {
                                         SettingService().sageLaunchUrl(
-                                          'https://sage-frontend-eta.vercel.app/privacy_policies',
+                                          ExternalLinks.sagePrivacyPolicy,
                                         );
                                       },
                               ),

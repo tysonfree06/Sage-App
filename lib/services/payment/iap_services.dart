@@ -20,12 +20,13 @@ class InAppPurchaseServices {
 
 //Fetch Subscription Products
 
-  int selectedSubscription = 2;
+  int selectedSubscription = 0;
 
 //Load subscriptions
   Future<void> loadSubscriptions(
     // ignore: avoid_positional_boolean_parameters
     void Function(bool loadingStatus)? updateLoading,
+    void Function(List<ProductDetails> subs)? updateSubscriptionsList,
   ) async {
     debugPrint('LOADING SUBSCRIPTIONS....');
     updateLoading?.call(false);
@@ -45,16 +46,11 @@ class InAppPurchaseServices {
 
       iapSubscriptions = response.productDetails;
       debugPrint('FOUND SUBSCRIPTIONS ARE: $iapSubscriptions....');
-      // debugPrint('PRICE: ${iapSubscriptions.first.price}');
-      debugPrint('Raw Price: ${iapSubscriptions.first.rawPrice}');
-      // debugPrint('Currency Code: ${iapSubscriptions.first.currencyCode}');
-      debugPrint('Currency Symbol: ${iapSubscriptions.first.currencySymbol}');
-      //raw price
-      //currency symbol
+      updateSubscriptionsList?.call(iapSubscriptions);
     } catch (e) {
       debugPrint('Failed to load subscriptions Error: $e');
     }
-    updateLoading?.call(true);
+    updateLoading?.call(true); //update UI (for localized pricing)
   }
 //END: Load subscriptions
 

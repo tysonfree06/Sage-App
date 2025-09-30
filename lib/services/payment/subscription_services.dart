@@ -45,7 +45,11 @@ class SubscriptionScreenService {
       );
       return;
     }
-
+    if (context.mounted) {
+      context.flushBarSuccessMessage(
+        message: 'Initializing payment sheet...',
+      );
+    }
     //for precise package / subscription selection
 
     final Map<int, String> keywords = {
@@ -62,7 +66,9 @@ class SubscriptionScreenService {
     );
 
     final keyword = keywords[_iapServices.selectedSubscription];
-
+    debugPrint(
+      'SELECTED SUBSCRIPTION INDEX (FROM SUBSCRIPTION SERVICES.DART): ${_iapServices.selectedSubscription}',
+    );
     product = iapSubscriptions.firstWhere(
       (product) => product.title.contains(keyword ?? 'Year'),
       orElse: () => throw Exception(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/my_button.dart';
+import 'package:sage/app/constants/external_links.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
@@ -149,7 +150,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 icon: Assets.icons.privacy.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_privacy_policy,
                 onTap: () => SettingService().sageLaunchUrl(
-                  'https://sage-frontend-eta.vercel.app/privacy_policies',
+                  ExternalLinks.sagePrivacyPolicy,
                 ),
               ),
               SizedBox(height: 10.h),
@@ -157,7 +158,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 icon: Assets.icons.terms.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_terms_conditions,
                 onTap: () => SettingService().sageLaunchUrl(
-                  'https://sage-frontend-eta.vercel.app/termsandconditions',
+                  ExternalLinks.sagetermsAndCondition,
                 ),
               ),
               SizedBox(height: 20.h),

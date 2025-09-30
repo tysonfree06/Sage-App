@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:sage/app/components/colored_rich_text.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_text_button.dart';
+import 'package:sage/app/constants/external_links.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
@@ -30,21 +32,85 @@ class SubscriptionScreen extends StatefulWidget {
 bool isSubscriptionButtonLoading = false;
 bool isLoaded = true;
 
+//default subscriptions
+List<Subscription> subscriptions = [
+  Subscription(
+    label: 'Yearly',
+    duration: '12 Months auto-renewing',
+    priceString: r'$67.99',
+    discount: 60,
+    discountComparedTo: 'Less Compared To Weekly',
+    price: 67.99,
+  ),
+  Subscription(
+    label: 'Monthly',
+    duration: '30 days auto-renewing',
+    priceString: r'$6.99',
+    discount: 50,
+    discountComparedTo: 'Less Compared To Weekly',
+    price: 6.99,
+  ),
+  Subscription(
+    label: 'Weekly',
+    duration: '7 days auto-renewing',
+    priceString: r'$2.99',
+    price: 2.99,
+  ),
+];
+
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   final _iapServices = InAppPurchaseServices();
 
   //initial payment id
   String priceId = Env.stripeYearly;
 
+  //Update prices
+  //When subscriptions are loaded from IAP, update the localized prices
+  void updatePrices(List<ProductDetails> subs) {
+    for (final sub in subs) {
+      if (sub.title.contains('Year')) {
+        subscriptions[0] = Subscription(
+          label: 'Yearly',
+          duration: '12 Months auto-renewing',
+          priceString: '${sub.currencySymbol} ${sub.rawPrice}',
+          discount: 60,
+          discountComparedTo: 'Less Compared To Weekly',
+          price: sub.rawPrice,
+        );
+      } else if (sub.title.contains('Month')) {
+        subscriptions[1] = Subscription(
+          label: 'Monthly',
+          duration: '30 days auto-renewing',
+          priceString: '${sub.currencySymbol} ${sub.rawPrice}',
+          discount: 50,
+          discountComparedTo: 'Less Compared To Weekly',
+          price: sub.rawPrice,
+        );
+      } else if (sub.title.contains('Week')) {
+        subscriptions[2] = Subscription(
+          label: 'Weekly',
+          duration: '7 days auto-renewing',
+          priceString: '${sub.currencySymbol} ${sub.rawPrice}',
+          price: sub.rawPrice,
+        );
+      }
+    }
+    setState(() {});
+  }
+  //END: Update prices
+
   @override
   void initState() {
     super.initState();
     _iapServices
-      ..loadSubscriptions((loadingStatus) {
-        setState(() {
-          isLoaded = loadingStatus;
-        });
-      }) //load Subscripions for in app purchase
+      ..loadSubscriptions(
+        (loadingStatus) {
+          setState(() {
+            isLoaded = loadingStatus;
+          });
+        },
+        updatePrices,
+      ) //load Subscripions for in app purchase
       ..startListeningToPurchaseUpdates(
         context,
         isSignupFlow: widget.showSkip,
@@ -119,24 +185,31 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     SizedBox(height: 16.h),
                     //prices
                     SubscriptionOption(
-                      subscriptionOptions: SubscriptionModel.subscriptions,
+                      // subscriptionOptions: SubscriptionModel.subscriptions,
+                      subscriptionOptions: subscriptions,
                       onIndexChanged: (index) {
                         switch (index) {
                           case 0:
                             setState(() {
                               _iapServices.selectedSubscription = 0;
+                              debugPrint(
+                                  'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
                               priceId = Env.stripeYearly;
                             });
                           // break;
                           case 1:
                             setState(() {
                               _iapServices.selectedSubscription = 1;
+                              debugPrint(
+                                  'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
                               priceId = Env.stripeMonthly;
                             });
                           // break;
                           case 2:
                             setState(() {
                               _iapServices.selectedSubscription = 2;
+                              debugPrint(
+                                  'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
                               priceId = Env.stripeWeekly;
                             });
                           // break;
@@ -220,7 +293,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           label: 'Terms of Service',
                           onPressed: () {
                             SettingService().sageLaunchUrl(
-                              'https://www.apple.com/legal/internet-services/itunes/dev/stdeula',
+                              ExternalLinks.appleTermsOfService,
                             );
                           },
                         ),
@@ -275,5 +348,33 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               ),
             ),
     );
+  }
+}
+
+// Subscrition Model
+class SubscriptionModel {
+  SubscriptionModel({this.selectedIndex}) {
+    // If selectedIndex is null and the list is not empty, assign the first item
+    //by default
+    if (selectedIndex == null && subscriptions.isNotEmpty) {
+      selectedIndex = 0;
+    }
+  }
+
+  int? selectedIndex;
+
+  // Select a subscription by index
+  void selectSubscription(int index) {
+    if (index >= 0 && index < subscriptions.length) {
+      selectedIndex = index;
+    }
+  }
+
+  // Get the selected subscription
+  Subscription? get selectedSubscription {
+    if (selectedIndex != null && selectedIndex! < subscriptions.length) {
+      return subscriptions[selectedIndex!];
+    }
+    return null;
   }
 }
