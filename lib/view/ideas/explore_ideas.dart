@@ -6,8 +6,6 @@
   to reload the data.
 */
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/free_user_alert.dart';
@@ -394,180 +392,179 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
           final bool isBookmarked = savedBy.contains(userId.toString());
           final String imageUrl = topPicks[index]['image'].toString();
 
-          return SizedBox(
-            width: 182.w,
-            child: Card(
-              color: Colors.white,
-              // margin: const EdgeInsets.all(16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  12.r,
+          return GestureDetector(
+            onTap: () async {
+              await _gotoIdeaDetails(context, topPicks, index);
+            },
+            child: SizedBox(
+              width: 182.w,
+              child: Card(
+                color: Colors.white,
+                // margin: const EdgeInsets.all(16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    12.r,
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(12.w),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Image with category pill
-                    Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          // child: imageUrl.isNotEmpty && imageUrl != 'null'
-                          //     ?
-                          child: Image.network(
-                            imageUrl,
-                            height: 127.h,
-                            width: 152.w,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                              color: context.colors.white,
-                              width: 152.w,
+                child: Padding(
+                  padding: EdgeInsets.all(12.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Image with category pill
+                      Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            // child: imageUrl.isNotEmpty && imageUrl != 'null'
+                            //     ?
+                            child: Image.network(
+                              imageUrl,
                               height: 127.h,
+                              width: 152.w,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                color: context.colors.white,
+                                width: 152.w,
+                                height: 127.h,
+                              ),
+                            ),
+                            // : Container(
+                            //     color: Colors.grey,
+                            //     width: 152.w,
+                            //     height: 127.h,
+                            //   ),
+                          ),
+                          Positioned(
+                            bottom: 10,
+                            right: 10,
+                            child: IdeaTag(
+                              label: topPicks[index]['type'].toString(),
                             ),
                           ),
-                          // : Container(
-                          //     color: Colors.grey,
-                          //     width: 152.w,
-                          //     height: 127.h,
-                          //   ),
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: IdeaTag(
-                            label: topPicks[index]['type'].toString(),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    Text(
-                      topPicks[index]['title'] as String,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14.sp,
+                        ],
                       ),
-                    ),
 
-                    Row(
-                      children: [
-                        Assets.icons.locationGrey.svg(),
-                        SizedBox(
-                          width: 2.w,
+                      const SizedBox(height: 12),
+
+                      Text(
+                        topPicks[index]['title'] as String,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14.sp,
                         ),
-                        Expanded(
-                          child: Text(
-                            topPicks[index]['location'] as String,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w700,
+                      ),
+
+                      Row(
+                        children: [
+                          Assets.icons.locationGrey.svg(),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          Expanded(
+                            child: Text(
+                              topPicks[index]['location'] as String,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      // ignore: avoid_dynamic_calls
-                      r'$' + topPicks[index]['cost'].toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: context.colors.textDarkGreen,
-                        fontSize: 11.sp,
+                        ],
                       ),
-                    ),
 
-                    SizedBox(height: 8.h),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            final isPremium = sessionController.user!.isPremium;
-                            if (!isPremium!) {
-                              IdeasServices.showSubscriptionDialog(context);
-                            } else {
-                              if (isBookmarked) {
-                                // setState(() {
-                                //   isBookmarked = false;
-                                // });
-                                await IdeasServices().removeBookmark(
-                                  context,
-                                  topPicks[index]['_id'] as String,
-                                );
-                                await loadFeed();
+                      const SizedBox(height: 8),
+
+                      Text(
+                        // ignore: avoid_dynamic_calls
+                        r'$' + topPicks[index]['cost'].toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: context.colors.textDarkGreen,
+                          fontSize: 11.sp,
+                        ),
+                      ),
+
+                      SizedBox(height: 8.h),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              final isPremium =
+                                  sessionController.user!.isPremium;
+                              if (!isPremium!) {
+                                IdeasServices.showSubscriptionDialog(context);
                               } else {
-                                // setState(() {
-                                //   isBookmarked = true;
-                                // });
-                                await IdeasServices().addBookmark(
-                                  context,
-                                  topPicks[index]['_id'] as String,
-                                );
-                                await loadFeed();
+                                if (isBookmarked) {
+                                  // setState(() {
+                                  //   isBookmarked = false;
+                                  // });
+                                  await IdeasServices().removeBookmark(
+                                    context,
+                                    topPicks[index]['_id'] as String,
+                                  );
+                                  await loadFeed();
+                                } else {
+                                  // setState(() {
+                                  //   isBookmarked = true;
+                                  // });
+                                  await IdeasServices().addBookmark(
+                                    context,
+                                    topPicks[index]['_id'] as String,
+                                  );
+                                  await loadFeed();
+                                }
                               }
-                            }
-                          },
-                          // child: Assets.icons.bookmark.svg(),
-                          child: Padding(
-                            padding: EdgeInsets.all(2.w),
-                            child: isBookmarked
-                                ? Assets.icons.bookmarkFilled.svg(height: 18)
-                                : Assets.icons.bookmark.svg(height: 17),
+                            },
+                            // child: Assets.icons.bookmark.svg(),
+                            child: Padding(
+                              padding: EdgeInsets.all(2.w),
+                              child: isBookmarked
+                                  ? Assets.icons.bookmarkFilled.svg(height: 18)
+                                  : Assets.icons.bookmark.svg(height: 17),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 3.w,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            IdeasServices.showIdeaSheet(
-                              context,
-                              topPicks[index]['_id'] as String,
-                              loadFeed,
-                              () {},
-                              isBookmarked: isBookmarked,
-                            );
-                          },
-                          child: Container(
-                            color: Colors.transparent,
-                            alignment: Alignment.center,
-                            width: 24.w,
-                            height: 20.h,
-                            child: Assets.icons.threeDots.svg(),
+                          SizedBox(
+                            width: 3.w,
                           ),
-                        ),
-                        SizedBox(
-                          width: 32.w,
-                        ),
-                        MyTextButton(
-                          onPressed: () async {
-                            await IdeasServices.gotoIdeaDetails(
-                              context,
-                              isAddedIdea: false,
-                              ideaDetails:
-                                  topPicks[index] as Map<String, dynamic>,
-                            ).then((_) {
-                              loadFeed();
-                            });
-                          },
-                          fontSize: 12.sp,
-                          label: 'View Details',
-                        ),
-                      ],
-                    ),
-                  ],
+                          GestureDetector(
+                            onTap: () {
+                              IdeasServices.showIdeaSheet(
+                                context,
+                                topPicks[index]['_id'] as String,
+                                loadFeed,
+                                () {},
+                                isBookmarked: isBookmarked,
+                              );
+                            },
+                            child: Container(
+                              color: Colors.transparent,
+                              alignment: Alignment.center,
+                              width: 24.w,
+                              height: 20.h,
+                              child: Assets.icons.threeDots.svg(),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 32.w,
+                          ),
+                          MyTextButton(
+                            onPressed: () async {
+                              await _gotoIdeaDetails(context, topPicks, index);
+                            },
+                            fontSize: 12.sp,
+                            label: 'View Details',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -578,5 +575,20 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
         },
       ),
     );
+  }
+
+  //for top picks
+  Future<void> _gotoIdeaDetails(
+    BuildContext context,
+    List<dynamic> topPicks,
+    int index,
+  ) async {
+    await IdeasServices.gotoIdeaDetails(
+      context,
+      isAddedIdea: false,
+      ideaDetails: topPicks[index] as Map<String, dynamic>,
+    ).then((_) {
+      loadFeed();
+    });
   }
 }

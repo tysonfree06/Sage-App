@@ -339,7 +339,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ? null
                                     : () {
                                         SettingService().sageLaunchUrl(
-                                          ExternalLinks.sagetermsAndCondition,
+                                          ExternalLinks.sageTermsAndCondition,
                                         );
                                       },
                               ),

@@ -102,6 +102,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      isSubscriptionButtonLoading = false;
+    });
     _iapServices
       ..loadSubscriptions(
         (loadingStatus) {
@@ -322,19 +325,24 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       isLoading: isSubscriptionButtonLoading,
                       label: context.l10n.subscribe,
                       onPressed: () async {
-                        await SubscriptionScreenService().handleSubscribeButton(
-                          context,
-                          priceId,
-                          isSignupFlow: widget.showSkip,
-                          updateLoading: () {
-                            setState(
-                              () {
-                                isSubscriptionButtonLoading =
-                                    !isSubscriptionButtonLoading;
-                              },
-                            );
-                          },
-                        );
+                        WidgetsBinding.instance.addPostFrameCallback((_) async {
+                          await SubscriptionScreenService()
+                              .handleSubscribeButton(
+                            context,
+                            priceId,
+                            isSignupFlow: widget.showSkip,
+                            updateLoading: () {
+                              if (context.mounted) {
+                                setState(
+                                  () {
+                                    isSubscriptionButtonLoading =
+                                        !isSubscriptionButtonLoading;
+                                  },
+                                );
+                              }
+                            },
+                          );
+                        });
                       },
                     ),
                     SizedBox(height: 16.h),

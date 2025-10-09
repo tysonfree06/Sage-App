@@ -42,199 +42,212 @@ class _IdeaCardState extends State<IdeaCard> {
 
     final bool isBookmarked = savedBy.contains(userId.toString());
 
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-      ),
-      child: SizedBox(
-        height: 155.h,
-        child: Card(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(10.w),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Image with category pill
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15.r),
-                  child: Image.network(
-                    imageUrl,
-                    height: 126.h,
-                    width: 120.w,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: context.colors.white,
-                      width: 120.w,
+    return GestureDetector(
+      onTap: () async {
+        await _gotoIdeaDetails(context);
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+        ),
+        child: SizedBox(
+          height: 155.h,
+          child: Card(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(10.w),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image with category pill
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15.r),
+                    child: Image.network(
+                      imageUrl,
                       height: 126.h,
+                      width: 120.w,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: context.colors.white,
+                        width: 120.w,
+                        height: 126.h,
+                      ),
                     ),
                   ),
-                ),
 
-                SizedBox(width: 10.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    SizedBox(
-                      width: 185.w,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IdeaTag(
-                            label: widget.data['type'].toString(),
-                          ),
-                          if (widget.showOptionsButton)
-                            Padding(
-                              padding: EdgeInsets.only(right: 5.w),
-                              child: GestureDetector(
-                                onTap: () {
-                                  IdeasServices.showIdeaSheet(
-                                    context,
-                                    widget.data['_id'] as String,
-                                    () {
-                                      widget.onBookmarkOrDislikePressed?.call();
-                                    },
-                                    () {
-                                      widget.onBookmarkOrDislikePressed?.call();
-                                    },
-                                    isBookmarked: isBookmarked,
-                                  );
-                                },
-                                child: Container(
-                                  color: Colors.transparent,
-                                  alignment: Alignment.center,
-                                  width: 18.w,
-                                  height: 16.h,
-                                  child:
-                                      Assets.icons.threeDots.svg(height: 14.h),
+                  SizedBox(width: 10.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      SizedBox(
+                        width: 185.w,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IdeaTag(
+                              label: widget.data['type'].toString(),
+                            ),
+                            if (widget.showOptionsButton)
+                              Padding(
+                                padding: EdgeInsets.only(right: 5.w),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    IdeasServices.showIdeaSheet(
+                                      context,
+                                      widget.data['_id'] as String,
+                                      () {
+                                        widget.onBookmarkOrDislikePressed
+                                            ?.call();
+                                      },
+                                      () {
+                                        widget.onBookmarkOrDislikePressed
+                                            ?.call();
+                                      },
+                                      isBookmarked: isBookmarked,
+                                    );
+                                  },
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    alignment: Alignment.center,
+                                    width: 18.w,
+                                    height: 16.h,
+                                    child: Assets.icons.threeDots
+                                        .svg(height: 14.h),
+                                  ),
                                 ),
-                              ),
-                            )
-                          else
-                            const SizedBox.shrink(),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    SizedBox(
-                      width: 160.w,
-                      child: Text(
-                        overflow: TextOverflow.ellipsis,
-                        widget.data['title'] as String,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 15,
+                              )
+                            else
+                              const SizedBox.shrink(),
+                          ],
                         ),
                       ),
-                    ),
-                    SizedBox(height: 4.h),
-                    //
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Assets.icons.locationGrey.svg(),
-                        SizedBox(
-                          width: 2.w,
-                        ),
-                        SizedBox(
-                          width: 160.w,
-                          child: Text(
-                            widget.data['location'] == null
-                                ? ''
-                                : widget.data['location'] as String,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+                      SizedBox(height: 8.h),
+                      SizedBox(
+                        width: 160.w,
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          widget.data['title'] as String,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 15,
                           ),
                         ),
-                      ],
-                    ),
-                    //
-                    SizedBox(height: 8.h),
-                    Text(
-                      widget.data['cost'] == null
-                          ? r'$0'
-                          : r'$' + widget.data['cost'].toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: context.colors.textDarkGreen,
-                        fontSize: 12.sp,
                       ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        if (!widget.isAddedIdeaScreen) ...[
-                          //InkWell as a replacement to Gesture Detector
-                          InkWell(
-                            onTap: () async {
-                              final isPremium =
-                                  sessionController.user!.isPremium;
-                              if (!isPremium!) {
-                                IdeasServices.showSubscriptionDialog(context);
-                              } else {
-                                if (isBookmarked) {
-                                  await IdeasServices().removeBookmark(
-                                    context,
-                                    widget.data['_id'] as String,
-                                  );
-                                  widget.onBookmarkOrDislikePressed?.call();
-                                  debugPrint('CALLED THE FUNCTION IN THE CARD');
-                                } else {
-                                  await IdeasServices().addBookmark(
-                                    context,
-                                    widget.data['_id'] as String,
-                                  );
-                                  widget.onBookmarkOrDislikePressed?.call();
-                                }
-                                debugPrint('CALLED THE FUNCTION IN THE CARD');
-                              }
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.all(2.w),
-                              child: isBookmarked
-                                  ? Assets.icons.bookmarkFilled.svg(height: 18)
-                                  : Assets.icons.bookmark.svg(height: 17),
-                            ),
+                      SizedBox(height: 4.h),
+                      //
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Assets.icons.locationGrey.svg(),
+                          SizedBox(
+                            width: 2.w,
                           ),
                           SizedBox(
-                            width: 90.w,
+                            width: 160.w,
+                            child: Text(
+                              widget.data['location'] == null
+                                  ? ''
+                                  : widget.data['location'] as String,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ] else
-                          const SizedBox.shrink(),
-                        MyTextButton(
-                          label: 'View Details',
+                        ],
+                      ),
+                      //
+                      SizedBox(height: 8.h),
+                      Text(
+                        widget.data['cost'] == null
+                            ? r'$0'
+                            : r'$' + widget.data['cost'].toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: context.colors.textDarkGreen,
                           fontSize: 12.sp,
-                          onPressed: () async {
-                            await IdeasServices.gotoIdeaDetails(
-                              context,
-                              isAddedIdea: widget.isAddedIdeaScreen,
-                              ideaDetails: widget.data,
-                              callBackFlag: false,
-                            );
-                            widget.onReturnFromDetails?.call();
-                          },
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                      ),
+                      SizedBox(height: 8.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (!widget.isAddedIdeaScreen) ...[
+                            //InkWell as a replacement to Gesture Detector
+                            InkWell(
+                              onTap: () async {
+                                final isPremium =
+                                    sessionController.user!.isPremium;
+                                if (!isPremium!) {
+                                  IdeasServices.showSubscriptionDialog(context);
+                                } else {
+                                  if (isBookmarked) {
+                                    await IdeasServices().removeBookmark(
+                                      context,
+                                      widget.data['_id'] as String,
+                                    );
+                                    widget.onBookmarkOrDislikePressed?.call();
+                                    debugPrint(
+                                        'CALLED THE FUNCTION IN THE CARD');
+                                  } else {
+                                    await IdeasServices().addBookmark(
+                                      context,
+                                      widget.data['_id'] as String,
+                                    );
+                                    widget.onBookmarkOrDislikePressed?.call();
+                                  }
+                                  debugPrint('CALLED THE FUNCTION IN THE CARD');
+                                }
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(2.w),
+                                child: isBookmarked
+                                    ? Assets.icons.bookmarkFilled
+                                        .svg(height: 18)
+                                    : Assets.icons.bookmark.svg(height: 17),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 90.w,
+                            ),
+                          ] else
+                            const SizedBox.shrink(),
+                          MyTextButton(
+                            label: 'View Details',
+                            fontSize: 12.sp,
+                            onPressed: () async {
+                              await _gotoIdeaDetails(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _gotoIdeaDetails(BuildContext context) async {
+    await IdeasServices.gotoIdeaDetails(
+      context,
+      isAddedIdea: widget.isAddedIdeaScreen,
+      ideaDetails: widget.data,
+      callBackFlag: false,
+    );
+    widget.onReturnFromDetails?.call();
   }
 }

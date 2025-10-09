@@ -361,7 +361,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                     ..onTap = () {
                                       debugPrint('Terms & Conditions clicked');
                                       SettingService().sageLaunchUrl(
-                                        ExternalLinks.sagetermsAndCondition,
+                                        ExternalLinks.sageTermsAndCondition,
                                       );
                                     },
                                 ),

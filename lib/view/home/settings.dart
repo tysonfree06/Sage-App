@@ -158,7 +158,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 icon: Assets.icons.terms.svg(width: 18.w, height: 18.w),
                 text: context.l10n.settings_terms_conditions,
                 onTap: () => SettingService().sageLaunchUrl(
-                  ExternalLinks.sagetermsAndCondition,
+                  ExternalLinks.sageTermsAndCondition,
                 ),
               ),
               SizedBox(height: 20.h),

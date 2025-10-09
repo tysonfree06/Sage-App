@@ -49,7 +49,7 @@
   "@_LOGIN_SCREEN": {},
   "login": "Login ",
   "login_to_your_account": "To Your Account",
-  "login_subtitle": "Enter your account details and continue to SAGE",
+  "login_subtitle": "Enter your account details and continue to Sage",
   "login_email_label": "Email Address",
   "login_email_hint": "Enter your email",
   "login_password_label": "Password",

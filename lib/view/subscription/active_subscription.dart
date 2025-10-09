@@ -169,15 +169,9 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                             color: Colors.black54,
                           ),
                         ),
-
-                      ///CANCEL
-                      /// Show if:
-                      /// -> Android && Stripe
-                      /// -> Iphone && Stripe
-                      if ((Platform.isAndroid &&
-                                  subscriptionPlatform == 'stripe' ||
-                              Platform.isIOS &&
-                                  subscriptionPlatform == 'stripe') &&
+                      //Show if:
+                      //-> Stripe
+                      if ((subscriptionPlatform == 'stripe') &&
                           isSubscriptionActive) ...[
                         SizedBox(height: 16.h),
                         // Cancel Membership TextButton

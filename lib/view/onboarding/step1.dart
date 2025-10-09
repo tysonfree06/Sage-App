@@ -91,7 +91,7 @@ class _Step1ScreenState extends State<Step1Screen> {
   // ];
   static const apologyLanguages = [
     "Saying I'm Sorry",
-    'Owing Up',
+    'Owning Up',
     'Making It Right',
     'Changing Behaviour',
     'Asking to Be Forgiven',

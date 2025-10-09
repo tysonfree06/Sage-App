@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 // import 'package:sage/services/session_manager/session_controller.dart';
@@ -41,9 +40,20 @@ class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
             style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700),
           ),
           actions: [
-            MyTextButton(
-              label: 'My Added Ideas',
-              isDark: false,
+            // MyTextButton(
+            //   label: 'My Added Ideas',
+            //   isDark: false,
+            //   onPressed: () {
+            //     final isPremium = sessionController.user!.isPremium;
+
+            //     if (!isPremium!) {
+            //       IdeasServices.showSubscriptionDialog(context);
+            //     } else {
+            //       IdeasServices.gotoMyAddedIdeas(context);
+            //     }
+            //   },
+            // ),
+            IconButton(
               onPressed: () {
                 final isPremium = sessionController.user!.isPremium;
 
@@ -53,6 +63,11 @@ class _IdeaScreenState extends State<IdeaScreen> with TickerProviderStateMixin {
                   IdeasServices.gotoMyAddedIdeas(context);
                 }
               },
+              icon: Icon(
+                Icons.add_circle,
+                size: 28.w,
+                color: context.colors.mainGreenLight,
+              ),
             ),
             SizedBox(
               width: 16.w,
