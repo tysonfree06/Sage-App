@@ -560,9 +560,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
                               child: Assets.icons.threeDots.svg(),
                             ),
                           ),
-                          SizedBox(
-                            width: 32.w,
-                          ),
+                          const Spacer(),
                           MyTextButton(
                             onPressed: () async {
                               await _gotoIdeaDetails(context, topPicks, index);

@@ -100,6 +100,9 @@ class OnboardingService {
   Future<void> submitAllData(
       BuildContext context, Map<String, dynamic> payload) async {
     try {
+      OnboardingService.goToDataAnalysis(
+        context,
+      );
       final response = await _userRepository.updateProfile(payload);
       debugPrint('RESPONSE IS: $response');
       if (context.mounted) {
@@ -110,9 +113,9 @@ class OnboardingService {
         }
         //FIXME: This is not a part of onboarding so exit the flow and push this screen to stack (it will also remove previous items in stack)
 
-        OnboardingService.goToDataAnalysis(
-          context,
-        );
+        // OnboardingService.goToDataAnalysis(
+        //   context,
+        // );
       }
     } catch (e) {
       if (context.mounted) {

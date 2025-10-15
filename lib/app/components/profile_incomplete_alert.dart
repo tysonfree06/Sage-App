@@ -51,11 +51,18 @@ class _ProfileIncompleteAlertState extends State<ProfileIncompleteAlert> {
                 Row(
                   children: [
                     Text(
-                      'Profile Incomplete',
+                      'Finish Profile Setup',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15.sp,
                       ),
+                    ),
+                    SizedBox(
+                      width: 6.w,
+                    ),
+                    Icon(
+                      Icons.edit,
+                      size: 18.w,
                     ),
                     const Spacer(),
                     GestureDetector(
@@ -87,7 +94,7 @@ class _ProfileIncompleteAlertState extends State<ProfileIncompleteAlert> {
                               width: 4.w,
                             ),
                             Text(
-                              'Complete Profile',
+                              'Continue',
                               style: TextStyle(
                                 fontSize: 11.sp,
                                 color: Colors.white,
@@ -103,7 +110,8 @@ class _ProfileIncompleteAlertState extends State<ProfileIncompleteAlert> {
                   height: 6.h,
                 ),
                 Text(
-                  '''Your profile is not complete. Please fill all information to get perfect ideas!''',
+                  // '''Your profile is not complete. Please fill all information to get perfect ideas!''',
+                  '''You're almost there. Complete the final step to unlock your full experience.''',
                   style: TextStyle(
                     // fontSize: 14.sp,
                     color: context.colors.subtext,
