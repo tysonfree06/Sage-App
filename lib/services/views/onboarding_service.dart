@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:sage/app/routes/routes_name.dart';
+import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
+import 'package:sage/app/utils/service_error_handler.dart';
+import 'package:sage/repository/user_repo.dart';
 
 class OnboardingService {
   static Future<void> goToOnBoarding(BuildContext context) async {
@@ -91,4 +94,51 @@ class OnboardingService {
     //   }
     // }
   }
+
+  //Test
+  final UserRepository _userRepository = UserRepository();
+  Future<void> submitAllData(
+      BuildContext context, Map<String, dynamic> payload) async {
+    try {
+      final response = await _userRepository.updateProfile(payload);
+      debugPrint('RESPONSE IS: $response');
+      if (context.mounted) {
+        if (response['message'] != null) {
+          context.flushBarSuccessMessage(
+            message: response['message'].toString(),
+          );
+        }
+        //FIXME: This is not a part of onboarding so exit the flow and push this screen to stack (it will also remove previous items in stack)
+
+        OnboardingService.goToDataAnalysis(
+          context,
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ErrorHandler.handle(context, e, serviceName: 'OnboardingService');
+      }
+      // Developer logging
+      //   if (e is AppException) {
+      //     if (mounted) {
+      //       debugPrint(
+      //         // ignore: lines_longer_than_80_chars
+      //         '[OnboardingService] ❌ OnBoarding Data Upload failed: ${e.debugMessage}',
+      //       );
+      //       debugPrint('USER MESSAGE IS: ${e.userMessage}');
+      //       context.flushBarErrorMessage(
+      //         message: 'Invalid Partner Code or Partner already linked',
+      //       );
+      //     }
+      //   } else {
+      //     if (mounted) {
+      //       context.flushBarErrorMessage(
+      //         message: 'Something went wrong...',
+      //       );
+      //     }
+      //     debugPrint('[OnboardingService] ❌ Unexpected error: $e');
+      //   }
+    }
+  }
+  //END: Test
 }

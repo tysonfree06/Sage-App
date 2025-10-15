@@ -13,6 +13,7 @@ import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/subscription.dart';
 import 'package:sage/services/payment/iap_services.dart';
 import 'package:sage/services/payment/subscription_services.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/services/views/subscription_services.dart';
 import 'package:sage/view/subscription/widget/my_scaffold.dart';
@@ -60,6 +61,7 @@ List<Subscription> subscriptions = [
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   final _iapServices = InAppPurchaseServices();
+  final _sessionController = SessionController();
 
   //initial payment id
   String priceId = Env.stripeYearly;
@@ -191,28 +193,29 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       // subscriptionOptions: SubscriptionModel.subscriptions,
                       subscriptionOptions: subscriptions,
                       onIndexChanged: (index) {
+                        _sessionController.setselectedSubscriptionIndex(index);
                         switch (index) {
                           case 0:
                             setState(() {
-                              _iapServices.selectedSubscription = 0;
-                              debugPrint(
-                                  'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
+                              // _iapServices.selectedSubscription = 0;
+                              // debugPrint(
+                              //     'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
                               priceId = Env.stripeYearly;
                             });
                           // break;
                           case 1:
                             setState(() {
-                              _iapServices.selectedSubscription = 1;
-                              debugPrint(
-                                  'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
+                              // _iapServices.selectedSubscription = 1;
+                              // debugPrint(
+                              //     'SELECTED SUBSCRIPTION INDEX: ${_sessionController.selectedSubscriptionIndex}');
                               priceId = Env.stripeMonthly;
                             });
                           // break;
                           case 2:
                             setState(() {
-                              _iapServices.selectedSubscription = 2;
-                              debugPrint(
-                                  'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
+                              // _iapServices.selectedSubscription = 2;
+                              // debugPrint(
+                              //     'SELECTED SUBSCRIPTION INDEX: ${_sessionController.selectedSubscriptionIndex}');
                               priceId = Env.stripeWeekly;
                             });
                           // break;

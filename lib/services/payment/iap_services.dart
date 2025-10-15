@@ -20,7 +20,7 @@ class InAppPurchaseServices {
 
 //Fetch Subscription Products
 
-  int selectedSubscription = 0;
+  // int selectedSubscription = 0;
 
 //Load subscriptions
   Future<void> loadSubscriptions(

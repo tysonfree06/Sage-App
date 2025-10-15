@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/components/free_user_alert.dart';
 import 'package:sage/app/components/loading_widget.dart';
+import 'package:sage/app/components/profile_incomplete_alert.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/styles/app_radiuses.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
@@ -226,6 +227,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    //profile completion status will be checked
+                    //within the widget
+                    const ProfileIncompleteAlert(),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    //the subscription status is checked within FreeUserAlert
+                    //widget
                     const FreeUserAlert(
                       title: 'Get More Out of Sage 💕',
                       subtitle:

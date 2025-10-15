@@ -34,10 +34,62 @@ class _NavigationScreenState extends State<NavigationScreen> {
       // check if user has completed his profile, otherwise, navigate to onboarding
       final UserModel user = SessionController().user!;
       if (user.email.isNotEmpty) {
-        if (user.loveLanguage == null || user.loveLanguage == '') {
+        //original
+        // if (user.loveLanguage == null || user.loveLanguage == '') {
+        //   if (mounted) {
+        //     SignupService.goToOnBoarding(context);
+        //   }
+        // }
+
+        //new
+        // bool isNullOrEmpty(String? value) =>
+        //     value == null || value.trim().isEmpty;
+
+        // final allEmptyOrNull = isNullOrEmpty(user.loveLanguage) &&
+        //     isNullOrEmpty(user.apologyLanguage) &&
+        //     isNullOrEmpty(user.communicationStyle) &&
+        //     isNullOrEmpty(user.relationshipStatus) &&
+        //     user.anniversaryDate == null &&
+        //     user.dateOfBirth == null &&
+        //     user.interests == null &&
+        //     user.giftPreferences == null &&
+        //     user.location == null;
+        // if (allEmptyOrNull) {
+        //   //If all fields are empty or null (User has bypassed the onboarding),
+        //   //navigate to Onboarding
+        //   if (mounted) {
+        //     SignupService.goToOnBoarding(context);
+        //   }
+        // }
+        //
+
+        //latest
+        final fields = [
+          user.loveLanguage,
+          user.apologyLanguage,
+          user.communicationStyle,
+          user.relationshipStatus,
+          user.anniversaryDate,
+          user.dateOfBirth,
+          user.interests,
+          user.giftPreferences,
+          user.location,
+        ];
+
+        // Convert to bools for easier checking
+        final bool allEmptyOrNull =
+            fields.every((f) => f == null || (f is String && f.trim().isEmpty));
+        final bool anyEmptyOrNull =
+            fields.any((f) => f == null || (f is String && f.trim().isEmpty));
+
+        if (allEmptyOrNull) {
           if (mounted) {
             SignupService.goToOnBoarding(context);
           }
+        } else if (anyEmptyOrNull) {
+          //isProfileIncomplete = true;
+          SessionController().setProfileCompletionStatus(status: true);
+          debugPrint('Profile Incomplete');
         }
       }
     });

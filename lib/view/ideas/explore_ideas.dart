@@ -13,6 +13,7 @@ import 'package:sage/app/components/global_unfocus_keyboard.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_form_text_field.dart';
 import 'package:sage/app/components/my_text_button.dart';
+import 'package:sage/app/components/profile_incomplete_alert.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
@@ -193,6 +194,13 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
             child: ListView(
               children: [
                 SizedBox(height: 16.h),
+                //profile completion status will be checked
+                //within the widget
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: const ProfileIncompleteAlert(),
+                ),
+                SizedBox(height: 10.h),
                 if (isPremium == true)
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -218,6 +226,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
                     ),
                   ),
                 //END: search box
+
                 SizedBox(height: 20.h),
                 _buildCategories(categories),
                 if (moreIdeas.isEmpty && topPicks.isEmpty) ...[

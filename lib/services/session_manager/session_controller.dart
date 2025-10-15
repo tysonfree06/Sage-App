@@ -15,13 +15,16 @@ class SessionController extends ChangeNotifier {
   String? _token;
   UserModel? _user;
   UserModel? partner;
-  bool _isPartnerFetched =
-      false; //#muttas remove it when partner is auto loading on splash..
+  bool _isPartnerFetched = false;
+  int _selectedSubscriptionIndex = 0;
+  bool _isProfileIncomplete = false;
 
   List<dynamic>? notifications;
 
   String? get token => _token;
   bool get isPartnerFetched => _isPartnerFetched;
+  int get selectedSubscriptionIndex => _selectedSubscriptionIndex;
+  bool get isProfileIncomplete => _isProfileIncomplete;
 
   //make user getter
   UserModel? get user => _user;
@@ -74,12 +77,22 @@ class SessionController extends ChangeNotifier {
     _isPartnerFetched = status;
   }
 
+  Future<void> setselectedSubscriptionIndex(int index) async {
+    _selectedSubscriptionIndex = index;
+  }
+
+  Future<void> setProfileCompletionStatus({bool status = false}) async {
+    _isProfileIncomplete = status;
+  }
+
   /// Clear token on logout
   Future<void> clearSession() async {
     _token = null;
     _user = null;
     partner = null;
     _isPartnerFetched = false;
+    _selectedSubscriptionIndex = 0;
+    _isProfileIncomplete = false;
     notifications = null;
     notifyListeners();
     await _localStorage.clearValue('auth_token');

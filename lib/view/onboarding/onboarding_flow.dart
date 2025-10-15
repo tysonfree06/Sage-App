@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sage/app/components/my_text_button.dart';
 import 'package:sage/app/components/step_progress_bar.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/general_extensions.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/onboarding_service.dart';
 import 'package:sage/view/views.dart';
 
 class OnboardingFlowScreen extends StatefulWidget {
@@ -15,6 +18,7 @@ class OnboardingFlowScreen extends StatefulWidget {
 class OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   final _pageController = PageController();
   final sessionController = SessionController();
+  final _onboardingService = OnboardingService();
   int _currentStep = 0;
 
   // Step 1
@@ -97,6 +101,21 @@ class OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
             color: context.colors.mainGreenLight,
           ),
           centerTitle: true,
+          actions: [
+            MyTextButton(
+              onPressed: () {
+                if (_currentStep < 3) {
+                  nextStep();
+                } else {
+                  _onboardingService.submitAllData(context, payload);
+                }
+              },
+              label: 'Skip',
+            ),
+            SizedBox(
+              width: 16.w,
+            ),
+          ],
           title: SizedBox(
             width: context.mediaQueryWidth / 2,
             child: StepProgressBar(

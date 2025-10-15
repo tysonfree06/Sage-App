@@ -4,6 +4,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/services/payment/iap_services.dart';
 import 'package:sage/services/payment/stripe_services.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 
 class SubscriptionScreenService {
   final _stripeServices = StripeServices();
@@ -33,6 +34,7 @@ class SubscriptionScreenService {
   }
 
   Future<void> _handleIAPSubscription(BuildContext context) async {
+    final _sessionController = SessionController();
     debugPrint('IN HANDLE IAP SUBSCRIPTION,');
     debugPrint('SUBSCRIPTIONS LIST IS: $iapSubscriptions');
     if (iapSubscriptions.isEmpty) {
@@ -58,19 +60,22 @@ class SubscriptionScreenService {
       2: 'Week',
     };
 
-    ProductDetails product = iapSubscriptions.firstWhere(
-      (product) => product.title.contains('Year'),
-      orElse: () => throw Exception(
-        'Yearly Subscription not found',
-      ),
-    );
+    // ProductDetails product = iapSubscriptions.firstWhere(
+    //   (product) => product.title.contains('Year'),
+    //   orElse: () => throw Exception(
+    //     'Yearly Subscription not found',
+    //   ),
+    // );
 
-    final keyword = keywords[_iapServices.selectedSubscription];
+    // final String keyword = keywords[_iapServices.selectedSubscription]!;
+    final String keyword =
+        keywords[_sessionController.selectedSubscriptionIndex]!;
+
     debugPrint(
-      'SELECTED SUBSCRIPTION INDEX (FROM SUBSCRIPTION SERVICES.DART): ${_iapServices.selectedSubscription}',
+      'SELECTED SUBSCRIPTION INDEX (FROM SUBSCRIPTION SERVICES.DART): ${_sessionController.selectedSubscriptionIndex}',
     );
-    product = iapSubscriptions.firstWhere(
-      (product) => product.title.contains(keyword ?? 'Year'),
+    final ProductDetails product = iapSubscriptions.firstWhere(
+      (product) => product.title.contains(keyword),
       orElse: () => throw Exception(
         '$keyword Subscription not found',
       ),
