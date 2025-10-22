@@ -129,6 +129,9 @@ class InAppPurchaseServices {
     //status will be 'restored'.
     //Sandbox is "Notoriously Buggy for Subscriptions" : ChatGpt
     //That's why it returns false status in sandbox
+    //
+    //
+    //Purchased
     if (purchase.status == PurchaseStatus.purchased
         // || purchase.status == PurchaseStatus.restored
         ) {
@@ -144,8 +147,22 @@ class InAppPurchaseServices {
           context.flushBarErrorMessage(message: 'Error verifying purchase...');
         }
       }
+      //restored
     } else if (purchase.status == PurchaseStatus.restored) {
+      await InAppPurchase.instance.completePurchase(purchase);
       debugPrint(' Purchase Restored');
+    }
+    //Error
+    else if (purchase.status == PurchaseStatus.error) {
+      debugPrint('❌ Purchase Error: ${purchase.error}');
+      await InAppPurchase.instance.completePurchase(purchase);
+      //Pending
+    } else if (purchase.status == PurchaseStatus.pending) {
+      debugPrint(' Purchase Pending...');
+      //Canceled
+    } else if (purchase.status == PurchaseStatus.canceled) {
+      debugPrint(' Purchase Canceled by user...');
+      await InAppPurchase.instance.completePurchase(purchase);
     }
   }
 //END: Process Purchase
