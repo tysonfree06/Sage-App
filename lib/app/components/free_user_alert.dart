@@ -26,39 +26,38 @@ class _FreeUserAlertState extends State<FreeUserAlert> {
   Widget build(BuildContext context) {
     return isPremium
         ? const SizedBox.shrink()
-        : Container(
-            // margin: EdgeInsets.symmetric(horizontal: 16.w),
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: context.colors.mainGreenLight.withAlpha(75),
-              borderRadius: BorderRadius.circular(15.r),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      widget.title ?? 'Subscribe',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.sp,
+        : GestureDetector(
+            onTap: () async {
+              await SettingService.goToSubscriptionScreen(
+                context,
+                false,
+              );
+              setState(() {
+                isPremium = SessionController().user!.isPremium ?? false;
+              });
+            },
+            child: Container(
+              // margin: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: context.colors.mainGreenLight.withAlpha(75),
+                borderRadius: BorderRadius.circular(15.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        widget.title ?? 'Subscribe',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15.sp,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () async {
-                        await SettingService.goToSubscriptionScreen(
-                          context,
-                          false,
-                        );
-                        setState(() {
-                          isPremium =
-                              SessionController().user!.isPremium ?? false;
-                        });
-                      },
-                      child: Container(
+                      const Spacer(),
+                      Container(
                         padding: EdgeInsets.symmetric(
                           vertical: 4.h,
                           horizontal: 10.w,
@@ -89,20 +88,20 @@ class _FreeUserAlertState extends State<FreeUserAlert> {
                           ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 6.h,
-                ),
-                Text(
-                  widget.subtitle ?? 'You are not subscribed!',
-                  style: TextStyle(
-                    // fontSize: 14.sp,
-                    color: context.colors.subtext,
+                    ],
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  Text(
+                    widget.subtitle ?? 'You are not subscribed!',
+                    style: TextStyle(
+                      // fontSize: 14.sp,
+                      color: context.colors.subtext,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
   }

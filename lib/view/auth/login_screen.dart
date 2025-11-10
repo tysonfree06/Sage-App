@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void fillFormForTesting() {
     if (kDebugMode) {
       emailController.text = 'mtalha2410@gmail.com';
-      passwordController.text = 'Mt@lh@2!';
+      passwordController.text = 'Sage@123';
     }
   }
 

@@ -68,7 +68,7 @@ class MyDatePickerButton extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     // You can customize this
-    return '${date.day}/${date.month}/${date.year}';
+    return '${date.month}/${date.day}/${date.year}';
   }
 
   void _showDatePicker(BuildContext context) {

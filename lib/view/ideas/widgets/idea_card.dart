@@ -89,10 +89,54 @@ class _IdeaCardState extends State<IdeaCard> {
                       SizedBox(
                         width: 185.w,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IdeaTag(
                               label: widget.data['type'].toString(),
+                            ),
+                            const Spacer(),
+                            //Save Button
+                            if (!widget.isAddedIdeaScreen) ...[
+                              //InkWell as a replacement to Gesture Detector
+                              InkWell(
+                                onTap: () async {
+                                  final isPremium =
+                                      sessionController.user!.isPremium;
+                                  if (!isPremium!) {
+                                    IdeasServices.showSubscriptionDialog(
+                                        context);
+                                  } else {
+                                    if (isBookmarked) {
+                                      await IdeasServices().removeBookmark(
+                                        context,
+                                        widget.data['_id'] as String,
+                                      );
+                                      widget.onBookmarkOrDislikePressed?.call();
+                                      debugPrint(
+                                          'CALLED THE FUNCTION IN THE CARD');
+                                    } else {
+                                      await IdeasServices().addBookmark(
+                                        context,
+                                        widget.data['_id'] as String,
+                                      );
+                                      widget.onBookmarkOrDislikePressed?.call();
+                                    }
+                                    debugPrint(
+                                        'CALLED THE FUNCTION IN THE CARD');
+                                  }
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.all(2.w),
+                                  child: isBookmarked
+                                      ? Assets.icons.bookmarkFilled
+                                          .svg(height: 18)
+                                      : Assets.icons.bookmark.svg(height: 17),
+                                ),
+                              ),
+                            ] else
+                              const SizedBox.shrink(),
+                            //END: Save Button
+                            SizedBox(
+                              width: 6.w,
                             ),
                             if (widget.showOptionsButton)
                               Padding(
@@ -132,6 +176,7 @@ class _IdeaCardState extends State<IdeaCard> {
                       SizedBox(
                         width: 160.w,
                         child: Text(
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           widget.data['title'] as String,
                           style: const TextStyle(
@@ -176,59 +221,6 @@ class _IdeaCardState extends State<IdeaCard> {
                           color: context.colors.textDarkGreen,
                           fontSize: 12.sp,
                         ),
-                      ),
-                      SizedBox(height: 8.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (!widget.isAddedIdeaScreen) ...[
-                            //InkWell as a replacement to Gesture Detector
-                            InkWell(
-                              onTap: () async {
-                                final isPremium =
-                                    sessionController.user!.isPremium;
-                                if (!isPremium!) {
-                                  IdeasServices.showSubscriptionDialog(context);
-                                } else {
-                                  if (isBookmarked) {
-                                    await IdeasServices().removeBookmark(
-                                      context,
-                                      widget.data['_id'] as String,
-                                    );
-                                    widget.onBookmarkOrDislikePressed?.call();
-                                    debugPrint(
-                                        'CALLED THE FUNCTION IN THE CARD');
-                                  } else {
-                                    await IdeasServices().addBookmark(
-                                      context,
-                                      widget.data['_id'] as String,
-                                    );
-                                    widget.onBookmarkOrDislikePressed?.call();
-                                  }
-                                  debugPrint('CALLED THE FUNCTION IN THE CARD');
-                                }
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(2.w),
-                                child: isBookmarked
-                                    ? Assets.icons.bookmarkFilled
-                                        .svg(height: 18)
-                                    : Assets.icons.bookmark.svg(height: 17),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 90.w,
-                            ),
-                          ] else
-                            const SizedBox.shrink(),
-                          MyTextButton(
-                            label: 'View Details',
-                            fontSize: 12.sp,
-                            onPressed: () async {
-                              await _gotoIdeaDetails(context);
-                            },
-                          ),
-                        ],
                       ),
                     ],
                   ),

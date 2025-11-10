@@ -196,9 +196,13 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen>
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
+              // const SizedBoxs(width: 4),
+              const Spacer(),
               // Dropdown
-              _buildSavedIdeasDropdown(context),
+              SizedBox(
+                width: 138.w,
+                child: _buildSavedIdeasDropdown(context),
+              ),
               SizedBox(
                 width: 16.w,
               ),
@@ -349,7 +353,7 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen>
   Expanded _buildSavedIdeasDropdown(BuildContext context) {
     return Expanded(
       child: Container(
-        height: 46.h,
+        height: 50.h,
         padding: EdgeInsets.all(15.w),
         decoration: BoxDecoration(
           color: const Color(0xFFF7FAFA),
