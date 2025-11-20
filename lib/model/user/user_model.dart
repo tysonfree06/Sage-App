@@ -114,6 +114,12 @@ class Location {
   final String? city;
   final String? state;
   final String? country;
+
+  bool get isEmpty {
+    return (city == null || city!.trim().isEmpty) &&
+        (state == null || state!.trim().isEmpty) &&
+        (country == null || country!.trim().isEmpty);
+  }
 }
 
 @JsonSerializable()

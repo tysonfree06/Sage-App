@@ -11,6 +11,8 @@ import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/env.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/onboarding_service.dart';
 import 'package:sage/services/views/signup_service.dart';
 import 'package:sage/view/onboarding/widgets/address_autocomplete.dart';
 
@@ -117,10 +119,33 @@ class _Step1ScreenState extends State<Step1Screen> {
   // List<dynamic> states = [];
   // List<dynamic> countries = Countires.allCountries;
 
+  void loadFromSession() {
+    final onboardingService = OnboardingService();
+    final session = SessionController();
+    final user = session.user;
+    selectedLoveLanguage = user?.loveLanguage;
+    //  ?? _loveLanguages.first;
+    selectedApologyLanguage = user?.apologyLanguage;
+    //  ?? _apologyLanguages.first;
+    selectedCommunicationStyle = user?.communicationStyle;
+    // ?? _communicationStyles.first;
+    selectedBudgetLevel = user?.budgetLevel;
+    //  ?? _budgetLevels.first;
+    selectedRelationshipStatus =
+        user?.relationshipStatus ?? relationshipStatuses.first;
+    anniversaryDate = user?.anniversaryDate;
+    dob = user?.dateOfBirth;
+    final String addressFromSession = onboardingService.formatLocation();
+    _locationController.text = addressFromSession;
+    if (addressFromSession.isNotEmpty) {
+      selectedCountry = user!.location!.country;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
+    loadFromSession();
     // load initial values or pick first option as default
     // selectedLoveLanguage = widget.initialLoveLanguage ?? loveLanguages.first;
     // selectedApologyLanguage =
@@ -128,15 +153,24 @@ class _Step1ScreenState extends State<Step1Screen> {
     // selectedCommunicationStyle =
     //     widget.initialCommunicationStyle ?? communicationStyles.first;
     // selectedBudgetLevel = widget.initialBudgetLevel ?? budgetLevels.first;
-    selectedRelationshipStatus =
-        widget.initialRelationshipStatus ?? relationshipStatuses.first;
 
-    anniversaryDate = widget.initialAnniversaryDate != null
-        ? DateTime.tryParse(widget.initialAnniversaryDate!)
-        : null;
-    dob = widget.initialDateOfBirth != null
-        ? DateTime.tryParse(widget.initialDateOfBirth!)
-        : null;
+    ///
+    ///
+    ///
+    // selectedRelationshipStatus =
+    //     widget.initialRelationshipStatus ?? relationshipStatuses.first;
+
+    // anniversaryDate = widget.initialAnniversaryDate != null
+    //     ? DateTime.tryParse(widget.initialAnniversaryDate!)
+    //     : null;
+    // dob = widget.initialDateOfBirth != null
+    //     ? DateTime.tryParse(widget.initialDateOfBirth!)
+    //     : null;
+    ///
+    ///
+    ///
+    ///
+    ///
     //get countries on init
 
     // selectedCity = widget.initialCity ?? cities.first;
@@ -213,6 +247,8 @@ class _Step1ScreenState extends State<Step1Screen> {
         // selectedCity == null ||
         // selectedState == null ||
         selectedCountry == null) {
+      context.flushBarErrorMessage(
+          message: context.l10n.onboarding_error_complete_all_fields);
       return;
     }
 
@@ -221,17 +257,14 @@ class _Step1ScreenState extends State<Step1Screen> {
         selectedApologyLanguage!.isEmpty ||
         selectedCommunicationStyle!.isEmpty ||
         selectedBudgetLevel!.isEmpty ||
-        selectedRelationshipStatus.isEmpty ||
+        // selectedRelationshipStatus.isEmpty ||
         anniversaryDate == null ||
         dob == null ||
         // selectedCity!.isEmpty ||
         // selectedState!.isEmpty ||
         selectedCountry!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.onboarding_error_complete_all_fields),
-        ),
-      );
+      context.flushBarErrorMessage(
+          message: context.l10n.onboarding_error_complete_all_fields);
       return;
     }
 

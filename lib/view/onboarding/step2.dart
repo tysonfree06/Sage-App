@@ -7,6 +7,7 @@ import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 
 class Step2Screen extends StatefulWidget {
   const Step2Screen({
@@ -54,11 +55,16 @@ class _Step2ScreenState extends State<Step2Screen> {
     'Photography',
   ];
 
+  final SessionController _sessionController = SessionController();
   @override
   void initState() {
     super.initState();
     // make a mutable copy
-    _selectedInterests = Set.from(widget.initialSelectedInterests);
+    // _selectedInterests = Set.from(widget.initialSelectedInterests);
+
+    //Set from session
+    _selectedInterests =
+        (_sessionController.user?.interests ?? []).toSet().cast<String>();
   }
 
   // only allow Next when exactly 5 interests are chosen

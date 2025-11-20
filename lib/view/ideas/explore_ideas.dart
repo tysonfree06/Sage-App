@@ -201,7 +201,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
                   child: const ProfileIncompleteAlert(),
                 ),
                 SizedBox(height: 10.h),
-                if (isPremium == true)
+                if (isPremium != null && isPremium == true)
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: MyFormTextField(

@@ -9,6 +9,7 @@ import 'package:sage/services/points_services.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/storage/local_storage.dart';
 import 'package:sage/services/views/login_service.dart';
+import 'package:sage/services/views/signup_service.dart';
 
 class SplashServices {
   final LocalStorage _localStorage = LocalStorage();
@@ -42,6 +43,11 @@ class SplashServices {
           response['user'] as Map<String, dynamic>,
         ),
       );
+
+      //check if profile is complete, remove "Finish Profile" banner
+
+      checkProfileCompletionStatus();
+      //END: check if profile is complete
 
       debugPrint('[$tag] ✅ Profile fetched');
     } catch (e) {
@@ -82,6 +88,7 @@ class SplashServices {
       if (context.mounted) await fetchPartner(context);
       try {
         if (context.mounted) LoginService.goToHome(context);
+        return;
       } catch (_) {
         debugPrint('[$tag] Error fetching profile, clearing session');
         await _sessionController.clearSession();
@@ -113,5 +120,113 @@ class SplashServices {
       debugPrint('[$tag] ❌ Error fetching partner: $e');
       return {};
     }
+  }
+
+  int checkProfileCompletionStatus() {
+    //Main Questions not answered: return 0;
+    //Incomplete: return 1;
+    //Complete: return 2;
+
+    // check if user has completed his profile, otherwise, navigate to onboarding
+    final UserModel user = SessionController().user!;
+    if (user.email.isNotEmpty) {
+      //
+      //original
+      //
+      // if (user.loveLanguage == null || user.loveLanguage == '') {
+      //   if (mounted) {
+      //     SignupService.goToOnBoarding(context);
+      //   }
+      // }
+      //END: original
+
+      // //new
+      // final fields = [
+      //   user.loveLanguage,
+      //   user.apologyLanguage,
+      //   user.communicationStyle,
+      //   user.relationshipStatus,
+      //   user.anniversaryDate, //type: DateTime
+      //   user.dateOfBirth, //type: DateTime
+      //   user.interests, //type: List
+      //   user.giftPreferences, //type: List
+      //   user.location,
+      // ];
+      // // Convert to bools for easier checking
+      // final bool allEmptyOrNull =
+      //     fields.every((f) => f == null || (f is String && f.trim().isEmpty));
+      // final bool anyEmptyOrNull =
+      //     fields.any((f) => f == null || (f is String && f.trim().isEmpty));
+
+      // debugPrint("💁🏻 $fields");
+      // debugPrint('ALL : $allEmptyOrNull');
+      // debugPrint('ANY : $anyEmptyOrNull');
+
+      // if (allEmptyOrNull) {
+      //   if (mounted) {
+      //     SignupService.goToOnBoarding(context);
+      //   }
+      // } else if (anyEmptyOrNull) {
+      //   //isProfileIncomplete = true;
+      //   SessionController().setProfileCompletionStatus(status: true);
+      //   debugPrint('Profile Incomplete');
+      // }
+      // //END: new
+
+      //latest
+      final questions = [
+        user.loveLanguage,
+        user.apologyLanguage,
+        user.communicationStyle,
+        user.relationshipStatus,
+      ];
+      final fields = [
+        user.anniversaryDate, //type: DateTime
+        user.dateOfBirth, //type: DateTime
+        user.interests, //type: List
+        user.giftPreferences, //type: List
+      ];
+      // Convert to bools for easier checking
+
+      // final bool allEmptyOrNull = fields.every(_isEmptyValue);
+      final bool anyQuestionEmptyOrNull = questions.any(_isEmptyValue);
+      final bool anyFieldEmptyOrNull = fields.any(_isEmptyValue);
+      debugPrint("💁🏻 $fields");
+      debugPrint('QUESTIONS? : $anyQuestionEmptyOrNull');
+      debugPrint('FIELDS? : $anyFieldEmptyOrNull');
+
+      if (anyQuestionEmptyOrNull) {
+        return 0;
+      } else if (anyFieldEmptyOrNull) {
+        debugPrint('Profile Incomplete');
+        SessionController().setProfileCompletionStatus(status: true);
+        return 1;
+      }
+      SessionController().setProfileCompletionStatus(status: false);
+      debugPrint('Profile Complete');
+      return 2;
+      //latest
+    }
+    return 2;
+  }
+
+  bool _isEmptyValue(dynamic value) {
+    if (value == null) return true;
+
+    if (value is String) {
+      return value.trim().isEmpty;
+    }
+
+    if (value is List) {
+      return value.isEmpty;
+    }
+
+    if (value is DateTime) {
+      // Treat a date value as NOT empty (unless you want to check something else)
+      return false;
+    }
+
+    // For any other type, consider it "not empty"
+    return false;
   }
 }

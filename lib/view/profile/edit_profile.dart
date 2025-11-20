@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sage/app/components/custom_radio_group.dart';
+import 'package:sage/app/components/global_unfocus_keyboard.dart';
 import 'package:sage/app/components/loading_widget.dart';
 import 'package:sage/app/components/my_button.dart';
 import 'package:sage/app/components/my_datepicker_button.dart';
@@ -16,6 +17,7 @@ import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/services/image_picker.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/onboarding_service.dart';
 import 'package:sage/services/views/settings_service.dart';
 import 'package:sage/services/views/signup_service.dart';
 import 'package:sage/view/onboarding/widgets/address_autocomplete.dart';
@@ -39,10 +41,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
   // Controllers & state
   late TextEditingController _nameController;
-  late String _loveLanguage;
-  late String _apologyLanguage;
-  late String _communicationStyle;
-  late String _budgetLevel;
+  String? _loveLanguage;
+  String? _apologyLanguage;
+  String? _communicationStyle;
+  String? _budgetLevel;
   late String _relationshipStatus;
   DateTime? _anniversaryDate;
   DateTime? _dob;
@@ -104,57 +106,53 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
+    final onboardingService = OnboardingService();
     final user = _session.user;
+    // debugPrint('USER FROM SESSION');
+    // debugPrint('🚨${user!.toJson()}');
     _nameController = TextEditingController(text: user?.name);
-    _loveLanguage = user?.loveLanguage ?? _loveLanguages.first;
-    _apologyLanguage = user?.apologyLanguage ?? _apologyLanguages.first;
-    _communicationStyle =
-        user?.communicationStyle ?? _communicationStyles.first;
-    _budgetLevel = user?.budgetLevel ?? _budgetLevels.first;
+    _loveLanguage = user?.loveLanguage;
+    //  ?? _loveLanguages.first;
+    _apologyLanguage = user?.apologyLanguage;
+    //  ?? _apologyLanguages.first;
+    _communicationStyle = user?.communicationStyle;
+    // ?? _communicationStyles.first;
+    _budgetLevel = user?.budgetLevel;
+    //  ?? _budgetLevels.first;
     _relationshipStatus =
         user?.relationshipStatus ?? _relationshipStatuses.first;
     _anniversaryDate = user?.anniversaryDate;
     _dob = user?.dateOfBirth;
-    setLocations(); //remove comment #muttas
+    // setLocations(); //remove comment #muttas
+    _locationController.text = onboardingService.formatLocation();
     _uploadedUrl = user?.image;
 
     //get countries on init
     // getCountries();
   }
 
-  void setLocations() {
-    //old
-    // final user = _session.user;
-    // if (user?.location?.city != null && user?.location?.city != '') {
-    //   cities.add({'code': '', 'name': user?.location?.city});
-    //   _city = user?.location?.city;
-    // }
+  // void setLocations() {
+  //   final user = _session.user;
+  //   //address
+  //   String address = '';
+  //   if (user?.location?.city != null && user?.location?.city != '') {
+  //     cities.add({'code': '', 'name': user?.location?.city});
+  //     // _city = user?.location?.city;
+  //     address = '$address ${user?.location?.city},';
+  //   }
 
-    // if (user?.location?.state != null && user?.location?.state != '') {
-    //   states.add({'code': '', 'name': user?.location?.state});
-    //   _state = user?.location?.state;
-    // }
-    // _country = user?.location?.country;
-    //end: old
+  //   if (user?.location?.state != null && user?.location?.state != '') {
+  //     states.add({'code': '', 'name': user?.location?.state});
+  //     // _state = user?.location?.state;
+  //     address = '$address ${user?.location?.state},';
+  //   }
+  //   // _country = user?.location?.country;
+  //   address = '$address ${user?.location?.country}';
 
-    final user = _session.user;
-    String address = '';
-    if (user?.location?.city != null && user?.location?.city != '') {
-      cities.add({'code': '', 'name': user?.location?.city});
-      // _city = user?.location?.city;
-      address = '$address ${user?.location?.city},';
-    }
-
-    if (user?.location?.state != null && user?.location?.state != '') {
-      states.add({'code': '', 'name': user?.location?.state});
-      // _state = user?.location?.state;
-      address = '$address ${user?.location?.state},';
-    }
-    // _country = user?.location?.country;
-    address = '$address ${user?.location?.country}';
-
-    _locationController.text = address;
-  }
+  //   if (address.isNotEmpty && address.length > 1) {
+  //     _locationController.text = address;
+  //   }
+  // }
 
   Future<void> _pickAndUploadImage() async {
     final source = await showModalBottomSheet<ImageSource>(
@@ -215,7 +213,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       );
       if (mounted) {
         setState(() {
-          isLoading = true;
+          isLoading = false;
         });
       }
       return;
@@ -349,232 +347,235 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-            children: [
-              _buildAvatarPicker(),
-              SizedBox(height: 24.h),
-              _buildTextField(
-                label: context.l10n.lets_name_label,
-                controller: _nameController,
-                hint: context.l10n.lets_name_hint,
-              ),
-              SizedBox(height: 16.h),
-              _buildDropdown(
-                // label: context.l10n.onboarding_step1_what_is_your_love_language,
-                label: 'How do you like your partner to show you love?',
-                value: _loveLanguage,
-                items: _loveLanguages,
-                onChanged: (v) => setState(() => _loveLanguage = v!),
-                hint: 'Select your love language',
-              ),
-              SizedBox(height: 16.h),
-              _buildDropdown(
-                // label:
-                //     context.l10n.onboarding_step1_what_is_your_apology_language,
-                label: 'How do you like your partner to apologize to you?',
-                value: _apologyLanguage,
-                items: _apologyLanguages,
-                onChanged: (v) => setState(() => _apologyLanguage = v!),
-                hint: 'Select your apology language',
-              ),
-              SizedBox(height: 16.h),
-              _buildDropdown(
-                label: 'How do you communicate with your partner?',
-                // label: context
-                //     .l10n.onboarding_step1_what_is_your_communication_style,
-                value: _communicationStyle,
-                items: _communicationStyles,
-                hint: 'Select your communication style',
-                onChanged: (v) => setState(() {
-                  _communicationStyle = v!;
-                }),
-              ),
-              SizedBox(height: 16.h),
-              _buildDropdown(
-                label: context.l10n.onboarding_step1_budget_level,
-                value: _budgetLevel,
-                items: _budgetLevels,
-                onChanged: (v) => setState(() => _budgetLevel = v!),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                context.l10n.onboarding_step1_relationship_status,
-                style: labelStyle,
-              ),
-              SizedBox(height: 10.h),
-              CustomRadioGroup<String>(
-                options: _relationshipStatuses,
-                selectedValue: _relationshipStatus,
-                onChanged: (v) => setState(() => _relationshipStatus = v),
-                labelBuilder: (v) => v,
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                context.l10n.onboarding_step1_anniversary_date,
-                style: labelStyle,
-              ),
-              MyDatePickerButton(
-                hintText: _anniversaryDate == null
-                    ? context.l10n.onboarding_step1_select_a_date
-                    : _formatDate(_anniversaryDate),
-                selectedDate: _anniversaryDate,
-                onChanged: (d) => setState(() => _anniversaryDate = d),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Assets.icons.calander.svg(),
+        child: GlobalUnfocusKeyboard(
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+              children: [
+                _buildAvatarPicker(),
+                SizedBox(height: 24.h),
+                _buildTextField(
+                  label: context.l10n.lets_name_label,
+                  controller: _nameController,
+                  hint: context.l10n.lets_name_hint,
                 ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                context.l10n.onboarding_step1_date_of_birth,
-                style: labelStyle,
-              ),
-              MyDatePickerButton(
-                hintText: _dob == null
-                    ? context.l10n.onboarding_step1_select_a_date
-                    : _formatDate(_dob),
-                selectedDate: _dob,
-                onChanged: (d) => setState(() => _dob = d),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Assets.icons.calander.svg(),
+                SizedBox(height: 16.h),
+                _buildDropdown(
+                  // label: context.l10n.onboarding_step1_what_is_your_love_language,
+                  label: 'How do you like your partner to show you love?',
+                  value: _loveLanguage,
+                  items: _loveLanguages,
+                  onChanged: (v) => setState(() => _loveLanguage = v!),
+                  hint: 'Select your love language',
                 ),
-              ),
-              SizedBox(height: 16.h),
-              Text(context.l10n.onboarding_step1_location, style: labelStyle),
-              SizedBox(height: 10.h),
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: _buildDropdown(
-              //         value: _country,
-              //         // items: countries,
-              //         items: countries.map((country) {
-              //           return country['name'].toString();
-              //         }).toList(),
-              //         onChanged: (v) {
-              //           setState(() {
-              //             showStatesDropdown = true;
-              //             _country = v;
-              //           });
-              //           final String countryCode =
-              //               _service.getCodeByName(countries, v!);
-              //           getStates(countryCode).then((_) {
-              //             if (states.isEmpty) {
-              //               setState(() {
-              //                 showStatesDropdown = false;
-              //               });
-              //               if (context.mounted) {
-              //                 context.flushBarErrorMessage(
-              //                   message: 'No States found for this country.',
-              //                 );
-              //               }
-              //             }
-              //           });
-              //         },
-              //         hint: 'Select Country',
-              //       ),
-              //     ),
-              //     if (showStatesDropdown) ...[
-              //       SizedBox(width: 16.w),
-              //       Expanded(
-              //         child: _buildDropdown(
-              //           itemType: 'state',
-              //           ctx: context,
-              //           value: _state,
-              //           // items: states,
-              //           items: states.map((state) {
-              //             return state['name'].toString();
-              //           }).toList(),
-              //           onChanged: (v) {
-              //             if (mounted) {
-              //               showCitiesDropdown = true;
-              //               setState(() => _state = v);
-              //             }
-              //             if (_country != null) {
-              //               final String countryCode = _service.getCodeByName(
-              //                 countries,
-              //                 _country!,
-              //               );
-              //               final String stateCode =
-              //                   _service.getCodeByName(states, v!);
-              //               getCities(countryCode, stateCode).then((_) {
-              //                 if (cities.isEmpty) {
-              //                   setState(() {
-              //                     showCitiesDropdown = false;
-              //                   });
-              //                   if (context.mounted) {
-              //                     context.flushBarErrorMessage(
-              //                       message: 'No Cities found for this state.',
-              //                     );
-              //                   }
-              //                 }
-              //               });
-              //             }
-              //           },
-              //           // hint: _state,
-              //           hint: 'Select State',
-              //         ),
-              //       ),
-              //     ],
-              //   ],
-              // ),
-              // SizedBox(height: 10.h),
-              // if (showCitiesDropdown)
-              //   _buildDropdown(
-              //     itemType: 'city',
-              //     ctx: context,
-              //     value: _city,
-              //     // items: cities,
-              //     items: cities.map((city) {
-              //       return city['name'].toString();
-              //     }).toList(),
-              //     onChanged: (v) {
-              //       if (mounted) {
-              //         setState(() => _city = v);
-              //       }
-              //     },
-              //     hint: 'Select City',
-              //   ),
-              // SizedBox(height: 24.h),
-              //Places api
-              AddressAutocompleteTextField(
-                controller: _locationController,
-                apiKey: Env.placesApiKey,
-                hint: 'Enter Your Location',
-                readOnly: isLoading,
-                onAddressSelected: (AddressResult result) {
-                  _locationController.text = result.address;
-                  debugPrint('Address: ${result.address}');
-                  debugPrint('City: ${result.city}');
-                  _city = result.city;
-                  debugPrint('State: ${result.state}');
-                  _state = result.state;
-                  debugPrint('Country: ${result.country}');
-                  _country = result.country;
-                },
-                // validator: (value) {
-                //   if (value == null || value.isEmpty) {
-                //     return context.l10n.error_address_required;
-                //   }
-                //   if (value.isNotEmpty && _lat == 0 && _lng == 0) {
-                //     return context.l10n.error_address_invalid;
-                //   }
-                //   return null;
-                // },
-              ),
-              //END Places api
-              SizedBox(height: 24.h),
-              MyButton(
-                isLoading: isLoading,
-                label: context.l10n.edit_update,
-                onPressed: _busy ? null : _submit,
-              ),
-              SizedBox(height: 30.h),
-            ],
+                SizedBox(height: 16.h),
+                _buildDropdown(
+                  // label:
+                  //     context.l10n.onboarding_step1_what_is_your_apology_language,
+                  label: 'How do you like your partner to apologize to you?',
+                  value: _apologyLanguage,
+                  items: _apologyLanguages,
+                  onChanged: (v) => setState(() => _apologyLanguage = v!),
+                  hint: 'Select your apology language',
+                ),
+                SizedBox(height: 16.h),
+                _buildDropdown(
+                  label: 'How do you communicate with your partner?',
+                  // label: context
+                  //     .l10n.onboarding_step1_what_is_your_communication_style,
+                  value: _communicationStyle,
+                  items: _communicationStyles,
+                  hint: 'Select your communication style',
+                  onChanged: (v) => setState(() {
+                    _communicationStyle = v!;
+                  }),
+                ),
+                SizedBox(height: 16.h),
+                _buildDropdown(
+                  label: context.l10n.onboarding_step1_budget_level,
+                  value: _budgetLevel,
+                  hint: 'Select your budget level',
+                  items: _budgetLevels,
+                  onChanged: (v) => setState(() => _budgetLevel = v!),
+                ),
+                SizedBox(height: 16.h),
+                Text(
+                  context.l10n.onboarding_step1_relationship_status,
+                  style: labelStyle,
+                ),
+                SizedBox(height: 10.h),
+                CustomRadioGroup<String>(
+                  options: _relationshipStatuses,
+                  selectedValue: _relationshipStatus,
+                  onChanged: (v) => setState(() => _relationshipStatus = v),
+                  labelBuilder: (v) => v,
+                ),
+                SizedBox(height: 16.h),
+                Text(
+                  context.l10n.onboarding_step1_anniversary_date,
+                  style: labelStyle,
+                ),
+                MyDatePickerButton(
+                  hintText: _anniversaryDate == null
+                      ? context.l10n.onboarding_step1_select_a_date
+                      : _formatDate(_anniversaryDate),
+                  selectedDate: _anniversaryDate,
+                  onChanged: (d) => setState(() => _anniversaryDate = d),
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Assets.icons.calander.svg(),
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                Text(
+                  context.l10n.onboarding_step1_date_of_birth,
+                  style: labelStyle,
+                ),
+                MyDatePickerButton(
+                  hintText: _dob == null
+                      ? context.l10n.onboarding_step1_select_a_date
+                      : _formatDate(_dob),
+                  selectedDate: _dob,
+                  onChanged: (d) => setState(() => _dob = d),
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Assets.icons.calander.svg(),
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                Text(context.l10n.onboarding_step1_location, style: labelStyle),
+                SizedBox(height: 10.h),
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: _buildDropdown(
+                //         value: _country,
+                //         // items: countries,
+                //         items: countries.map((country) {
+                //           return country['name'].toString();
+                //         }).toList(),
+                //         onChanged: (v) {
+                //           setState(() {
+                //             showStatesDropdown = true;
+                //             _country = v;
+                //           });
+                //           final String countryCode =
+                //               _service.getCodeByName(countries, v!);
+                //           getStates(countryCode).then((_) {
+                //             if (states.isEmpty) {
+                //               setState(() {
+                //                 showStatesDropdown = false;
+                //               });
+                //               if (context.mounted) {
+                //                 context.flushBarErrorMessage(
+                //                   message: 'No States found for this country.',
+                //                 );
+                //               }
+                //             }
+                //           });
+                //         },
+                //         hint: 'Select Country',
+                //       ),
+                //     ),
+                //     if (showStatesDropdown) ...[
+                //       SizedBox(width: 16.w),
+                //       Expanded(
+                //         child: _buildDropdown(
+                //           itemType: 'state',
+                //           ctx: context,
+                //           value: _state,
+                //           // items: states,
+                //           items: states.map((state) {
+                //             return state['name'].toString();
+                //           }).toList(),
+                //           onChanged: (v) {
+                //             if (mounted) {
+                //               showCitiesDropdown = true;
+                //               setState(() => _state = v);
+                //             }
+                //             if (_country != null) {
+                //               final String countryCode = _service.getCodeByName(
+                //                 countries,
+                //                 _country!,
+                //               );
+                //               final String stateCode =
+                //                   _service.getCodeByName(states, v!);
+                //               getCities(countryCode, stateCode).then((_) {
+                //                 if (cities.isEmpty) {
+                //                   setState(() {
+                //                     showCitiesDropdown = false;
+                //                   });
+                //                   if (context.mounted) {
+                //                     context.flushBarErrorMessage(
+                //                       message: 'No Cities found for this state.',
+                //                     );
+                //                   }
+                //                 }
+                //               });
+                //             }
+                //           },
+                //           // hint: _state,
+                //           hint: 'Select State',
+                //         ),
+                //       ),
+                //     ],
+                //   ],
+                // ),
+                // SizedBox(height: 10.h),
+                // if (showCitiesDropdown)
+                //   _buildDropdown(
+                //     itemType: 'city',
+                //     ctx: context,
+                //     value: _city,
+                //     // items: cities,
+                //     items: cities.map((city) {
+                //       return city['name'].toString();
+                //     }).toList(),
+                //     onChanged: (v) {
+                //       if (mounted) {
+                //         setState(() => _city = v);
+                //       }
+                //     },
+                //     hint: 'Select City',
+                //   ),
+                // SizedBox(height: 24.h),
+                //Places api
+                AddressAutocompleteTextField(
+                  controller: _locationController,
+                  apiKey: Env.placesApiKey,
+                  hint: 'Enter Your Location',
+                  readOnly: isLoading,
+                  onAddressSelected: (AddressResult result) {
+                    _locationController.text = result.address;
+                    debugPrint('Address: ${result.address}');
+                    debugPrint('City: ${result.city}');
+                    _city = result.city;
+                    debugPrint('State: ${result.state}');
+                    _state = result.state;
+                    debugPrint('Country: ${result.country}');
+                    _country = result.country;
+                  },
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return context.l10n.error_address_required;
+                  //   }
+                  //   if (value.isNotEmpty && _lat == 0 && _lng == 0) {
+                  //     return context.l10n.error_address_invalid;
+                  //   }
+                  //   return null;
+                  // },
+                ),
+                //END Places api
+                SizedBox(height: 24.h),
+                MyButton(
+                  isLoading: isLoading,
+                  label: context.l10n.edit_update,
+                  onPressed: _busy ? null : _submit,
+                ),
+                SizedBox(height: 30.h),
+              ],
+            ),
           ),
         ),
       ),

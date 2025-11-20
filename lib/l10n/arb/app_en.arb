@@ -152,7 +152,7 @@
   "onboarding_step4_add_partner_with_code": "Add partner with the code that your partner has shared with you.",
   "onboarding_step4_connect": "Connect",
   "onboarding_step4_will_add_later": "Will Add Later",
-  "onboarding_error_complete_all_fields": "Please complete the form",
+  "onboarding_error_complete_all_fields": "Fill all fields to continue",
   "onboarding_step2_limit_5_interests": "You can only select up to 5 interests only",
   "onboarding_step3_limit_5_preferences": "You can only select up to 5 preferences only",
   "@_SETTINGS_SCREEN": {},

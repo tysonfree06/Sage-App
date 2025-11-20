@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
-import 'package:sage/model/user/user_model.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
-import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/signup_service.dart';
 import 'package:sage/services/views/splash_services.dart';
 import 'package:sage/view/home/home.dart';
@@ -31,67 +29,29 @@ class _NavigationScreenState extends State<NavigationScreen> {
     // final user = sessionController.user;
     // if (user == null)
     SplashServices().fetchProfile(context).then((_) {
-      // check if user has completed his profile, otherwise, navigate to onboarding
-      final UserModel user = SessionController().user!;
-      if (user.email.isNotEmpty) {
-        //original
-        // if (user.loveLanguage == null || user.loveLanguage == '') {
-        //   if (mounted) {
-        //     SignupService.goToOnBoarding(context);
-        //   }
-        // }
+      int profileCompetionStatus =
+          SplashServices().checkProfileCompletionStatus();
 
-        //new
-        // bool isNullOrEmpty(String? value) =>
-        //     value == null || value.trim().isEmpty;
-
-        // final allEmptyOrNull = isNullOrEmpty(user.loveLanguage) &&
-        //     isNullOrEmpty(user.apologyLanguage) &&
-        //     isNullOrEmpty(user.communicationStyle) &&
-        //     isNullOrEmpty(user.relationshipStatus) &&
-        //     user.anniversaryDate == null &&
-        //     user.dateOfBirth == null &&
-        //     user.interests == null &&
-        //     user.giftPreferences == null &&
-        //     user.location == null;
-        // if (allEmptyOrNull) {
-        //   //If all fields are empty or null (User has bypassed the onboarding),
-        //   //navigate to Onboarding
-        //   if (mounted) {
-        //     SignupService.goToOnBoarding(context);
-        //   }
-        // }
-        //
-
-        //latest
-        final fields = [
-          user.loveLanguage,
-          user.apologyLanguage,
-          user.communicationStyle,
-          user.relationshipStatus,
-          user.anniversaryDate,
-          user.dateOfBirth,
-          user.interests,
-          user.giftPreferences,
-          user.location,
-        ];
-
-        // Convert to bools for easier checking
-        final bool allEmptyOrNull =
-            fields.every((f) => f == null || (f is String && f.trim().isEmpty));
-        final bool anyEmptyOrNull =
-            fields.any((f) => f == null || (f is String && f.trim().isEmpty));
-
-        if (allEmptyOrNull) {
-          if (mounted) {
-            SignupService.goToOnBoarding(context);
-          }
-        } else if (anyEmptyOrNull) {
-          //isProfileIncomplete = true;
-          SessionController().setProfileCompletionStatus(status: true);
-          debugPrint('Profile Incomplete');
+      if (profileCompetionStatus == 0) {
+        if (mounted) {
+          SignupService.goToOnBoarding(context);
         }
       }
+      // if (anyQuestionEmptyOrNull) {
+      //     return 0;
+      // if (mounted) {
+      //   SignupService.goToOnBoarding(context);
+      // }
+      //   } else if (anyFieldEmptyOrNull) {
+      //     return 1;
+      //     //isProfileIncomplete = true;
+      //     SessionController().setProfileCompletionStatus(status: true);
+      //     debugPrint('Profile Incomplete');
+      //   } else {
+      //     return 2;
+      //     SessionController().setProfileCompletionStatus(status: false);
+      //     debugPrint('Profile Complete');
+      //   }
     });
   }
 

@@ -8,6 +8,8 @@ import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/l10n/l10n.dart';
 import 'package:sage/model/redeem/redeem_model.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
+import 'package:sage/services/views/ideas_service.dart';
 import 'package:sage/services/views/redeem_points_service.dart';
 
 class OfferDetailScreen extends StatefulWidget {
@@ -21,6 +23,9 @@ class OfferDetailScreen extends StatefulWidget {
 
 class _OfferDetailScreenState extends State<OfferDetailScreen> {
   bool isLoading = false;
+
+  final sessionController = SessionController();
+
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('MMM dd, yyyy');
@@ -234,29 +239,35 @@ class _OfferDetailScreenState extends State<OfferDetailScreen> {
                         label:
                             'Raffle for ${widget.offer.pointsRequired} Points',
                         onPressed: () async {
-                          await showDialog<void>(
-                            context: context,
-                            builder: (_) => MyDialog(
-                              image: Assets.images.dialog.infoBlue,
-                              titleFirst: context.l10n.dialog_redeem,
-                              titleSecond:
-                                  context.l10n.redeem_dialog_second_title,
-                              subtitle:
-                                  context.l10n.dialog_redeem_offer_subtitle,
-                              confirmLabel: context.l10n.redeem_dialog_yes_sure,
-                              onConfirm: () async {
-                                setState(() => isLoading = true);
-                                Navigator.pop(context);
-                                await RedeemPointsService.redeemOffer(
-                                  context,
-                                  widget.offer.id,
-                                ).then((_) {
-                                  setState(() => isLoading = false);
-                                });
-                                // setState(() => isLoading = false);
-                              },
-                            ),
-                          );
+                          final isPremium = sessionController.user!.isPremium;
+                          if (!isPremium!) {
+                            IdeasServices.showSubscriptionDialog(context);
+                          } else {
+                            await showDialog<void>(
+                              context: context,
+                              builder: (_) => MyDialog(
+                                image: Assets.images.dialog.infoBlue,
+                                titleFirst: context.l10n.dialog_redeem,
+                                titleSecond:
+                                    context.l10n.redeem_dialog_second_title,
+                                subtitle:
+                                    context.l10n.dialog_redeem_offer_subtitle,
+                                confirmLabel:
+                                    context.l10n.redeem_dialog_yes_sure,
+                                onConfirm: () async {
+                                  setState(() => isLoading = true);
+                                  Navigator.pop(context);
+                                  await RedeemPointsService.redeemOffer(
+                                    context,
+                                    widget.offer.id,
+                                  ).then((_) {
+                                    setState(() => isLoading = false);
+                                  });
+                                  // setState(() => isLoading = false);
+                                },
+                              ),
+                            );
+                          }
                         },
                       ),
                     ],

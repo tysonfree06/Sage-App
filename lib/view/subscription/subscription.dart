@@ -97,22 +97,28 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         );
       }
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
   //END: Update prices
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isSubscriptionButtonLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isSubscriptionButtonLoading = false;
+      });
+    }
     _iapServices
       ..loadSubscriptions(
         (loadingStatus) {
-          setState(() {
-            isLoaded = loadingStatus;
-          });
+          if (mounted) {
+            setState(() {
+              isLoaded = loadingStatus;
+            });
+          }
         },
         updatePrices,
       ) //load Subscripions for in app purchase
@@ -196,28 +202,37 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         _sessionController.setselectedSubscriptionIndex(index);
                         switch (index) {
                           case 0:
-                            setState(() {
-                              // _iapServices.selectedSubscription = 0;
-                              // debugPrint(
-                              //     'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
-                              priceId = Env.stripeYearly;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                // _iapServices.selectedSubscription = 0;
+                                // debugPrint(
+                                //     'SELECTED SUBSCRIPTION INDEX: ${_iapServices.selectedSubscription}');
+                                priceId = Env.stripeYearly;
+                              });
+                            }
+
                           // break;
                           case 1:
-                            setState(() {
-                              // _iapServices.selectedSubscription = 1;
-                              // debugPrint(
-                              //     'SELECTED SUBSCRIPTION INDEX: ${_sessionController.selectedSubscriptionIndex}');
-                              priceId = Env.stripeMonthly;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                // _iapServices.selectedSubscription = 1;
+                                // debugPrint(
+                                //     'SELECTED SUBSCRIPTION INDEX: ${_sessionController.selectedSubscriptionIndex}');
+                                priceId = Env.stripeMonthly;
+                              });
+                            }
+
                           // break;
                           case 2:
-                            setState(() {
-                              // _iapServices.selectedSubscription = 2;
-                              // debugPrint(
-                              //     'SELECTED SUBSCRIPTION INDEX: ${_sessionController.selectedSubscriptionIndex}');
-                              priceId = Env.stripeWeekly;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                // _iapServices.selectedSubscription = 2;
+                                // debugPrint(
+                                //     'SELECTED SUBSCRIPTION INDEX: ${_sessionController.selectedSubscriptionIndex}');
+                                priceId = Env.stripeWeekly;
+                              });
+                            }
+
                           // break;
                         }
                       },

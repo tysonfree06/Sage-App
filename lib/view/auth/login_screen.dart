@@ -148,15 +148,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? Assets.icons.visibilityOff.svg()
                             : Assets.icons.visibilityOn.svg(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return context.l10n.error_password_required;
-                          // } else if (!value.lessSecurePasswordValidator()) {
-                        } else if (!value.passwordValidator()) {
-                          return context.l10n.error_password_strength;
-                        }
-                        return null;
-                      },
+                      // validator: (value) {
+                      //   if (value == null || value.isEmpty) {
+                      //     return context.l10n.error_password_required;
+                      //     // } else if (!value.lessSecurePasswordValidator()) {
+                      //   } else if (!value.passwordValidator()) {
+                      //     return context.l10n.error_password_strength;
+                      //   }
+                      //   return null;
+                      // },
                       readOnly: isLoading,
                     );
                   },

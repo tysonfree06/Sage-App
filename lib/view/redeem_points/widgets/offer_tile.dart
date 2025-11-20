@@ -54,16 +54,27 @@ class OfferTile extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            offer.image ?? '',
+          // child: Image.asset(
+          //   Assets.icons.raffle.path,
+          //   width: 92.w,
+          //   height: 102.h,
+          //   fit: BoxFit.cover,
+          //   errorBuilder: (context, error, stackTrace) => Container(
+          //     color: Colors.grey,
+          //     width: 92.w,
+          //     height: 102.h,
+          //   ),
+          // ),
+          child: Container(
+            color: context.colors.mainGreenLight.withValues(
+              alpha: 0.25,
+            ),
             width: 92.w,
             height: 102.h,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: Colors.grey,
-              width: 92.w,
-              height: 102.h,
+            padding: EdgeInsets.all(
+              8.w,
             ),
+            child: Assets.icons.raffle.svg(),
           ),
         ),
         SizedBox(width: 10.w),

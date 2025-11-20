@@ -4,6 +4,7 @@ import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/app/utils/service_error_handler.dart';
 import 'package:sage/repository/user_repo.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 
 class OnboardingService {
   static Future<void> goToOnBoarding(BuildContext context) async {
@@ -144,4 +145,25 @@ class OnboardingService {
     }
   }
   //END: Test
+
+  String formatLocation() {
+    final session = SessionController();
+    final user = session.user;
+    //address
+    String address = '';
+    if (user?.location?.city != null && user?.location?.city != '') {
+      address = '$address ${user?.location?.city},';
+    }
+
+    if (user?.location?.state != null && user?.location?.state != '') {
+      address = '$address ${user?.location?.state},';
+    }
+    // _country = user?.location?.country;
+    address = '$address ${user?.location?.country}';
+
+    if (address.isNotEmpty && address.length > 1) {
+      return address;
+    }
+    return '';
+  }
 }

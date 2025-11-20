@@ -45,55 +45,25 @@ class _FreeUserAlertState extends State<FreeUserAlert> {
                 borderRadius: BorderRadius.circular(15.r),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        widget.title ?? 'Subscribe',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15.sp,
-                        ),
-                      ),
-                      const Spacer(),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 4.h,
-                          horizontal: 10.w,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.colors.greenBg,
-                          borderRadius: BorderRadius.circular(50.r),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Assets.icons.premium.svg(),
-                            SizedBox(
-                              width: 4.w,
-                            ),
-                            Text(
-                              widget.buttonText ?? 'Unlock Now',
-                              style: TextStyle(
-                                fontSize: 11.sp,
-                                color: const Color.fromRGBO(
-                                  243,
-                                  229,
-                                  171,
-                                  1,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  Text(
+                    textAlign: TextAlign.center,
+                    widget.title ?? 'Subscribe',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15.sp,
+                    ),
                   ),
+                  SizedBox(
+                    height: 4.h,
+                  ),
+                  UnlockButton(widget: widget),
                   SizedBox(
                     height: 6.h,
                   ),
                   Text(
+                    textAlign: TextAlign.center,
                     widget.subtitle ?? 'You are not subscribed!',
                     style: TextStyle(
                       // fontSize: 14.sp,
@@ -104,5 +74,49 @@ class _FreeUserAlertState extends State<FreeUserAlert> {
               ),
             ),
           );
+  }
+}
+
+class UnlockButton extends StatelessWidget {
+  const UnlockButton({
+    required this.widget,
+    super.key,
+  });
+
+  final FreeUserAlert widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: 4.h,
+        horizontal: 10.w,
+      ),
+      decoration: BoxDecoration(
+        color: context.colors.greenBg,
+        borderRadius: BorderRadius.circular(6.r),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Assets.icons.premium.svg(),
+          SizedBox(
+            width: 4.w,
+          ),
+          Text(
+            widget.buttonText ?? 'Unlock Now',
+            style: TextStyle(
+              fontSize: 11.sp,
+              color: const Color.fromRGBO(
+                243,
+                229,
+                171,
+                1,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -7,6 +7,7 @@ import 'package:sage/app/styles/app_dimensions.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/l10n/l10n.dart';
+import 'package:sage/services/session_manager/session_controller.dart';
 
 class Step3Screen extends StatefulWidget {
   const Step3Screen({
@@ -42,10 +43,13 @@ class _Step3ScreenState extends State<Step3Screen> {
     'Event Tickets',
   ];
 
+  final SessionController _sessionController = SessionController();
   @override
   void initState() {
     super.initState();
-    _selectedPrefs = Set.from(widget.initialSelectedPrefs);
+    // _selectedPrefs = Set.from(widget.initialSelectedPrefs);
+    _selectedPrefs =
+        (_sessionController.user?.giftPreferences ?? []).toSet().cast<String>();
   }
 
   bool get _canProceed => _selectedPrefs.isNotEmpty;

@@ -83,6 +83,7 @@ class SessionController extends ChangeNotifier {
 
   Future<void> setProfileCompletionStatus({bool status = false}) async {
     _isProfileIncomplete = status;
+    debugPrint('👤 ACCOUNT COMPLETION STATUS SET TO: $_isProfileIncomplete');
   }
 
   /// Clear token on logout
