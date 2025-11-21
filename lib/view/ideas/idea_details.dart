@@ -250,7 +250,7 @@ class MyAddedIdeaInfo extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: Colors.black54,
                   ),
                 ),
               ],

@@ -389,7 +389,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
 
   SizedBox _buildTopPicks(List<dynamic> topPicks) {
     return SizedBox(
-      height: 260.h,
+      height: 265.h,
       child: ListView.separated(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         scrollDirection: Axis.horizontal,
@@ -533,7 +533,7 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
                             },
                             // child: Assets.icons.bookmark.svg(),
                             child: Padding(
-                              padding: EdgeInsets.all(2.w),
+                              padding: EdgeInsets.symmetric(horizontal: 2.w),
                               child: isBookmarked
                                   ? Assets.icons.bookmarkFilled.svg(height: 18)
                                   : Assets.icons.bookmark.svg(height: 17),

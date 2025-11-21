@@ -350,50 +350,48 @@ class _SavedIdeasScreenState extends State<SavedIdeasScreen>
     );
   }
 
-  Expanded _buildSavedIdeasDropdown(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 50.h,
-        padding: EdgeInsets.all(15.w),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF7FAFA),
-          border: Border.all(color: const Color(0xFFDDE5E6)),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            value: selectedDropdown,
-            icon: Icon(
-              Icons.keyboard_arrow_down,
-              color: context.colors.mainGreenLight,
-            ),
-            dropdownColor: Colors.white,
-            style: const TextStyle(
-              color: Color(0xFF4C5C5D),
-              fontSize: 16,
-            ),
-            items: dropdownItems.map((item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(item),
-              );
-            }).toList(),
-            onChanged: (value) {
-              if (value != null) {
-                if (value == 'All') {
-                  resetList();
-                  setState(() {
-                    selectedDropdown = value;
-                  });
-                } else {
-                  setState(() {
-                    filterByCategory(value);
-                    selectedDropdown = value;
-                  });
-                }
-              }
-            },
+  Widget _buildSavedIdeasDropdown(BuildContext context) {
+    return Container(
+      height: 50.h,
+      padding: EdgeInsets.all(15.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7FAFA),
+        border: Border.all(color: const Color(0xFFDDE5E6)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: selectedDropdown,
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            color: context.colors.mainGreenLight,
           ),
+          dropdownColor: Colors.white,
+          style: const TextStyle(
+            color: Color(0xFF4C5C5D),
+            fontSize: 16,
+          ),
+          items: dropdownItems.map((item) {
+            return DropdownMenuItem<String>(
+              value: item,
+              child: Text(item),
+            );
+          }).toList(),
+          onChanged: (value) {
+            if (value != null) {
+              if (value == 'All') {
+                resetList();
+                setState(() {
+                  selectedDropdown = value;
+                });
+              } else {
+                setState(() {
+                  filterByCategory(value);
+                  selectedDropdown = value;
+                });
+              }
+            }
+          },
         ),
       ),
     );
