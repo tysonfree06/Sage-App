@@ -33,6 +33,11 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
       false; // happens when isPremium = true but no subscription in server
 
   Future<void> fetchSubscription() async {
+    if (mounted) {
+      setState(() {
+        isLoaded = false;
+      });
+    }
     debugPrint('Fetching Subscription...');
     try {
       final response = await _subscriptionService.getSubscriptionDetails();
@@ -190,9 +195,9 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
   MyButton _buildChangeButton(BuildContext context) {
     return MyButton(
       label: isSubscriptionActive ? 'Change Membership' : 'Subscribe',
-      onPressed: () {
+      onPressed: () async {
         if (isSubscriptionActive && !Platform.isIOS) {
-          showDialog<void>(
+          await showDialog<void>(
             context: context,
             builder: (_) => MyDialog(
               titleFirst: 'Change ',
@@ -200,15 +205,17 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
               subtitle:
                   '''Changing subscription will discard your current subscription.''',
               confirmLabel: 'Continue',
-              onConfirm: () {
-                SubscriptionService.goToChangeSubscription(
+              onConfirm: () async {
+                await SubscriptionService.goToChangeSubscription(
                   context,
                 );
+                await fetchSubscription();
               },
             ),
           );
         } else {
-          SubscriptionService.goToChangeSubscription(context);
+          await SubscriptionService.goToChangeSubscription(context);
+          await fetchSubscription();
         }
       },
     );

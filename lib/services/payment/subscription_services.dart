@@ -17,6 +17,7 @@ class SubscriptionScreenService {
     VoidCallback? updateLoading,
   }) async {
     if (Platform.isIOS) {
+      //TODO: Replace with if (!Platform.isIOS) to run stripe on ios
       await _handleIAPSubscription(
         context,
       );

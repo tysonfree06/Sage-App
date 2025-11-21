@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 import 'package:sage/generated/assets/assets.gen.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 import 'package:sage/services/views/settings_service.dart';
+import 'package:sage/services/views/splash_services.dart';
 
 class FreeUserAlert extends StatefulWidget {
   const FreeUserAlert({
@@ -20,23 +23,35 @@ class FreeUserAlert extends StatefulWidget {
   State<FreeUserAlert> createState() => _FreeUserAlertState();
 }
 
+@override
 class _FreeUserAlertState extends State<FreeUserAlert> {
   bool isPremium = SessionController().user!.isPremium ?? false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return isPremium
-        ? const SizedBox.shrink()
-        : GestureDetector(
-            onTap: () async {
-              await SettingService.goToSubscriptionScreen(
-                context,
-                false,
-              );
-              setState(() {
-                isPremium = SessionController().user!.isPremium ?? false;
-              });
-            },
-            child: Container(
+    return GestureDetector(
+      onTap: () async {
+        await SettingService.goToSubscriptionScreen(
+          context,
+          false,
+        );
+        //fetch user profile
+        if (context.mounted) {
+          await SplashServices().fetchProfile(context);
+        }
+        setState(() {
+          isPremium = SessionController().user!.isPremium ?? false;
+        });
+        debugPrint('👤 Subscription status updated : $isPremium');
+      },
+      child: isPremium
+          ? const SizedBox.shrink()
+          : Container(
               // margin: EdgeInsets.symmetric(horizontal: 16.w),
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
               width: double.infinity,
@@ -73,7 +88,7 @@ class _FreeUserAlertState extends State<FreeUserAlert> {
                 ],
               ),
             ),
-          );
+    );
   }
 }
 

@@ -67,7 +67,7 @@ class OfferTile extends StatelessWidget {
           // ),
           child: Container(
             color: context.colors.mainGreenLight.withValues(
-              alpha: 0.25,
+              alpha: 0.4,
             ),
             width: 92.w,
             height: 102.h,

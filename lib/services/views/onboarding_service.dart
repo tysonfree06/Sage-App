@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:sage/app/routes/routes_name.dart';
 import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/app/utils/service_error_handler.dart';
+import 'package:sage/model/user/user_model.dart';
 import 'package:sage/repository/user_repo.dart';
 import 'package:sage/services/session_manager/session_controller.dart';
 
@@ -45,14 +46,26 @@ class OnboardingService {
     //   context.flushBarSuccessMessage(
     //     message: response['message'] as String,
     //   );
+
+    //get subscription status
+    final user = SessionController().user;
+    final bool isPremium = user?.isPremium ?? false;
+
     Timer(
       const Duration(seconds: 3),
-      () => Navigator.pushNamedAndRemoveUntil(
-        context,
-        RoutesName.subscription,
-        arguments: true, //Show Skip Button
-        (route) => false,
-      ),
+      () => isPremium
+          ? Navigator.pushNamedAndRemoveUntil(
+              context,
+              RoutesName.navigation,
+              arguments: true, //Show Skip Button
+              (route) => false,
+            )
+          : Navigator.pushNamedAndRemoveUntil(
+              context,
+              RoutesName.subscription,
+              arguments: true, //Show Skip Button
+              (route) => false,
+            ),
     );
 
     // Timer(const Duration(seconds: 3), () async {

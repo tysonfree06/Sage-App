@@ -54,17 +54,21 @@ class _OfferDetailScreenState extends State<OfferDetailScreen> {
                 height: 215.h,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: context.colors.mainGreenDark,
+                  // color: context.colors.mainGreenDark,
+                  color: context.colors.mainGreenLight.withValues(
+                    alpha: 0.4,
+                  ),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 clipBehavior: Clip.hardEdge,
-                child: Image.network(
-                  widget.offer.image ?? '',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey,
-                  ),
-                ),
+                // child: Image.network(
+                //   widget.offer.image ?? '',
+                //   fit: BoxFit.cover,
+                //   errorBuilder: (context, error, stackTrace) => Container(
+                //     color: Colors.grey,
+                //   ),
+                // ),
+                child: Assets.icons.raffle.svg(),
               ),
               SizedBox(height: 15.h),
               Row(

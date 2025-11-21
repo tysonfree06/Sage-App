@@ -7,6 +7,7 @@ import 'package:sage/app/utils/extensions/flush_bar_extension.dart';
 import 'package:sage/provider/home/navigation_provider.dart';
 import 'package:sage/repository/iap_repo.dart';
 import 'package:sage/repository/subscription_repo.dart';
+import 'package:sage/services/points_services.dart';
 import 'package:sage/services/views/splash_services.dart';
 
 class SubscriptionService {
@@ -85,7 +86,7 @@ class SubscriptionService {
       if (context.mounted) {
         await SplashServices().fetchProfile(context);
       }
-      final int pointEarned = response['points_earned'] as int;
+      final int pointsEarned = response['points_earned'] as int;
       if (context.mounted) {
         // if (context.mounted) {
         //   if (pointEarned > 0) {
@@ -105,7 +106,26 @@ class SubscriptionService {
             (route) => false,
           );
         } else {
-          await goToActiveSubscription(context, pointEarned);
+          if (context.mounted) {
+            context.flushBarSuccessMessage(
+              message: 'You have subscribed successfully!',
+            );
+          }
+          //show points earned dialog if it's not signup flow
+          if (pointsEarned > 0) {
+            PointsServices.showPointsEarnedDialog(
+              context,
+              'Subscribing to Sage!',
+              points: pointsEarned,
+            );
+          }
+          // else {
+          //   if (context.mounted) {
+          //     Navigator.of(context).pop();
+          //   }
+          // }
+
+          // await goToActiveSubscription(context, pointEarned);
         }
       }
 
@@ -158,8 +178,8 @@ class SubscriptionService {
   }
 
   //Go to subscription screen to change membership
-  static void goToChangeSubscription(BuildContext context) {
-    Navigator.pushReplacementNamed(
+  static Future<void> goToChangeSubscription(BuildContext context) async {
+    await Navigator.pushReplacementNamed(
       context,
       RoutesName.subscription,
     );

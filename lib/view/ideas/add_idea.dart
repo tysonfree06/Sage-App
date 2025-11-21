@@ -120,10 +120,12 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
       context.flushBarErrorMessage(
         message: 'All fields and image is mandatory,',
       );
-      setState(() {
-        _busy = false;
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          isLoading = false;
+        });
+      }
       return;
     }
 
@@ -142,10 +144,12 @@ class _AddIdeaScreenState extends State<AddIdeaScreen> {
       ]);
     }
 
-    setState(() {
-      _busy = false;
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _busy = false;
+        isLoading = false;
+      });
+    }
   }
 
   //pick and upload image
