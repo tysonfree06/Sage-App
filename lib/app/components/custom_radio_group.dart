@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sage/app/utils/extensions/context_extensions.dart';
 
 class CustomRadioGroup<T> extends StatelessWidget {
@@ -34,7 +35,9 @@ class CustomRadioGroup<T> extends StatelessWidget {
             ),
             Text(
               labelBuilder(option),
-              style: context.typography.subtitle.copyWith(),
+              style: context.typography.subtitle.copyWith(
+                fontSize: 15.sp,
+              ),
             ),
           ],
         );

@@ -360,9 +360,12 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: isSelected
-                            ? const Color.fromARGB(255, 193, 193, 193)
+                            // ? const Color.fromARGB(255, 193, 193, 193)
+                            ? context.colors.mainGreenLight.withValues(
+                                alpha: 0.7,
+                              )
                             : Colors.transparent,
-                        width: 5.w,
+                        width: 4.w,
                       ),
                       borderRadius: BorderRadius.circular(150.r),
                     ),
@@ -428,23 +431,39 @@ class _ExploreIdeasScreenState extends State<ExploreIdeasScreen>
                             borderRadius: BorderRadius.circular(12),
                             // child: imageUrl.isNotEmpty && imageUrl != 'null'
                             //     ?
-                            child: Image.network(
-                              imageUrl,
-                              height: 127.h,
-                              width: 152.w,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(
-                                color: context.colors.white,
-                                width: 152.w,
-                                height: 127.h,
-                              ),
-                            ),
-                            // : Container(
-                            //     color: Colors.grey,
+                            // child: Image.network(
+                            //   imageUrl,
+                            //   height: 127.h,
+                            //   width: 152.w,
+                            //   fit: BoxFit.cover,
+                            //   errorBuilder: (context, error, stackTrace) =>
+                            //       Container(
+                            //     color: context.colors.white,
                             //     width: 152.w,
                             //     height: 127.h,
                             //   ),
+                            // ),
+                            //TODO: replace with network image above (on client's go ahead)
+                            child: Container(
+                              color: context.colors.mainGreenLight
+                                  .withValues(alpha: 0.2),
+                              height: 127.h,
+                              width: 152.w,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                              ),
+                              // child: Image.asset(
+                              //   Assets.images.logo.launcherIcon.path,
+                              //   fit: BoxFit.contain,
+                              //   errorBuilder: (context, error, stackTrace) =>
+                              //       Container(
+                              //     color: context.colors.white,
+                              //     width: 152.w,
+                              //     height: 127.h,
+                              //   ),
+                              // ),
+                              child: Assets.images.logo.logoHorizontal.svg(),
+                            ),
                           ),
                           Positioned(
                             bottom: 10,

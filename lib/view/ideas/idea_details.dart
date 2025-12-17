@@ -69,17 +69,26 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                   // if (widget.ideaDetails?['image'] != null &&
                   //     widget.ideaDetails?['image'] != '')
 
-                  Image.network(
-                fit: BoxFit.cover,
-                widget.ideaDetails?['image'] as String,
-                width: double.infinity,
-                height: 190.h,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  alignment: Alignment.center,
-                  color: Colors.white,
-                  width: double.infinity,
-                  height: 190.h,
+                  //     Image.network(
+                  //   fit: BoxFit.cover,
+                  //   widget.ideaDetails?['image'] as String,
+                  //   width: double.infinity,
+                  //   height: 190.h,
+                  //   errorBuilder: (context, error, stackTrace) => Container(
+                  //     alignment: Alignment.center,
+                  //     color: Colors.white,
+                  //     width: double.infinity,
+                  //     height: 190.h,
+                  //   ),
+                  // ),
+                  //TODO: replace with network image above (on client's go ahead)
+                  Container(
+                color: context.colors.mainGreenLight.withValues(alpha: 0.2),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 64.w,
                 ),
+                height: 190.h,
+                child: Assets.images.logo.logoHorizontal.svg(),
               ),
             ),
             const SizedBox(height: 12),

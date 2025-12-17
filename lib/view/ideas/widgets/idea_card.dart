@@ -66,15 +66,32 @@ class _IdeaCardState extends State<IdeaCard> {
                   // Image with category pill
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15.r),
-                    child: Image.network(
-                      imageUrl,
-                      height: 126.h,
-                      width: 120.w,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: context.colors.white,
-                        width: 120.w,
+                    // child: Image.network(
+                    //   imageUrl,
+                    //   height: 126.h,
+                    //   width: 120.w,
+                    //   fit: BoxFit.cover,
+                    //   errorBuilder: (context, error, stackTrace) => Container(
+                    //     color: context.colors.white,
+                    //     width: 120.w,
+                    //     height: 126.h,
+                    //   ),
+                    // ),
+                    //TODO: replace with network image above (on client's go ahead)
+                    child: ColoredBox(
+                      color: context.colors.mainGreenLight.withValues(
+                        alpha: 0.2,
+                      ),
+                      child: Image.asset(
+                        Assets.images.logo.launcherIcon.path,
                         height: 126.h,
+                        width: 120.w,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: context.colors.white,
+                          width: 120.w,
+                          height: 126.h,
+                        ),
                       ),
                     ),
                   ),
