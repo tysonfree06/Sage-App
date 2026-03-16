@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+
+class MyBottomSheet extends StatelessWidget {
+  const MyBottomSheet({
+    required this.child,
+    super.key,
+  });
+
+  final Widget child;
+
+  static Future<T?> show<T>(
+    BuildContext context, {
+    required Widget child,
+    bool isDismissible = true,
+  }) {
+    return showModalBottomSheet<T>(
+      context: context,
+      isDismissible: isDismissible,
+      enableDrag: false,
+      useSafeArea: true,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (_) => MyBottomSheet(child: child),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SingleChildScrollView(
+          child: child,
+        ),
+      ),
+    );
+  }
+}
