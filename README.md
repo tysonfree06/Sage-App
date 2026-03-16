@@ -6,61 +6,65 @@ Sage is a relationship tool designed to help couples discover personalized, AI-g
 ---
 
 ## 🛠️ Tech Stack / Languages Used
-- **Frontend:** React (Web PWA)
-- **Backend:** Firebase Cloud Functions
-- **Database:** Firestore
-- **Authentication:** Firebase Auth
-- **Deployment:** Firebase Hosting (PWA)
+- **Frontend**: Flutter  
+- **Authentication**: MongoDB Auth (via Atlas App Services)  
+- **Database**: MongoDB Atlas  
+- **Backend / Server Logic**: MongoDB Atlas Functions (or custom Node.js server)  
+- **Media Storage & Delivery**: Cloudinary  
+- **AI Integration**: OpenAI API (GPT-4o mini)  
+- **Payments**: Stripe API (for subscriptions & payment confirmations)  
+- **In-App Purchases**: Apple IAP API (for iOS subscriptions)  
+- **Marketing Automation (Email)**: Mailchimp API  
+- **Raffle + Rewards System**: Tango Card API  
 - **Version Control:** Git, GitHub
 
 ---
 
-## 🔌 APIs Used
-- **OpenAI API (GPT-4o Mini):** Personalized idea generation
-- **Stripe API:** Subscription and payment processing
-- **Tango Card API:** Raffle reward fulfillment with gift cards
-- **Mailchimp API:** Email automations (sign up, reset password, marketing)
-- **Firebase Cloud Messaging (optional):** Push notifications
-- **Google Analytics / Firebase Analytics:** Event tracking and user behavior
-
----
-
 ## 📈 Monitoring and Tracking
-- **Performance & Errors:** Firebase Performance Monitoring, Crashlytics
-- **User Behavior & Analytics:** Google Analytics, Firebase Analytics
-- **Error Handling:** Cloud Function logs (Firebase Console > Functions > Logs)
-- **Raffle & Points Tracking:** Firestore collections with audit timestamps
-- **Feedback & Bug Reports:** Stored in Firestore under `feedback` collection
+| Component               | Monitoring/Tracking Capability                         | Notes                         |
+|-------------------------|--------------------------------------------------------|-------------------------------|
+| **MongoDB Auth**        | ✅ MongoDB Atlas Logs (App Services > Logs)            | Track login attempts, function errors |
+| **MongoDB Atlas DB**    | ✅ Atlas Monitoring Dashboard                           | Monitor slow queries, CPU, RAM, storage, connections |
+| **MongoDB Functions**   | ✅ Atlas Functions Logs                                 | Logs via `console.log()` for each invocation |
+| **Cloudinary**          | ✅ Cloudinary Dashboard                                 | Track storage, bandwidth, and transformations |
+| **OpenAI API**          | ✅ OpenAI Usage Dashboard                               | Track token usage, error rates by model |
+| **Stripe API**          | ✅ Stripe Dashboard                                     | Track subscription events, payments, failures |
+| **Mailchimp API**       | ✅ Mailchimp Analytics                                  | Campaign performance (opens, clicks, unsubscribes) |
+| **Tango Card API**      | ✅ API-Level Logs                                       | Log reward send success/fail responses in backend |
 
 ---
 ### 🧱 File Structure Explanation
 Provide a list or tree view of the key folders and files:
 ```bash
-/src
-  /components
-  /pages
-  /utils
-  /config
+Sage-App/
+│
+├── .idea/                       # IDE config folder (used by Android Studio)
+│   └── runConfigurations/      # Stores saved run/debug presets
+│
+├── .vscode/                    # VS Code-specific settings (like launch configs)
+│
+├── android/                    # Native Android build files
+│
+├── assets/                     # App assets (images, fonts, etc.)
+│
+├── ios/                        # Native iOS build files
+│
+├── lib/                        # Main Flutter source code folder
+│
+├── .fvmrc                      # Specifies Flutter version used with FVM
+├── .gitignore                  # Git ignore rules (e.g., .DS_Store, build/, etc.)
+├── README.md                   # Main project documentation
+├── README-DEV.md               # Developer-specific notes and instructions
+├── analysis_options.yaml       # Linter configuration for Dart analyzer
+├── devtools_options.yaml       # Dart DevTools configuration options
+├── l10n.yaml                   # Localization configuration
+├── pubspec.yaml                # Flutter project metadata and dependencies
 ```
 
 ---
 ## 🚀 Getting Started
 
-```bash
-git clone https://github.com/your-org/sage-app.git
-cd sage-app
-npm install
-npm run dev
-```
-
-Environment variables should be stored in a `.env` file (not committed to Git):
-```
-FIREBASE_API_KEY=
-OPENAI_API_KEY=
-STRIPE_SECRET_KEY=
-MAILCHIMP_API_KEY=
-TANGO_CARD_CREDENTIALS=
-```
+See [Dev Guide](./README-DEV.md)
 
 ---
 
@@ -239,7 +243,4 @@ git checkout -b hotfix/v1.0.0-patch v1.0.0
 
 ---
 
-
-## 📬 Contact
-For questions or contributions, reach out at [your-email@example.com] or open an issue on GitHub.
   
